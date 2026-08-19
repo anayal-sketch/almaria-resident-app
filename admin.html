@@ -379,9 +379,10 @@ const D={
   f_netnote:'Net is rent collected less maintenance cost. It is not a full profit and loss — service charge, utilities, management fee, insurance and depreciation are not in this view.',
   f_instal:'Instalment', f_duedate:'Due', f_paidon:'Paid on', f_amount:'Amount',
   f_vacantnote:'Vacant — no rent billed', f_arronly:'Arrears only',
+  f_credit:'Paid in advance', f_credit_d:'Collected ahead of the due date', f_ahead:'Ahead',
   e_wo:'No work orders match', e_wo_d:'Clear the search or choose a different filter.',
   e_arr:'No apartment is in arrears', e_arr_d:'Every billed instalment has been collected.',
-  demo:'Demonstration data — six months of simulated operations so every figure and chart ties to the same underlying records.',
+  demo:'Units, areas, leases, contract values, payment schedules and occupancy are the real register at 19 August 2026. Tenant names are substituted and no identity numbers are carried. Maintenance work orders are simulated — no maintenance log exists yet, which is the point.',
   seriesnote:'Series colours use a contrast- and colour-blindness-validated palette rather than the brand gold, which fails those checks as a data colour. Brand colour is kept for interface chrome.'
  },
  ar:{
@@ -462,9 +463,10 @@ const D={
   f_netnote:'الصافي هو الإيجار المحصّل ناقص تكلفة الصيانة، وليس قائمة دخل كاملة — رسوم الخدمة والمرافق وأتعاب الإدارة والتأمين والإهلاك غير مدرجة.',
   f_instal:'الدفعة', f_duedate:'الاستحقاق', f_paidon:'تاريخ السداد', f_amount:'المبلغ',
   f_vacantnote:'شاغرة — لا يوجد إيجار مفوتر', f_arronly:'المتأخرات فقط',
+  f_credit:'مدفوع مقدماً', f_credit_d:'محصّل قبل تاريخ الاستحقاق', f_ahead:'مقدماً',
   e_wo:'لا توجد أوامر عمل مطابقة', e_wo_d:'امسح البحث أو اختر تصفية أخرى.',
   e_arr:'لا توجد شقة عليها متأخرات', e_arr_d:'تم تحصيل جميع الدفعات المفوترة.',
-  demo:'بيانات تجريبية — ستة أشهر من التشغيل المحاكى، وكل رقم ورسم مبني على نفس السجلات.',
+  demo:'الوحدات والمساحات والعقود وقيمها وجداول الدفعات ونسبة الإشغال هي السجل الفعلي حتى ١٩ أغسطس ٢٠٢٦. أسماء المستأجرين مستبدلة ولا تتضمن أي أرقام هوية. أوامر الصيانة محاكاة — إذ لا يوجد سجل صيانة بعد، وهذا هو جوهر الموضوع.',
   seriesnote:'ألوان الرسوم تستخدم لوحة مُتحقق منها لتباين ولعمى الألوان بدلاً من الذهبي المؤسسي الذي لا يجتاز هذه الاختبارات كلون بيانات. اللون المؤسسي مخصص لواجهة النظام.'
  }
 };
@@ -533,51 +535,36 @@ const CAT_TECH={ac:['Mostafa A.','Coolair Est.'],lift:['Otis Service'],clean:['B
  pest:['Riyadh Pest Co.'],plumb:['Sayed M.','Ramy H.'],elec:['Ramy H.','Mostafa A.'],
  appl:['Mostafa A.'],carp:['Sayed M.'],alum:['Sayed M.'],paint:['Sayed M.'],waste:['Belda Housekeeping'],wifi:['Ramy H.']};
 
-/* 37 apartments: floors 1–4, plus 3 penthouses */
-const UNITS=[];
-(function(){
- const perFloor=[9,9,8,8];
- let idx=0;
- perFloor.forEach((n,f)=>{
-  for(let i=1;i<=n;i++){
-   const num=(f+1)*100+i;
-   const t=idx%9===0?'3BR':(idx%3===0?'1BR':'2BR');
-   UNITS.push({u:String(num),floor:f+1,type:t,
-     area:t==='1BR'?between(78,92):t==='2BR'?between(118,138):between(158,178)});
-   idx++;
-  }
- });
- ['P1','P2','P3'].forEach(p=>UNITS.push({u:p,floor:5,type:'PH',area:between(210,245)}));
-})();
+const TODAY=new Date(2026,7,19,18,0);
 
-const FIRST=['Khalid','Faisal','Abdulaziz','Nasser','Turki','Saad','Yousef','Majed','Salman','Bandar','Omar','Hassan','Ibrahim','Ziad','Rakan','Waleed','Fahad','Anas','Tariq','Mansour','Rayan','Sami','Adel','Hisham','Marwan','Nawaf'];
-const LAST=['Al Harbi','Al Otaibi','Al Qahtani','Al Dossari','Al Shammari','Al Ghamdi','Al Zahrani','Al Mutairi','Al Subaie','Al Anazi','Al Amri','Al Rashidi'];
-const FIRST_AR=['خالد','فيصل','عبدالعزيز','ناصر','تركي','سعد','يوسف','ماجد','سلمان','بندر','عمر','حسن','إبراهيم','زياد','راكان','وليد','فهد','أنس','طارق','منصور','ريان','سامي','عادل','هشام','مروان','نواف'];
-const LAST_AR=['الحربي','العتيبي','القحطاني','الدوسري','الشمري','الغامدي','الزهراني','المطيري','السبيعي','العنزي','العمري','الرشيدي'];
+/* Almaria Residence — canonical register, extracted from بيان ايجارات الشقق 19.xlsx (19 Aug 2026).
+   Units, areas, floors, contract values, payment schedules and occupancy are the real figures.
+   Tenant names are substituted; no identity numbers, nationalities or job titles are carried. */
+const REGISTER=[{"id": "A-001", "type": "3BR", "area": 136, "floor": 0, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "A-002", "type": "3BR", "area": 150, "floor": 0, "let": true, "tenant": "Sami Fares", "tenantAr": "سامي فارس", "value": 160000, "start": "2025-09-15", "end": "2026-09-14", "paid": 160000, "remain": 0, "inst": [{"n": 1, "amt": 40000.0, "due": "2025-09-15", "paid": true}, {"n": 2, "amt": 40000.0, "due": "2025-09-15", "paid": true}, {"n": 3, "amt": 80000.0, "due": "2026-03-15", "paid": true}]}, {"id": "A-003", "type": "2BR", "area": 116, "floor": 0, "let": false, "tenant": null, "tenantAr": null, "value": 108750, "start": "2025-01-08", "end": "2026-07-31", "paid": null, "remain": null, "inst": []}, {"id": "A-004", "type": "2BR", "area": 126, "floor": 0, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "A-005", "type": "3BR", "area": 146, "floor": 0, "let": true, "tenant": "Rana Rahman", "tenantAr": "رنا رحمن", "value": 150000, "start": "2026-06-01", "end": "2027-05-31", "paid": 75000, "remain": 75000, "inst": [{"n": 1, "amt": 75000.0, "due": "2026-06-01", "paid": true}, {"n": 2, "amt": 75000.0, "due": "2026-12-01", "paid": false}]}, {"id": "A-006", "type": "3BR", "area": 151, "floor": 0, "let": true, "tenant": "Nabil Hamdan", "tenantAr": "نبيل حمدان", "value": 150000, "start": "2026-05-15", "end": "2027-05-14", "paid": 150000, "remain": 0, "inst": [{"n": 1, "amt": 75000.0, "due": "2026-04-28", "paid": true}, {"n": 2, "amt": 75000.0, "due": "2026-06-30", "paid": true}]}, {"id": "A-101", "type": "3BR", "area": 150, "floor": 1, "let": true, "tenant": "Lina Nasser", "tenantAr": "لينا ناصر", "value": 175000, "start": "2026-02-11", "end": "2027-02-10", "paid": 175000, "remain": 0, "inst": [{"n": 1, "amt": 175000.0, "due": "2026-02-11", "paid": true}]}, {"id": "A-102", "type": "3BR", "area": 154, "floor": 1, "let": true, "tenant": "Yusuf Aziz", "tenantAr": "يوسف عزيز", "value": 123750, "start": "2025-12-10", "end": "2026-06-09", "paid": 123750, "remain": 0, "inst": [{"n": 1, "amt": 41250.0, "due": "2025-12-10", "paid": true}, {"n": 2, "amt": 13750.0, "due": "2026-03-12", "paid": true}, {"n": 3, "amt": 13750.0, "due": "2026-04-13", "paid": true}, {"n": 4, "amt": 13750.0, "due": "2026-05-07", "paid": true}, {"n": 5, "amt": 13750.0, "due": "2026-06-07", "paid": true}, {"n": 6, "amt": 13750.0, "due": "2026-07-07", "paid": true}, {"n": 7, "amt": 13750.0, "due": "2026-08-07", "paid": true}]}, {"id": "A-103", "type": "1BR", "area": 46, "floor": 1, "let": true, "tenant": "Dina Younes", "tenantAr": "دينا يونس", "value": 110000, "start": "2025-08-09", "end": "2026-09-07", "paid": 109998, "remain": 2, "inst": [{"n": 1, "amt": 9166.0, "due": "2025-09-07", "paid": true}, {"n": 2, "amt": 9166.0, "due": "2025-10-07", "paid": true}, {"n": 3, "amt": 9166.0, "due": "2025-11-07", "paid": true}, {"n": 4, "amt": 27500.0, "due": "2025-12-08", "paid": true}, {"n": 5, "amt": 27500.0, "due": "2026-03-08", "paid": true}, {"n": 6, "amt": 27500.0, "due": "2026-06-08", "paid": true}]}, {"id": "A-104", "type": "3BR", "area": 156, "floor": 1, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "A-105", "type": "2BR", "area": 142, "floor": 0, "let": false, "tenant": null, "tenantAr": null, "value": 220000, "start": "2024-01-12", "end": "2025-11-30", "paid": null, "remain": null, "inst": []}, {"id": "A-106", "type": "1BR", "area": 46, "floor": 0, "let": true, "tenant": "Tarek Barakat", "tenantAr": "طارق بركات", "value": 125000, "start": "2025-08-27", "end": "2026-08-26", "paid": 125000, "remain": 0, "inst": [{"n": 1, "amt": 60000.0, "due": "2025-09-24", "paid": true}, {"n": 2, "amt": 60000.0, "due": "2025-09-24", "paid": true}, {"n": 3, "amt": 5000.0, "due": "2025-09-25", "paid": true}]}, {"id": "A-107", "type": "1BR", "area": 46, "floor": 0, "let": true, "tenant": "Farah Qasim", "tenantAr": "فرح قاسم", "value": 110000, "start": "2026-01-18", "end": "2027-01-17", "paid": 82500, "remain": 27500, "inst": [{"n": 1, "amt": 27500.0, "due": "2026-01-18", "paid": true}, {"n": 2, "amt": 27500.0, "due": "2026-04-18", "paid": true}, {"n": 3, "amt": 27500.0, "due": "2026-07-18", "paid": true}, {"n": 4, "amt": 27500.0, "due": "2026-10-18", "paid": false}]}, {"id": "A-201", "type": "3BR", "area": 151, "floor": 2, "let": true, "tenant": "Basel Darwish", "tenantAr": "باسل درويش", "value": 190000, "start": "2026-01-24", "end": "2027-01-23", "paid": 190000, "remain": 0, "inst": [{"n": 1, "amt": 95000.0, "due": "2026-01-27", "paid": true}, {"n": 2, "amt": 95000.0, "due": "2026-01-29", "paid": true}]}, {"id": "A-202", "type": "3BR", "area": 154, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "A-203", "type": "1BR", "area": 46, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": 82500, "start": "2025-11-15", "end": "2026-05-14", "paid": null, "remain": null, "inst": []}, {"id": "A-204", "type": "3BR", "area": 156, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": 170000, "start": "2026-08-10", "end": "2027-08-09", "paid": 0, "remain": 170000, "inst": []}, {"id": "A-205", "type": "2BR", "area": 142, "floor": 2, "let": true, "tenant": "Karim Fares", "tenantAr": "كريم فارس", "value": 160000, "start": "2026-01-01", "end": "2026-12-31", "paid": 0, "remain": 160000, "inst": [{"n": 1, "amt": 160000.0, "due": "2026-12-31", "paid": false}]}, {"id": "A-206", "type": "1BR", "area": 46, "floor": 2, "let": true, "tenant": "Mona Shaheen", "tenantAr": "منى شاهين", "value": 52708, "start": "2026-01-01", "end": "2026-12-31", "paid": 0, "remain": 52708, "inst": [{"n": 1, "amt": 52708.0, "due": "2026-12-31", "paid": false}]}, {"id": "A-207", "type": "1BR", "area": 46, "floor": 2, "let": true, "tenant": "Rami Khoury", "tenantAr": "رامي خوري", "value": 115000, "start": "2025-11-01", "end": "2026-10-31", "paid": 86250, "remain": 28750, "inst": [{"n": 1, "amt": 28750.0, "due": "2025-11-01", "paid": true}, {"n": 2, "amt": 28750.0, "due": "2026-02-01", "paid": true}, {"n": 3, "amt": 28750.0, "due": "2026-05-01", "paid": true}, {"n": 4, "amt": 28730.0, "due": "2026-08-01", "paid": false}]}, {"id": "A-301", "type": "2BR", "area": 140, "floor": 3, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "A-302", "type": "2BR", "area": 140, "floor": 3, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "B-007", "type": "1BR", "area": 130, "floor": 0, "let": true, "tenant": "Hala Nasser", "tenantAr": "هالة ناصر", "value": 120000, "start": "2025-08-18", "end": "2026-09-17", "paid": 110770, "remain": 9230, "inst": [{"n": 1, "amt": 15000.0, "due": "2025-07-28", "paid": true}, {"n": 2, "amt": 40385.0, "due": "2025-08-18", "paid": true}, {"n": 3, "amt": 55485.0, "due": "2026-03-20", "paid": true}, {"n": 4, "amt": 9130.0, "due": "2026-09-02", "paid": false}]}, {"id": "B-008", "type": "2BR", "area": 112, "floor": 0, "let": true, "tenant": "Ziad Aziz", "tenantAr": "زياد عزيز", "value": 145000, "start": "2025-08-16", "end": "2026-08-15", "paid": 145000, "remain": 0, "inst": [{"n": 1, "amt": 15000.0, "due": "2025-06-23", "paid": true}, {"n": 2, "amt": 15000.0, "due": "2025-08-14", "paid": true}, {"n": 3, "amt": 42500.0, "due": "2025-09-01", "paid": true}, {"n": 4, "amt": 72500.0, "due": "2026-02-16", "paid": true}]}, {"id": "B-009", "type": "2BR", "area": 48, "floor": 0, "let": true, "tenant": "Sara Younes", "tenantAr": "سارة يونس", "value": 155000, "start": "2026-07-05", "end": "2027-07-04", "paid": 25835, "remain": 129165, "inst": [{"n": 1, "amt": 12917.0, "due": "2026-07-05", "paid": true}, {"n": 2, "amt": 12918.0, "due": "2026-08-05", "paid": true}, {"n": 3, "amt": 12916.0, "due": "2026-09-05", "paid": false}, {"n": 4, "amt": 12918.0, "due": "2026-10-05", "paid": false}, {"n": 5, "amt": 12917.0, "due": "2026-11-05", "paid": false}, {"n": 6, "amt": 12916.0, "due": "2026-12-05", "paid": false}, {"n": 7, "amt": 12917.0, "due": "2027-01-05", "paid": false}, {"n": 8, "amt": 12917.0, "due": "2027-02-05", "paid": false}, {"n": 9, "amt": 12917.0, "due": "2027-03-05", "paid": false}, {"n": 10, "amt": 12917.0, "due": "2027-04-05", "paid": false}, {"n": 11, "amt": 12917.0, "due": "2027-05-05", "paid": false}, {"n": 12, "amt": 12916.0, "due": "2027-06-05", "paid": false}]}, {"id": "B-108", "type": "3BR", "area": 154, "floor": 0, "let": true, "tenant": "Sami Haddad", "tenantAr": "سامي حداد", "value": 59064, "start": "2026-05-02", "end": "2026-07-31", "paid": 39376, "remain": 19688, "inst": [{"n": 1, "amt": 19688.0, "due": "2026-05-02", "paid": true}, {"n": 2, "amt": 19688.0, "due": "2027-06-02", "paid": true}, {"n": 3, "amt": 19688.0, "due": "2028-07-02", "paid": false}]}, {"id": "B-109", "type": "2BR", "area": 141, "floor": 0, "let": true, "tenant": "Salma Mansour", "tenantAr": "سلمى منصور", "value": 160000, "start": "2025-12-03", "end": "2026-12-02", "paid": 106666, "remain": 53334, "inst": [{"n": 1, "amt": 53333.0, "due": "2025-12-03", "paid": true}, {"n": 2, "amt": 53333.0, "due": "2026-04-03", "paid": true}, {"n": 3, "amt": 53334.0, "due": "2026-08-13", "paid": false}]}, {"id": "B-110", "type": "1BR", "area": 46, "floor": 0, "let": true, "tenant": "Omar Barakat", "tenantAr": "عمر بركات", "value": 120000, "start": "2025-11-01", "end": "2026-11-01", "paid": 60000, "remain": 60000, "inst": [{"n": 1, "amt": 10000.0, "due": "2025-11-01", "paid": true}, {"n": 2, "amt": 10000.0, "due": "2025-12-01", "paid": true}, {"n": 3, "amt": 10000.0, "due": "2026-01-01", "paid": true}, {"n": 4, "amt": 10000.0, "due": "2026-02-01", "paid": true}, {"n": 5, "amt": 10000.0, "due": "2026-03-01", "paid": true}, {"n": 6, "amt": 10000.0, "due": "2026-04-01", "paid": true}, {"n": 7, "amt": 10000.0, "due": "2026-05-01", "paid": false}, {"n": 8, "amt": 10000.0, "due": "2026-06-01", "paid": false}, {"n": 9, "amt": 10000.0, "due": "2026-07-01", "paid": false}, {"n": 10, "amt": 10000.0, "due": "2026-08-01", "paid": false}, {"n": 11, "amt": 10000.0, "due": "2026-09-01", "paid": false}, {"n": 12, "amt": 10000.0, "due": "2026-10-01", "paid": false}]}, {"id": "B-111", "type": "3BR", "area": 154, "floor": 0, "let": true, "tenant": "Rana Qasim", "tenantAr": "رنا قاسم", "value": 59064, "start": "2026-05-02", "end": "2026-07-31", "paid": 39376, "remain": 19688, "inst": [{"n": 1, "amt": 19688.0, "due": "2026-05-02", "paid": true}, {"n": 2, "amt": 19688.0, "due": "2027-06-02", "paid": true}, {"n": 3, "amt": 19688.0, "due": "2028-07-02", "paid": false}]}, {"id": "B-112", "type": "3BR", "area": 145, "floor": 0, "let": true, "tenant": "Nabil Darwish", "tenantAr": "نبيل درويش", "value": 59064, "start": "2026-05-02", "end": "2026-07-31", "paid": 39376, "remain": 19688, "inst": [{"n": 1, "amt": 19688.0, "due": "2026-05-02", "paid": true}, {"n": 2, "amt": 19688.0, "due": "2027-06-02", "paid": true}, {"n": 3, "amt": 19688.0, "due": "2028-07-02", "paid": false}]}, {"id": "B-208", "type": "3BR", "area": 154, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "B-209", "type": "2BR", "area": 141, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": 40000, "start": "2026-08-11", "end": "2026-11-10", "paid": null, "remain": null, "inst": []}, {"id": "B-210", "type": "1BR", "area": 46, "floor": 2, "let": true, "tenant": "Dina Saleh", "tenantAr": "دينا صالح", "value": 115000, "start": "2025-09-15", "end": "2026-09-14", "paid": 115000, "remain": 0, "inst": [{"n": 1, "amt": 115000.0, "due": "2025-09-16", "paid": true}]}, {"id": "B-211", "type": "3BR", "area": 154, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "B-212", "type": "3BR", "area": 145, "floor": 2, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}, {"id": "B-303", "type": "2BR", "area": 140, "floor": 3, "let": true, "tenant": "Tarek Khoury", "tenantAr": "طارق خوري", "value": 220000, "start": "2026-03-05", "end": "2027-03-04", "paid": 100000, "remain": 120000, "inst": [{"n": 1, "amt": 40000.0, "due": "2026-02-15", "paid": true}, {"n": 2, "amt": 20000.0, "due": "2026-03-05", "paid": true}, {"n": 3, "amt": 40000.0, "due": "2026-06-05", "paid": true}, {"n": 4, "amt": 60000.0, "due": "2026-09-05", "paid": false}, {"n": 5, "amt": 60000.0, "due": "2026-12-05", "paid": false}]}, {"id": "B-304", "type": "2BR", "area": 140, "floor": 3, "let": false, "tenant": null, "tenantAr": null, "value": null, "start": null, "end": null, "paid": null, "remain": 0, "inst": []}];
 
-const RENT={'1BR':130000,'2BR':170000,'3BR':190000,'PH':240000};
-
-/* occupancy: 25 of 37 let (matches the current position) */
+/* Units come from the real register. Tenant names are substituted; occupancy,
+   apartment types, areas, floors, contract values and payment schedules are actual. */
+const UNITS=REGISTER.map(r=>({
+  u:r.id, floor:r.floor, type:r.type, area:r.area,
+  occupied:r.let, tenant:r.tenant, tenant_ar:r.tenantAr,
+  rent:r.value||0, leaseStart:r.start?new Date(r.start):null, leaseEnd:r.end?new Date(r.end):null,
+  inst:(r.inst||[]).map(x=>({q:x.n, amt:x.amt, due:x.due?new Date(x.due):null,
+        billed: x.due? new Date(x.due)<=TODAY : false, paid:x.paid,
+        paidOn: x.paid && x.due ? new Date(x.due) : null})),
+  sheetPaid:r.paid, sheetRemain:r.remain
+}));
+/* app-account state is the only invented field here — no such system exists yet */
 UNITS.forEach((u,i)=>{
- const let_ = i<25;
- u.occupied=let_;
- if(let_){
-  const fi=(i*7+3)%FIRST.length, li=(i*5+2)%LAST.length;
-  u.tenant=FIRST[fi]+' '+LAST[li];
-  u.tenant_ar=FIRST_AR[fi]+' '+LAST_AR[li];
-  u.rent=RENT[u.type];
-  const m=between(0,11);
-  u.leaseEnd=new Date(2026,8+ (m%12), between(1,28));
-  u.account = i<21 ? (i<19?'verified':'pending') : 'none';
-  u.lastSeen = i<19 ? between(0,9) : null;
+  u.account = u.occupied ? (i%9===0 ? 'pending' : (i%13===0 ? 'none' : 'verified')) : 'none';
+  u.lastSeen = u.account==='verified' ? (i*3)%10 : null;
   u.prefers = i%5===0 ? 'phone' : 'app';
- } else { u.account='none'; }
+  u.profile = 'good';
 });
 
 const MONTHS=[{k:'2026-03',en:'Mar',ar:'مارس'},{k:'2026-04',en:'Apr',ar:'أبريل'},
  {k:'2026-05',en:'May',ar:'مايو'},{k:'2026-06',en:'Jun',ar:'يونيو'},
  {k:'2026-07',en:'Jul',ar:'يوليو'},{k:'2026-08',en:'Aug',ar:'أغسطس'}];
-const TODAY=new Date(2026,7,19,18,0);
+
 
 const CATPOOL=[];CATS.forEach(c=>{for(let i=0;i<c.wt;i++)CATPOOL.push(c.id);});
 const DESCS={
@@ -603,8 +590,8 @@ MONTHS.forEach((M,mi)=>{
  const n = mi===5 ? 33 : between(19,27);
  for(let i=0;i<n;i++){
   const cid=pick(CATPOOL), c=CAT(cid);
-  const uidx=Math.floor(rnd()*25);
-  const u=UNITS[uidx];
+  const LETU=UNITS.filter(x=>x.occupied);
+  const u=LETU[Math.floor(rnd()*LETU.length)];
   const day = mi===5 ? between(1,19) : between(1,28);
   const raised=new Date(yy,mm-1,day,between(8,20),between(0,59));
   const pr = cid==='lift'?'high':(rnd()<0.13?'high':rnd()<0.35?'low':'med');
@@ -645,36 +632,17 @@ function woCost(w){return Math.round(w.mat + w.labH*85)}
 /* shared status predicates — declared early because the ledger and recompute() both use them */
 const isOpenWO=w=>['submitted','assigned','progress','hold'].includes(w.status);
 
-/* ---------- rent ledger: instalments, payments and ageing ----------
-   Quarterly instalments from the lease start. Payment behaviour is assigned per
-   tenant so the ageing table has a realistic tail rather than a uniform one. */
+/* ---------- rent ledger ----------
+   Instalments, amounts and due dates are the real schedule from the register.
+   Payment status is reconstructed from the sheet's own collected totals. */
 const addM=(d,n)=>{const x=new Date(d);x.setMonth(x.getMonth()+n);return x;};
-UNITS.forEach((u,i)=>{
- u.inst=[];
- if(!u.occupied)return;
- u.leaseStart=addM(u.leaseEnd,-12);
- const profile = i%17===0 ? 'problem' : (i%5===0 ? 'late' : 'good');
- u.profile=profile;
- const amt=u.rent/4;
- for(let q=0;q<4;q++){
-  const due=addM(u.leaseStart,q*3);
-  const billed=due<=TODAY;
-  let paid=false, paidOn=null;
-  if(billed){
-   if(profile==='good'){paid=true;paidOn=new Date(due.getTime()+between(0,4)*864e5);}
-   else if(profile==='late'){
-    const isLatest = addM(due,3)>TODAY;
-    if(isLatest && rnd()<0.80){paid=false;}
-    else {paid=true;paidOn=new Date(due.getTime()+between(12,45)*864e5);}
-   } else {
-    const isRecent = addM(due,6)>TODAY;
-    paid=!isRecent;
-    if(paid)paidOn=new Date(due.getTime()+between(5,30)*864e5);
-   }
-  }
-  u.inst.push({q:q+1,due,amt,billed,paid,paidOn});
- }
+UNITS.forEach(u=>{
+  if(!u.occupied) return;
+  const unpaidBilled=u.inst.filter(x=>x.billed&&!x.paid);
+  u.profile = !unpaidBilled.length ? 'good'
+    : (Math.max(...unpaidBilled.map(x=>(TODAY-x.due)/864e5)) > 60 ? 'problem' : 'late');
 });
+
 const AGE_BUCKETS=[
  {k:'b_cur',lo:0,hi:0},{k:'b_30',lo:1,hi:30},{k:'b_60',lo:31,hi:60},
  {k:'b_90',lo:61,hi:90},{k:'b_90p',lo:91,hi:1e9}
@@ -795,8 +763,10 @@ function recompute(){
  FIN={billed:UNITS.reduce((a,u)=>a+(u.billed||0),0),
       collected:UNITS.reduce((a,u)=>a+(u.collected||0),0),
       contracted:UNITS.filter(u=>u.occupied).reduce((a,u)=>a+u.rent,0)};
- FIN.outstanding=FIN.billed-FIN.collected;
- FIN.rate=FIN.billed?Math.round(FIN.collected/FIN.billed*100):0;
+ /* arrears and prepayments are separate positions — netting them hides both */
+ FIN.outstanding=UNITS.reduce((a,u)=>a+Math.max(0,u.outstanding||0),0);
+ FIN.credit=UNITS.reduce((a,u)=>a+Math.max(0,-(u.outstanding||0)),0);
+ FIN.rate=FIN.billed?Math.min(100,Math.round(FIN.collected/FIN.billed*100)):0;
  FIN.over30=ageing.filter(x=>x.b.lo>=31).reduce((a,x)=>a+x.amt,0);
 }
 recompute();
@@ -808,6 +778,7 @@ const fmtD=d=>{const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','O
  return NUM(d.getDate())+' '+L(m[d.getMonth()],mAr[d.getMonth()])+' '+NUM(d.getFullYear());};
 const ageH=workedH;
 
+const floorName=f=>f===0?L('Ground','الأرضي'):NUM(f);
 const fmtISO=str=>(!str||str==='—')?'—':fmtD(new Date(str));
 const STA={submitted:['p-info','clock','st_sub'],assigned:['p-info','check','st_ass'],
  progress:['p-warn','clock','st_prog'],hold:['p-ser','pause','st_hold'],
@@ -1197,7 +1168,7 @@ function pgUnits(){
    const cu=costByUnit.find(x=>x.u.u===u.u);
    const op=OPEN.filter(w=>w.unit===u.u).length;
    return `<tr>
-    <td class="strong">${NUM(u.u)}</td><td class="mono">${NUM(u.floor)}</td><td>${u.type}</td>
+    <td class="strong">${NUM(u.u)}</td><td class="mono">${floorName(u.floor)}</td><td>${u.type}</td>
     <td class="num mono">${NUM(u.area)} m²</td>
     <td>${u.occupied?`<span class="pill p-good">${I('check',12,2.1)}${T('occupied')}</span>`:`<span class="pill p-neut">${T('vacant')}</span>`}</td>
     <td>${u.occupied?L(u.tenant,u.tenant_ar):'—'}</td>
@@ -1287,12 +1258,13 @@ function finRows(){
  const rows=UNITS.map(u=>{
   const maint=unitCost(u), coll=u.collected||0;
   return {u, annual:u.occupied?u.rent:0, billed:u.billed||0, coll,
-    out:u.outstanding||0, od:u.overdueDays||0, maint,
+    out:Math.max(0,u.outstanding||0), pre:Math.max(0,-(u.outstanding||0)),
+    od:u.overdueDays||0, maint,
     net:coll-maint, pct:u.billed?maint/u.billed*100:0};
  });
  const k=FSORT.k, d=FSORT.dir;
  rows.sort((a,b)=>{
-  if(k==='unit'){const na=parseInt(a.u.u)||999, nb=parseInt(b.u.u)||999; return (na-nb)*d;}
+  if(k==='unit') return a.u.u.localeCompare(b.u.u,'en',{numeric:true})*d;
   return ((a[k]||0)-(b[k]||0))*d;
  });
  return rows;
@@ -1313,6 +1285,7 @@ function pgFin(){
   ${stat(T('f_outstanding'),money(FIN.outstanding),{t:NUM(UNITS.filter(u=>u.outstanding>0).length)+' '+L('units','وحدة'),cls:FIN.outstanding?'down':'flat',ic:FIN.outstanding?'alert':null})}
   ${stat(T('f_over30'),money(FIN.over30),{t:L('needs collection action','تحتاج إجراء تحصيل'),cls:FIN.over30?'down':'flat',ic:FIN.over30?'alert':null})}
   ${stat(T('h_maint'),money(totMaint),{t:NUM((totMaint/FIN.billed*100).toFixed(1))+'% '+L('of rent billed','من الإيجار المفوتر'),cls:'flat'})}
+  ${FIN.credit?stat(T('f_credit'),money(FIN.credit),{t:T('f_credit_d'),cls:'flat'}):''}
  </div>
 
  <div class="card mb">
@@ -1360,7 +1333,8 @@ function pgFin(){
         <td class="num mono">${u.occupied?money(r.billed):'—'}</td>
         <td class="num mono">${u.occupied?money(r.coll):'—'}</td>
         <td class="num mono ${r.out?'':''}" style="${r.out?'color:var(--critical);font-weight:800':''}">${r.out?money(r.out):'—'}</td>
-        <td class="num">${r.od?(r.od>30?`<span class="pill p-crit">${I('alert',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`:`<span class="pill p-warn">${I('clock',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`):'—'}</td>
+        <td class="num">${r.od?(r.od>30?`<span class="pill p-crit">${I('alert',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`:`<span class="pill p-warn">${I('clock',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`)
+          :(r.pre?`<span class="pill p-good">${I('check',12,2.1)}${T('f_ahead')}</span>`:'—')}</td>
         <td class="num mono">${r.maint?money(r.maint):'—'}</td>
         <td class="num mono" style="${r.pct>12?'color:var(--critical);font-weight:800':''}">${u.occupied?NUM(r.pct.toFixed(1))+'%':'—'}</td>
         <td class="num mono strong">${u.occupied?money(r.net):(r.maint?'−'+money(r.maint):'—')}</td>
@@ -1399,7 +1373,7 @@ function finDetail(uid){
    <td class="mono sub2">${x.paidOn?fmtD(x.paidOn):'—'}</td>
    <td><span class="pill ${st[0]}">${st[2]?I(st[2],12,2.1):''}${T(st[1])}</span></td></tr>`;
  };
- openDrawer(`${L('Apartment','شقة')} ${NUM(u.u)}<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${u.type} · ${NUM(u.area)} m² · ${L('Floor','الدور')} ${NUM(u.floor)}</div>`,
+ openDrawer(`${L('Apartment','شقة')} ${NUM(u.u)}<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${u.type} · ${NUM(u.area)} m² · ${L('Floor','الدور')} ${floorName(u.floor)}</div>`,
   !u.occupied ? `
    <div class="card"><div class="bd">
      <div class="warnbox">${I('alert',16,2.2)}<span>${T('f_vacantnote')}</span></div>
