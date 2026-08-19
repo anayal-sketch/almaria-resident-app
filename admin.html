@@ -133,6 +133,7 @@ th{
 td{padding:11px 12px; border-bottom:1px solid var(--grid); font-size:13px; vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tbody tr.click{cursor:pointer}
+tbody tr.click:focus-visible{outline:2px solid var(--teal-600);outline-offset:-2px}
 tbody tr.click:hover{background:#F7FAFB}
 .num{text-align:end; font-variant-numeric:tabular-nums}
 .mono{font-variant-numeric:tabular-nums; font-size:12.5px; color:var(--ink-2)}
@@ -223,6 +224,10 @@ label.f{display:block;font-size:11.5px;font-weight:800;color:var(--ink-2);margin
   display:flex;gap:9px;align-items:center;max-width:420px;box-shadow:0 10px 30px rgba(0,41,59,.3)}
 .toast.on{opacity:1;transform:none}
 
+.empty{text-align:center;padding:46px 20px}
+.empty .ei{color:#C7D2D7}
+.empty .et{font-size:15px;font-weight:800;color:var(--ink-2);margin:12px 0 5px}
+.empty .ed{font-size:13px;color:var(--muted)}
 .note{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:10px}
 .demo{
   background:var(--gold-soft);border:1px solid #EFDFB4;border-radius:9px;padding:10px 13px;
@@ -374,6 +379,8 @@ const D={
   f_netnote:'Net is rent collected less maintenance cost. It is not a full profit and loss — service charge, utilities, management fee, insurance and depreciation are not in this view.',
   f_instal:'Instalment', f_duedate:'Due', f_paidon:'Paid on', f_amount:'Amount',
   f_vacantnote:'Vacant — no rent billed', f_arronly:'Arrears only',
+  e_wo:'No work orders match', e_wo_d:'Clear the search or choose a different filter.',
+  e_arr:'No apartment is in arrears', e_arr_d:'Every billed instalment has been collected.',
   demo:'Demonstration data — six months of simulated operations so every figure and chart ties to the same underlying records.',
   seriesnote:'Series colours use a contrast- and colour-blindness-validated palette rather than the brand gold, which fails those checks as a data colour. Brand colour is kept for interface chrome.'
  },
@@ -455,6 +462,8 @@ const D={
   f_netnote:'الصافي هو الإيجار المحصّل ناقص تكلفة الصيانة، وليس قائمة دخل كاملة — رسوم الخدمة والمرافق وأتعاب الإدارة والتأمين والإهلاك غير مدرجة.',
   f_instal:'الدفعة', f_duedate:'الاستحقاق', f_paidon:'تاريخ السداد', f_amount:'المبلغ',
   f_vacantnote:'شاغرة — لا يوجد إيجار مفوتر', f_arronly:'المتأخرات فقط',
+  e_wo:'لا توجد أوامر عمل مطابقة', e_wo_d:'امسح البحث أو اختر تصفية أخرى.',
+  e_arr:'لا توجد شقة عليها متأخرات', e_arr_d:'تم تحصيل جميع الدفعات المفوترة.',
   demo:'بيانات تجريبية — ستة أشهر من التشغيل المحاكى، وكل رقم ورسم مبني على نفس السجلات.',
   seriesnote:'ألوان الرسوم تستخدم لوحة مُتحقق منها لتباين ولعمى الألوان بدلاً من الذهبي المؤسسي الذي لا يجتاز هذه الاختبارات كلون بيانات. اللون المؤسسي مخصص لواجهة النظام.'
  }
@@ -479,6 +488,7 @@ const IC={
  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/>',
  pause:'<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
  dl:'<path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"/><path d="M4 20h16"/>',
  plus:'<path d="M12 5v14M5 12h14"/>',
  chev:'<path d="m9 18 6-6-6-6"/>',
@@ -628,8 +638,12 @@ MONTHS.forEach((M,mi)=>{
 });
 WOS.sort((a,b)=>b.raised-a.raised);
 
-const OPEN=WOS.filter(w=>['submitted','assigned','progress','hold'].includes(w.status));
-const DONE=WOS.filter(w=>w.status==='done');
+let OPEN=[], DONE=[];
+
+/* shared helpers — declared early; function declarations hoist, so recompute() can use them */
+function woCost(w){return Math.round(w.mat + w.labH*85)}
+/* shared status predicates — declared early because the ledger and recompute() both use them */
+const isOpenWO=w=>['submitted','assigned','progress','hold'].includes(w.status);
 
 /* ---------- rent ledger: instalments, payments and ageing ----------
    Quarterly instalments from the lease start. Payment behaviour is assigned per
@@ -660,26 +674,11 @@ UNITS.forEach((u,i)=>{
   }
   u.inst.push({q:q+1,due,amt,billed,paid,paidOn});
  }
- u.billed=u.inst.filter(x=>x.billed).reduce((a,x)=>a+x.amt,0);
- u.collected=u.inst.filter(x=>x.paid).reduce((a,x)=>a+x.amt,0);
- u.outstanding=u.billed-u.collected;
- const unpaid=u.inst.filter(x=>x.billed&&!x.paid).sort((a,b)=>a.due-b.due)[0];
- u.overdueDays=unpaid?Math.floor((TODAY-unpaid.due)/864e5):0;
 });
 const AGE_BUCKETS=[
  {k:'b_cur',lo:0,hi:0},{k:'b_30',lo:1,hi:30},{k:'b_60',lo:31,hi:60},
  {k:'b_90',lo:61,hi:90},{k:'b_90p',lo:91,hi:1e9}
 ];
-const ageing=AGE_BUCKETS.map(b=>({b,amt:UNITS.filter(u=>u.occupied&&u.outstanding>0&&u.overdueDays>=b.lo&&u.overdueDays<=b.hi)
-  .reduce((a,u)=>a+u.outstanding,0),n:UNITS.filter(u=>u.occupied&&u.outstanding>0&&u.overdueDays>=b.lo&&u.overdueDays<=b.hi).length}));
-const FIN={
- billed:UNITS.reduce((a,u)=>a+(u.billed||0),0),
- collected:UNITS.reduce((a,u)=>a+(u.collected||0),0),
- contracted:UNITS.filter(u=>u.occupied).reduce((a,u)=>a+u.rent,0)
-};
-FIN.outstanding=FIN.billed-FIN.collected;
-FIN.rate=FIN.billed?Math.round(FIN.collected/FIN.billed*100):0;
-FIN.over30=ageing.filter(x=>x.b.lo>=31).reduce((a,x)=>a+x.amt,0);
 const unitCost=u=>{const c=costByUnitLookup[u.u];return c?c.cost:0;};
 let costByUnitLookup={};
 
@@ -717,11 +716,7 @@ const SUPPLIERS=[
  {n:'Belda Housekeeping',ar:'بلدة للنظافة',tr:'Housekeeping, waste',tr_ar:'النظافة والنفايات',resp:6.8,rew:11,rate:3.9,to:'2026-12-31'},
  {n:'Riyadh Pest Co.',ar:'الرياض لمكافحة الحشرات',tr:'Pest control',tr_ar:'مكافحة الحشرات',resp:9.4,rew:4,rate:4.2,to:'2027-01-31'}
 ];
-SUPPLIERS.forEach(s=>{
- const mine=DONE.filter(w=>w.tech===s.n);
- s.jobs=mine.length;
- s.spend=mine.reduce((a,w)=>a+w.mat+w.labH*85,0);
-});
+/* supplier aggregates are derived — see recompute() */
 
 const ANNS=[
  {en:'Water tank cleaning — Thursday 20 August',ar:'تنظيف خزانات المياه — الخميس ٢٠ أغسطس',aud:'all',st:'published',date:'2026-08-18',ok:true},
@@ -735,39 +730,76 @@ const ANNS=[
 /* ------------------------------ derived figures ------------------------------ */
 /* One definition of "breached", used by the queue, the panels and the SLA figures alike.
    An open job that has passed target counts as breached from the moment it does. */
-const isOpenWO=w=>['submitted','assigned','progress','hold'].includes(w.status);
 const workedH=w=>Math.max(0,Math.round((TODAY-w.raised)/36e5*0.42));
 const isBreached=w=> w.status==='cancelled' ? false : (isOpenWO(w) ? workedH(w)>w.target : w.breached);
 
-const byMonth=MONTHS.map(M=>{
- const r=WOS.filter(w=>w.month===M.k);
- const d=r.filter(w=>w.status==='done');
- const inSla=r.filter(w=>w.status!=='cancelled'&&!isBreached(w)).length;
- const denom=r.filter(w=>w.status!=='cancelled').length;
- return {...M, raised:r.length, closed:d.length,
-   sla: denom? Math.round(inSla/denom*100):0,
-   cost: d.reduce((a,w)=>a+w.mat+w.labH*85,0)};
-});
-const costByCat=CATS.map(c=>{
- const d=DONE.filter(w=>w.cat===c.id);
- return {c, jobs:d.length, cost:d.reduce((a,w)=>a+w.mat+w.labH*85,0)};
-}).filter(x=>x.jobs>0).sort((a,b)=>b.cost-a.cost);
-const costByUnit=UNITS.map(u=>{
- const d=DONE.filter(w=>w.unit===u.u);
- return {u, jobs:d.length, cost:d.reduce((a,w)=>a+w.mat+w.labH*85,0)};
-}).sort((a,b)=>b.cost-a.cost);
-costByUnit.forEach(x=>{costByUnitLookup[x.u.u]=x;});
-const totalCost=DONE.reduce((a,w)=>a+w.mat+w.labH*85,0);
-const monthCost=byMonth[5].cost;
-const prevCost=byMonth[4].cost;
-const slaNow=byMonth[5].sla, slaPrev=byMonth[4].sla;
-const avgClose=(DONE.reduce((a,w)=>a+w.closeH,0)/DONE.length);
-const breached=OPEN.filter(isBreached);
-const occupied=UNITS.filter(u=>u.occupied).length;
-const activated=UNITS.filter(u=>u.account==='verified').length;
-const appShare=Math.round(WOS.filter(w=>w.ch==='app').length/WOS.length*100);
-const ratings=DONE.filter(w=>w.rating);
-const avgRating=(ratings.reduce((a,w)=>a+w.rating,0)/ratings.length);
+let byMonth,costByCat,costByUnit,totalCost,monthCost,prevCost,slaNow,slaPrev,
+    avgClose,breached,occupied,activated,appShare,ratings,avgRating,ageing,FIN;
+
+/* Every figure in the console is derived from WOS and UNITS. Anything that mutates
+   those (closing a work order, recording a payment) must call this, or the reports
+   quietly disagree with the queue. */
+function recompute(){
+ const cost=woCost;
+ OPEN=WOS.filter(isOpenWO);
+ DONE=WOS.filter(w=>w.status==='done');
+
+ byMonth=MONTHS.map(M=>{
+  const r=WOS.filter(w=>w.month===M.k);
+  const d=r.filter(w=>w.status==='done');
+  const denom=r.filter(w=>w.status!=='cancelled').length;
+  const inSla=r.filter(w=>w.status!=='cancelled'&&!isBreached(w)).length;
+  return {...M, raised:r.length, closed:d.length,
+    sla: denom? Math.round(inSla/denom*100):0, cost: d.reduce((a,w)=>a+cost(w),0)};
+ });
+ costByCat=CATS.map(c=>{
+  const d=DONE.filter(w=>w.cat===c.id);
+  return {c, jobs:d.length, cost:d.reduce((a,w)=>a+cost(w),0)};
+ }).filter(x=>x.jobs>0).sort((a,b)=>b.cost-a.cost);
+ costByUnit=UNITS.map(u=>{
+  const d=DONE.filter(w=>w.unit===u.u);
+  return {u, jobs:d.length, cost:d.reduce((a,w)=>a+cost(w),0)};
+ }).sort((a,b)=>b.cost-a.cost);
+ costByUnitLookup={};
+ costByUnit.forEach(x=>{costByUnitLookup[x.u.u]=x;});
+
+ totalCost=DONE.reduce((a,w)=>a+cost(w),0);
+ monthCost=byMonth[5].cost; prevCost=byMonth[4].cost;
+ slaNow=byMonth[5].sla; slaPrev=byMonth[4].sla;
+ avgClose=DONE.length? DONE.reduce((a,w)=>a+w.closeH,0)/DONE.length : 0;
+ breached=OPEN.filter(isBreached);
+ occupied=UNITS.filter(u=>u.occupied).length;
+ activated=UNITS.filter(u=>u.account==='verified').length;
+ appShare=WOS.length? Math.round(WOS.filter(w=>w.ch==='app').length/WOS.length*100):0;
+ ratings=DONE.filter(w=>w.rating);
+ avgRating=ratings.length? ratings.reduce((a,w)=>a+w.rating,0)/ratings.length : 0;
+
+ SUPPLIERS.forEach(s=>{
+  const mine=DONE.filter(w=>w.tech===s.n);
+  s.jobs=mine.length; s.spend=mine.reduce((a,w)=>a+cost(w),0);
+ });
+
+ /* rent ledger */
+ UNITS.forEach(u=>{
+  if(!u.occupied)return;
+  u.billed=u.inst.filter(x=>x.billed).reduce((a,x)=>a+x.amt,0);
+  u.collected=u.inst.filter(x=>x.paid).reduce((a,x)=>a+x.amt,0);
+  u.outstanding=u.billed-u.collected;
+  const unpaid=u.inst.filter(x=>x.billed&&!x.paid).sort((a,b)=>a.due-b.due)[0];
+  u.overdueDays=unpaid?Math.floor((TODAY-unpaid.due)/864e5):0;
+ });
+ ageing=AGE_BUCKETS.map(b=>{
+  const hit=UNITS.filter(u=>u.occupied&&u.outstanding>0&&u.overdueDays>=b.lo&&u.overdueDays<=b.hi);
+  return {b, amt:hit.reduce((a,u)=>a+u.outstanding,0), n:hit.length};
+ });
+ FIN={billed:UNITS.reduce((a,u)=>a+(u.billed||0),0),
+      collected:UNITS.reduce((a,u)=>a+(u.collected||0),0),
+      contracted:UNITS.filter(u=>u.occupied).reduce((a,u)=>a+u.rent,0)};
+ FIN.outstanding=FIN.billed-FIN.collected;
+ FIN.rate=FIN.billed?Math.round(FIN.collected/FIN.billed*100):0;
+ FIN.over30=ageing.filter(x=>x.b.lo>=31).reduce((a,x)=>a+x.amt,0);
+}
+recompute();
 
 /* ------------------------------ helpers ------------------------------ */
 const $=id=>document.getElementById(id);
@@ -775,6 +807,8 @@ const fmtD=d=>{const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','O
  const mAr=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
  return NUM(d.getDate())+' '+L(m[d.getMonth()],mAr[d.getMonth()])+' '+NUM(d.getFullYear());};
 const ageH=workedH;
+
+const fmtISO=str=>(!str||str==='—')?'—':fmtD(new Date(str));
 const STA={submitted:['p-info','clock','st_sub'],assigned:['p-info','check','st_ass'],
  progress:['p-warn','clock','st_prog'],hold:['p-ser','pause','st_hold'],
  done:['p-good','check','st_done'],cancelled:['p-neut','x','st_can']};
@@ -990,7 +1024,7 @@ function pgOver(){
    <div class="hd"><div style="flex:1"><h2>${T('p_today')}</h2><div class="d">${T('p_today_d')}</div></div></div>
    <div class="bd tw" style="padding:0">
     <table><thead><tr><th>${T('unit')}</th><th>${T('category')}</th><th>${T('assignee')}</th><th>${T('status')}</th></tr></thead>
-    <tbody>${today.map(w=>`<tr class="click" onclick="woDetail('${w.id}')">
+    <tbody>${today.map(w=>`<tr class="click" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="woDetail('${w.id}')">
       <td class="strong">${NUM(w.unit)}</td><td>${catName(CAT(w.cat))}</td>
       <td class="sub2">${techName(w)}</td><td>${stPill(w.status)}</td></tr>`).join('')}</tbody></table>
    </div>
@@ -1002,7 +1036,7 @@ function pgOver(){
     <tbody>${due.slice(0,6).map(p=>{
       const od=new Date(p.next)<TODAY;
       return `<tr><td><div class="strong">${L(p.t,p.ar)}</div><div class="sub2">${p.asset}</div></td>
-      <td class="mono">${p.next}</td>
+      <td class="mono">${fmtISO(p.next)}</td>
       <td>${p.stat?`<span class="pill p-info">${I('alert',12,2.1)}${T('statutory')}</span> `:''}${od?`<span class="pill p-crit">${I('alert',12,2.1)}${T('overdue')}</span>`:''}</td></tr>`;}).join('')}</tbody></table>
    </div>
   </div>
@@ -1038,7 +1072,7 @@ function pgWO(){
   <div style="flex:1"></div>
   <button class="tbtn pri" onclick="toast(T('t_logged'))">${I('plus',15)}<span>${T('logfor')}</span></button>
  </div>
- <div class="card"><div class="tw">
+ <div class="card">${rows.length?`<div class="tw">
   <table>
    <thead><tr><th>${T('ref')}</th><th>${T('unit')}</th><th>${T('category')}</th><th>${T('desc')}</th>
    <th>${T('priority')}</th><th>${T('raised_c')}</th><th class="num">${T('age')}</th><th class="num">${T('targetc')}</th>
@@ -1047,7 +1081,7 @@ function pgWO(){
    ${rows.slice(0,60).map(w=>{
      const open=['submitted','assigned','progress','hold'].includes(w.status);
      const a=ageH(w), over=open&&a>w.target;
-     return `<tr class="click" onclick="woDetail('${w.id}')">
+     return `<tr class="click" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="woDetail('${w.id}')">
       <td class="mono strong">${w.id}</td>
       <td class="strong">${NUM(w.unit)}</td>
       <td>${catName(CAT(w.cat))}</td>
@@ -1061,8 +1095,9 @@ function pgWO(){
       <td>${stPill(w.status)}</td></tr>`;}).join('')}
    </tbody>
   </table>
- </div></div>
- <div class="note">${NUM(Math.min(rows.length,60))} ${T('of')} ${NUM(rows.length)} ${L('records shown','سجل معروض')}</div>`;
+ </div>`:`<div class="empty"><span class="ei">${I('search',44,1.5)}</span>
+   <div class="et">${T('e_wo')}</div><div class="ed">${T('e_wo_d')}</div></div>`}</div>
+ ${rows.length?`<div class="note">${NUM(Math.min(rows.length,60))} ${T('of')} ${NUM(rows.length)} ${L('records shown','سجل معروض')}</div>`:''}`;
 }
 
 function woDetail(id){
@@ -1108,7 +1143,7 @@ function woDetail(id){
     <div class="card"><div class="bd"><dl class="kv">
      <dt>${T('lab_hours')}</dt><dd>${NUM(w.labH)} ${T('hrs')}</dd>
      <dt>${T('mat_cost')}</dt><dd>${money(w.mat)} ${T('sar')}</dd>
-     <dt>${T('cost')}</dt><dd>${money(w.mat+w.labH*85)} ${T('sar')}</dd>
+     <dt>${T('cost')}</dt><dd>${money(woCost(w))} ${T('sar')}</dd>
      ${w.rating?`<dt>${T('rating')}</dt><dd>${NUM(w.rating)} / ${NUM(5)}</dd>`:''}
     </dl></div></div>`}
  `);
@@ -1118,6 +1153,8 @@ function closeWO(id){
  if(lab===''||mat===''){toast(T('t_needcost'));return;}
  const w=WOS.find(x=>x.id===id);
  w.status='done'; w.labH=parseFloat(lab)||0; w.mat=parseFloat(mat)||0;
+ w.rating=null;
+ recompute();
  closeDrawer(); render(); toast(T('t_closed'));
 }
 
@@ -1131,7 +1168,7 @@ function pgPPM(){
     const od=new Date(p.next)<TODAY, soon=!od&&new Date(p.next)<new Date(2026,7,31);
     return `<tr>
      <td><div class="strong">${L(p.t,p.ar)}</div><div class="sub2">${p.asset}</div></td>
-     <td>${L(p.freq,p.freq_ar)}</td><td class="mono">${p.last}</td><td class="mono strong">${p.next}</td>
+     <td>${L(p.freq,p.freq_ar)}</td><td class="mono">${fmtISO(p.last)}</td><td class="mono strong">${fmtISO(p.next)}</td>
      <td>${p.cert?`<span class="pill p-good">${I('check',12,2.1)}${T('held')}</span>`:`<span class="pill p-warn">${I('alert',12,2.1)}${T('missing')}</span>`}</td>
      <td>${p.stat?`<span class="pill p-info">${I('alert',12,2.1)}${T('statutory')}</span> `:''}${od?`<span class="pill p-crit">${I('alert',12,2.1)}${T('overdue')}</span>`:soon?`<span class="pill p-warn">${I('clock',12,2.1)}${L('This month','هذا الشهر')}</span>`:''}</td>
     </tr>`;}).join('')}</tbody></table>
@@ -1295,7 +1332,9 @@ function pgFin(){
  <div class="card">
    <div class="hd"><div style="flex:1"><h2>${T('f_table')}</h2><div class="d">${T('f_table_d')}</div></div>
      <button class="tbtn ${FONLY?'pri':''}" onclick="FONLY=!FONLY;render()">${I('alert',14)}<span>${T('f_arronly')}</span></button></div>
-   <div class="tw">
+   ${!rows.length?`<div class="empty"><span class="ei">${I('check',44,1.5)}</span>
+     <div class="et">${T('e_arr')}</div><div class="ed">${T('e_arr_d')}</div></div>`:''}
+   <div class="tw" style="${rows.length?'':'display:none'}">
     <table>
      <thead><tr>
       ${sortable('unit',T('unit'))}
@@ -1312,7 +1351,7 @@ function pgFin(){
      <tbody>
      ${rows.map(r=>{
        const u=r.u;
-       return `<tr class="click" onclick="finDetail('${u.u}')">
+       return `<tr class="click" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="finDetail('${u.u}')">
         <td class="strong">${NUM(u.u)}</td>
         <td>${u.type}</td>
         <td>${u.occupied?`<span class="pill p-good">${I('check',12,2.1)}${T('occupied')}</span>`:`<span class="pill p-neut">${T('vacant')}</span>`}</td>
@@ -1397,7 +1436,7 @@ function finDetail(uid){
     ${openJobs.map(w=>`<tr><td class="mono">${w.id}</td><td>${catName(CAT(w.cat))}</td>
       <td class="mono">${fmtD(w.raised)}</td><td class="num mono">—</td><td>${stPill(w.status)}</td></tr>`).join('')}
     ${jobs.slice(0,12).map(w=>`<tr><td class="mono">${w.id}</td><td>${catName(CAT(w.cat))}</td>
-      <td class="mono">${fmtD(w.raised)}</td><td class="num mono">${money(w.mat+w.labH*85)}</td><td>${stPill(w.status)}</td></tr>`).join('')}
+      <td class="mono">${fmtD(w.raised)}</td><td class="num mono">${money(woCost(w))}</td><td>${stPill(w.status)}</td></tr>`).join('')}
     ${(jobs.length+openJobs.length)===0?`<tr><td colspan="5" class="sub2" style="text-align:center;padding:18px">${L('No maintenance recorded','لا توجد صيانة مسجلة')}</td></tr>`:''}
     </tbody>
     <tfoot><tr style="background:#FBFCFC"><td colspan="3" class="strong">${L('Total','الإجمالي')}</td>
@@ -1420,7 +1459,7 @@ function pgAnn(){
    <td>${a.st==='published'?`<span class="pill p-good">${I('check',12,2.1)}${T('published')}</span>`
      :a.st==='scheduled'?`<span class="pill p-info">${I('clock',12,2.1)}${T('scheduled')}</span>`
      :`<span class="pill p-neut">${T('draft')}</span>`}</td>
-   <td class="mono">${a.date}</td></tr>`).join('')}</tbody>
+   <td class="mono">${a.date==='—'?'—':fmtISO(a.date)}</td></tr>`).join('')}</tbody>
  </table></div></div>`;
 }
 function newAnn(){
@@ -1451,7 +1490,7 @@ function pgSup(){
    <td class="num">${s.rew>10?`<span class="pill p-warn">${I('alert',12,2.1)}${NUM(s.rew)}%</span>`:`<span class="mono">${NUM(s.rew)}%</span>`}</td>
    <td class="num mono">${NUM(s.rate)}</td>
    <td class="num mono strong">${money(s.spend)}</td>
-   <td class="mono">${s.to}</td></tr>`).join('')}</tbody>
+   <td class="mono">${fmtISO(s.to)}</td></tr>`).join('')}</tbody>
  </table></div></div>
  <div class="note">${L('Response time uses the same working-hours clock as the internal team, so the two are comparable.','زمن الاستجابة يُحتسب بنفس ساعات العمل المطبقة على الفريق الداخلي ليكونا قابلين للمقارنة.')}</div>`;
 }
