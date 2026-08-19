@@ -359,6 +359,21 @@ const D={
   supplier:'Supplier', trades:'Trades', jobs6:'Jobs, 6 months', avgresp:'Avg response',
   rework:'Rework', rating:'Rating', spend:'Spend, 6 months', contract:'Contract to',
   /* misc */
+  m_fin:'Unit performance',
+  t_fin:'Unit performance', s_fin:'Rent, arrears and maintenance cost by apartment — R8 + R14',
+  f_billed:'Billed to date', f_collected:'Collected', f_outstanding:'Outstanding',
+  f_rate:'Collection rate', f_over30:'Overdue beyond 30 days', f_contracted:'Contracted rent, annual',
+  f_ageing:'Arrears ageing', f_ageing_d:'Outstanding balance by days past the due date',
+  b_cur:'Not yet due', b_30:'1–30 days', b_60:'31–60 days', b_90:'61–90 days', b_90p:'Over 90 days',
+  f_table:'Apartment ledger', f_table_d:'One row per apartment. Sort any column.',
+  h_annual:'Annual rent', h_billed:'Billed', h_coll:'Collected', h_out:'Outstanding',
+  h_od:'Overdue', h_maint:'Maintenance', h_net:'Net', h_pct:'Maint. % of rent',
+  f_none:'No arrears', f_paid:'Paid', f_due:'Due', f_overdue:'Overdue', f_notdue:'Not yet due',
+  f_sched:'Instalment schedule', f_hist:'Maintenance history', f_lease:'Lease',
+  f_term:'Term', f_profile:'Payment record', p_good:'On time', p_late:'Habitually late', p_problem:'In arrears',
+  f_netnote:'Net is rent collected less maintenance cost. It is not a full profit and loss — service charge, utilities, management fee, insurance and depreciation are not in this view.',
+  f_instal:'Instalment', f_duedate:'Due', f_paidon:'Paid on', f_amount:'Amount',
+  f_vacantnote:'Vacant — no rent billed', f_arronly:'Arrears only',
   demo:'Demonstration data — six months of simulated operations so every figure and chart ties to the same underlying records.',
   seriesnote:'Series colours use a contrast- and colour-blindness-validated palette rather than the brand gold, which fails those checks as a data colour. Brand colour is kept for interface chrome.'
  },
@@ -425,6 +440,21 @@ const D={
   t_annblock:'لا يمكن النشر — النص العربي فارغ. اللغتان مطلوبتان.',
   supplier:'المورد', trades:'التخصصات', jobs6:'الأوامر، ٦ أشهر', avgresp:'متوسط الاستجابة',
   rework:'إعادة العمل', rating:'التقييم', spend:'الإنفاق، ٦ أشهر', contract:'العقد حتى',
+  m_fin:'أداء الوحدات',
+  t_fin:'أداء الوحدات', s_fin:'الإيجار والمتأخرات وتكلفة الصيانة لكل شقة — تقرير ٨ و١٤',
+  f_billed:'المفوتر حتى تاريخه', f_collected:'المحصّل', f_outstanding:'المستحق',
+  f_rate:'نسبة التحصيل', f_over30:'متأخر أكثر من ٣٠ يوماً', f_contracted:'الإيجار التعاقدي السنوي',
+  f_ageing:'أعمار المتأخرات', f_ageing_d:'الرصيد المستحق حسب الأيام بعد تاريخ الاستحقاق',
+  b_cur:'لم تستحق بعد', b_30:'١–٣٠ يوم', b_60:'٣١–٦٠ يوم', b_90:'٦١–٩٠ يوم', b_90p:'أكثر من ٩٠ يوم',
+  f_table:'سجل الشقق', f_table_d:'صف لكل شقة. يمكن الترتيب بأي عمود.',
+  h_annual:'الإيجار السنوي', h_billed:'المفوتر', h_coll:'المحصّل', h_out:'المستحق',
+  h_od:'التأخير', h_maint:'الصيانة', h_net:'الصافي', h_pct:'الصيانة ٪ من الإيجار',
+  f_none:'لا توجد متأخرات', f_paid:'مدفوعة', f_due:'مستحقة', f_overdue:'متأخرة', f_notdue:'لم تستحق',
+  f_sched:'جدول الدفعات', f_hist:'سجل الصيانة', f_lease:'العقد',
+  f_term:'المدة', f_profile:'سجل السداد', p_good:'منتظم', p_late:'متأخر عادةً', p_problem:'عليه متأخرات',
+  f_netnote:'الصافي هو الإيجار المحصّل ناقص تكلفة الصيانة، وليس قائمة دخل كاملة — رسوم الخدمة والمرافق وأتعاب الإدارة والتأمين والإهلاك غير مدرجة.',
+  f_instal:'الدفعة', f_duedate:'الاستحقاق', f_paidon:'تاريخ السداد', f_amount:'المبلغ',
+  f_vacantnote:'شاغرة — لا يوجد إيجار مفوتر', f_arronly:'المتأخرات فقط',
   demo:'بيانات تجريبية — ستة أشهر من التشغيل المحاكى، وكل رقم ورسم مبني على نفس السجلات.',
   seriesnote:'ألوان الرسوم تستخدم لوحة مُتحقق منها لتباين ولعمى الألوان بدلاً من الذهبي المؤسسي الذي لا يجتاز هذه الاختبارات كلون بيانات. اللون المؤسسي مخصص لواجهة النظام.'
  }
@@ -601,6 +631,58 @@ WOS.sort((a,b)=>b.raised-a.raised);
 const OPEN=WOS.filter(w=>['submitted','assigned','progress','hold'].includes(w.status));
 const DONE=WOS.filter(w=>w.status==='done');
 
+/* ---------- rent ledger: instalments, payments and ageing ----------
+   Quarterly instalments from the lease start. Payment behaviour is assigned per
+   tenant so the ageing table has a realistic tail rather than a uniform one. */
+const addM=(d,n)=>{const x=new Date(d);x.setMonth(x.getMonth()+n);return x;};
+UNITS.forEach((u,i)=>{
+ u.inst=[];
+ if(!u.occupied)return;
+ u.leaseStart=addM(u.leaseEnd,-12);
+ const profile = i%17===0 ? 'problem' : (i%5===0 ? 'late' : 'good');
+ u.profile=profile;
+ const amt=u.rent/4;
+ for(let q=0;q<4;q++){
+  const due=addM(u.leaseStart,q*3);
+  const billed=due<=TODAY;
+  let paid=false, paidOn=null;
+  if(billed){
+   if(profile==='good'){paid=true;paidOn=new Date(due.getTime()+between(0,4)*864e5);}
+   else if(profile==='late'){
+    const isLatest = addM(due,3)>TODAY;
+    if(isLatest && rnd()<0.80){paid=false;}
+    else {paid=true;paidOn=new Date(due.getTime()+between(12,45)*864e5);}
+   } else {
+    const isRecent = addM(due,6)>TODAY;
+    paid=!isRecent;
+    if(paid)paidOn=new Date(due.getTime()+between(5,30)*864e5);
+   }
+  }
+  u.inst.push({q:q+1,due,amt,billed,paid,paidOn});
+ }
+ u.billed=u.inst.filter(x=>x.billed).reduce((a,x)=>a+x.amt,0);
+ u.collected=u.inst.filter(x=>x.paid).reduce((a,x)=>a+x.amt,0);
+ u.outstanding=u.billed-u.collected;
+ const unpaid=u.inst.filter(x=>x.billed&&!x.paid).sort((a,b)=>a.due-b.due)[0];
+ u.overdueDays=unpaid?Math.floor((TODAY-unpaid.due)/864e5):0;
+});
+const AGE_BUCKETS=[
+ {k:'b_cur',lo:0,hi:0},{k:'b_30',lo:1,hi:30},{k:'b_60',lo:31,hi:60},
+ {k:'b_90',lo:61,hi:90},{k:'b_90p',lo:91,hi:1e9}
+];
+const ageing=AGE_BUCKETS.map(b=>({b,amt:UNITS.filter(u=>u.occupied&&u.outstanding>0&&u.overdueDays>=b.lo&&u.overdueDays<=b.hi)
+  .reduce((a,u)=>a+u.outstanding,0),n:UNITS.filter(u=>u.occupied&&u.outstanding>0&&u.overdueDays>=b.lo&&u.overdueDays<=b.hi).length}));
+const FIN={
+ billed:UNITS.reduce((a,u)=>a+(u.billed||0),0),
+ collected:UNITS.reduce((a,u)=>a+(u.collected||0),0),
+ contracted:UNITS.filter(u=>u.occupied).reduce((a,u)=>a+u.rent,0)
+};
+FIN.outstanding=FIN.billed-FIN.collected;
+FIN.rate=FIN.billed?Math.round(FIN.collected/FIN.billed*100):0;
+FIN.over30=ageing.filter(x=>x.b.lo>=31).reduce((a,x)=>a+x.amt,0);
+const unitCost=u=>{const c=costByUnitLookup[u.u];return c?c.cost:0;};
+let costByUnitLookup={};
+
 /* assets & PPM */
 const ASSETS=[
  {a:'Passenger lift A',ar:'المصعد (أ)',loc:'Core',cat:'lift',inst:2021,warr:'2027',cond:'good'},
@@ -674,6 +756,7 @@ const costByUnit=UNITS.map(u=>{
  const d=DONE.filter(w=>w.unit===u.u);
  return {u, jobs:d.length, cost:d.reduce((a,w)=>a+w.mat+w.labH*85,0)};
 }).sort((a,b)=>b.cost-a.cost);
+costByUnit.forEach(x=>{costByUnitLookup[x.u.u]=x;});
 const totalCost=DONE.reduce((a,w)=>a+w.mat+w.labH*85,0);
 const monthCost=byMonth[5].cost;
 const prevCost=byMonth[4].cost;
@@ -827,6 +910,7 @@ const NAVDEF=[
  ['ann','m_ann','mega',()=>ANNS.filter(a=>a.st==='draft').length],
  ['sup','m_sup','truck',0],
  ['grp','nav_insight'],
+ ['fin','m_fin','build',0],
  ['rep','m_rep','chart',0]
 ];
 
@@ -848,7 +932,7 @@ function render(){
  $('expBtn').innerHTML=I('dl',15)+'<span>'+T('export')+'</span>';
  $('langLbl').textContent=LANG==='en'?'العربية':'English';
  $('sideFoot').textContent=L('Prototype · demonstration data','نموذج تجريبي · بيانات توضيحية');
- const f={over:pgOver,wo:pgWO,ppm:pgPPM,units:pgUnits,res:pgRes,rep:pgRep,ann:pgAnn,sup:pgSup}[PAGE];
+ const f={over:pgOver,wo:pgWO,ppm:pgPPM,units:pgUnits,res:pgRes,rep:pgRep,fin:pgFin,ann:pgAnn,sup:pgSup}[PAGE];
  $('page').innerHTML=f();
  if(PAGE==='over'||PAGE==='rep'){
   const a=document.querySelector('#cFlow'); if(a)wireFlow(a);
@@ -1157,6 +1241,169 @@ function pgRep(){
   </div>
  </div>
  <div class="note">${T('seriesnote')}</div>`;
+}
+
+/* ---------- unit performance (R8 + R14) ---------- */
+let FSORT={k:'unit',dir:1}, FONLY=false;
+function fsort(k){ FSORT = (FSORT.k===k) ? {k,dir:-FSORT.dir} : {k,dir:k==='unit'?1:-1}; render(); }
+function finRows(){
+ const rows=UNITS.map(u=>{
+  const maint=unitCost(u), coll=u.collected||0;
+  return {u, annual:u.occupied?u.rent:0, billed:u.billed||0, coll,
+    out:u.outstanding||0, od:u.overdueDays||0, maint,
+    net:coll-maint, pct:u.billed?maint/u.billed*100:0};
+ });
+ const k=FSORT.k, d=FSORT.dir;
+ rows.sort((a,b)=>{
+  if(k==='unit'){const na=parseInt(a.u.u)||999, nb=parseInt(b.u.u)||999; return (na-nb)*d;}
+  return ((a[k]||0)-(b[k]||0))*d;
+ });
+ return rows;
+}
+const sortable=(k,label,cls='')=>`<th class="${cls}" style="cursor:pointer;user-select:none" onclick="fsort('${k}')">${label}${FSORT.k===k?(FSORT.dir>0?' ▲':' ▼'):''}</th>`;
+
+function pgFin(){
+ const rows=finRows().filter(r=>!FONLY||r.out>0);
+ const maxAge=Math.max(...ageing.map(a=>a.amt),1);
+ const totMaint=rows.reduce((a,r)=>a+r.maint,0);
+ const totNet=rows.reduce((a,r)=>a+r.net,0);
+ return `
+ <div class="grid g6 mb">
+  ${stat(T('f_contracted'),money(FIN.contracted),{t:NUM(occupied)+' '+L('let units','وحدة مؤجرة'),cls:'flat'})}
+  ${stat(T('f_billed'),money(FIN.billed),{t:L('to 19 Aug 2026','حتى ١٩ أغسطس ٢٠٢٦'),cls:'flat'})}
+  ${stat(T('f_collected'),money(FIN.collected),{t:NUM(FIN.rate)+'% '+T('f_rate'),cls:FIN.rate>=95?'up':'down',ic:FIN.rate>=95?'up':'down'},
+    `<div class="meter"><i style="width:${FIN.rate}%;background:${FIN.rate>=95?'var(--good)':'var(--warning)'}"></i></div>`)}
+  ${stat(T('f_outstanding'),money(FIN.outstanding),{t:NUM(UNITS.filter(u=>u.outstanding>0).length)+' '+L('units','وحدة'),cls:FIN.outstanding?'down':'flat',ic:FIN.outstanding?'alert':null})}
+  ${stat(T('f_over30'),money(FIN.over30),{t:L('needs collection action','تحتاج إجراء تحصيل'),cls:FIN.over30?'down':'flat',ic:FIN.over30?'alert':null})}
+  ${stat(T('h_maint'),money(totMaint),{t:NUM((totMaint/FIN.billed*100).toFixed(1))+'% '+L('of rent billed','من الإيجار المفوتر'),cls:'flat'})}
+ </div>
+
+ <div class="card mb">
+  <div class="hd"><div><h2>${T('f_ageing')}</h2><div class="d">${T('f_ageing_d')}</div></div></div>
+  <div class="bd">
+   ${FIN.outstanding?`<div class="grid" style="grid-template-columns:repeat(5,1fr);gap:14px">
+    ${ageing.map(a=>`<div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink-2)">${T(a.b.k)}</div>
+      <div style="font-size:19px;font-weight:800;margin:5px 0 2px;font-variant-numeric:tabular-nums;${a.amt&&a.b.lo>=31?'color:var(--critical)':''}">${a.amt?money(a.amt):'—'}</div>
+      <div style="font-size:11.5px;color:var(--muted);font-weight:600">${a.n?NUM(a.n)+' '+L(a.n===1?'unit':'units','وحدة'):'—'}</div>
+      <div class="meter" style="margin-top:8px"><i style="width:${(a.amt/maxAge*100).toFixed(1)}%;background:${a.b.lo>=31?'var(--critical)':a.b.lo>=1?'var(--warning)':'var(--series-1)'}"></i></div>
+    </div>`).join('')}
+   </div>`:`<div class="okbox">${I('check',16,2.2)}<span>${T('f_none')}</span></div>`}
+  </div>
+ </div>
+
+ <div class="card">
+   <div class="hd"><div style="flex:1"><h2>${T('f_table')}</h2><div class="d">${T('f_table_d')}</div></div>
+     <button class="tbtn ${FONLY?'pri':''}" onclick="FONLY=!FONLY;render()">${I('alert',14)}<span>${T('f_arronly')}</span></button></div>
+   <div class="tw">
+    <table>
+     <thead><tr>
+      ${sortable('unit',T('unit'))}
+      <th>${T('type')}</th><th>${T('status')}</th><th>${T('tenant')}</th>
+      ${sortable('annual',T('h_annual'),'num')}
+      ${sortable('billed',T('h_billed'),'num')}
+      ${sortable('coll',T('h_coll'),'num')}
+      ${sortable('out',T('h_out'),'num')}
+      ${sortable('od',T('h_od'),'num')}
+      ${sortable('maint',T('h_maint'),'num')}
+      ${sortable('pct',T('h_pct'),'num')}
+      ${sortable('net',T('h_net'),'num')}
+     </tr></thead>
+     <tbody>
+     ${rows.map(r=>{
+       const u=r.u;
+       return `<tr class="click" onclick="finDetail('${u.u}')">
+        <td class="strong">${NUM(u.u)}</td>
+        <td>${u.type}</td>
+        <td>${u.occupied?`<span class="pill p-good">${I('check',12,2.1)}${T('occupied')}</span>`:`<span class="pill p-neut">${T('vacant')}</span>`}</td>
+        <td class="sub2">${u.occupied?L(u.tenant,u.tenant_ar):'—'}</td>
+        <td class="num mono">${u.occupied?money(r.annual):'—'}</td>
+        <td class="num mono">${u.occupied?money(r.billed):'—'}</td>
+        <td class="num mono">${u.occupied?money(r.coll):'—'}</td>
+        <td class="num mono ${r.out?'':''}" style="${r.out?'color:var(--critical);font-weight:800':''}">${r.out?money(r.out):'—'}</td>
+        <td class="num">${r.od?(r.od>30?`<span class="pill p-crit">${I('alert',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`:`<span class="pill p-warn">${I('clock',12,2.1)}${NUM(r.od)}${L('d','ي')}</span>`):'—'}</td>
+        <td class="num mono">${r.maint?money(r.maint):'—'}</td>
+        <td class="num mono" style="${r.pct>12?'color:var(--critical);font-weight:800':''}">${u.occupied?NUM(r.pct.toFixed(1))+'%':'—'}</td>
+        <td class="num mono strong">${u.occupied?money(r.net):(r.maint?'−'+money(r.maint):'—')}</td>
+       </tr>`;}).join('')}
+     </tbody>
+     <tfoot><tr style="background:#FBFCFC">
+       <td colspan="4" class="strong">${L('Total','الإجمالي')}</td>
+       <td class="num mono strong">${money(FIN.contracted)}</td>
+       <td class="num mono strong">${money(FIN.billed)}</td>
+       <td class="num mono strong">${money(FIN.collected)}</td>
+       <td class="num mono strong" style="color:var(--critical)">${money(FIN.outstanding)}</td>
+       <td></td>
+       <td class="num mono strong">${money(totMaint)}</td>
+       <td class="num mono strong">${NUM((totMaint/FIN.billed*100).toFixed(1))}%</td>
+       <td class="num mono strong">${money(totNet)}</td>
+     </tr></tfoot>
+    </table>
+   </div>
+ </div>
+ <div class="note">${T('f_netnote')}</div>`;
+}
+
+function finDetail(uid){
+ const u=UNITS.find(x=>x.u===uid);if(!u)return;
+ const maint=unitCost(u);
+ const jobs=DONE.filter(w=>w.unit===uid).sort((a,b)=>b.raised-a.raised);
+ const openJobs=OPEN.filter(w=>w.unit===uid);
+ const instRow=x=>{
+  const st = !x.billed ? ['p-neut','f_notdue',null]
+    : x.paid ? ['p-good','f_paid','check']
+    : ((TODAY-x.due)/864e5>0 ? ['p-crit','f_overdue','alert'] : ['p-warn','f_due','clock']);
+  return `<tr>
+   <td class="strong">${T('f_instal')} ${NUM(x.q)}</td>
+   <td class="mono">${fmtD(x.due)}</td>
+   <td class="num mono">${money(x.amt)}</td>
+   <td class="mono sub2">${x.paidOn?fmtD(x.paidOn):'—'}</td>
+   <td><span class="pill ${st[0]}">${st[2]?I(st[2],12,2.1):''}${T(st[1])}</span></td></tr>`;
+ };
+ openDrawer(`${L('Apartment','شقة')} ${NUM(u.u)}<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${u.type} · ${NUM(u.area)} m² · ${L('Floor','الدور')} ${NUM(u.floor)}</div>`,
+  !u.occupied ? `
+   <div class="card"><div class="bd">
+     <div class="warnbox">${I('alert',16,2.2)}<span>${T('f_vacantnote')}</span></div>
+     ${maint?`<dl class="kv" style="margin-top:14px"><dt>${T('h_maint')}</dt><dd>${money(maint)} ${T('sar')}</dd></dl>`:''}
+   </div></div>`
+  : `
+  <div class="grid g3 mb" style="gap:10px">
+    ${stat(T('h_coll'),money(u.collected),{t:T('h_billed')+' '+money(u.billed),cls:'flat'})}
+    ${stat(T('h_out'),money(u.outstanding),{t:u.overdueDays?NUM(u.overdueDays)+L('d overdue','ي تأخير'):T('f_none'),cls:u.outstanding?'down':'up',ic:u.outstanding?'alert':'check'})}
+    ${stat(T('h_maint'),money(maint),{t:NUM((maint/u.billed*100).toFixed(1))+'% '+L('of billed','من المفوتر'),cls:'flat'})}
+  </div>
+
+  <div class="sect" style="margin-top:0">${T('f_lease')}</div>
+  <div class="card mb"><div class="bd"><dl class="kv">
+    <dt>${T('tenant')}</dt><dd>${L(u.tenant,u.tenant_ar)}</dd>
+    <dt>${T('f_term')}</dt><dd>${fmtD(u.leaseStart)} — ${fmtD(u.leaseEnd)}</dd>
+    <dt>${T('h_annual')}</dt><dd>${money(u.rent)} ${T('sar')}</dd>
+    <dt>${T('f_profile')}</dt><dd>${u.profile==='good'?`<span class="pill p-good">${I('check',12,2.1)}${T('p_good')}</span>`
+      :u.profile==='late'?`<span class="pill p-warn">${I('clock',12,2.1)}${T('p_late')}</span>`
+      :`<span class="pill p-crit">${I('alert',12,2.1)}${T('p_problem')}</span>`}</dd>
+    <dt>${T('h_net')}</dt><dd>${money(u.collected-maint)} ${T('sar')}</dd>
+  </dl></div></div>
+
+  <div class="sect">${T('f_sched')}</div>
+  <div class="card mb"><div class="tw"><table>
+    <thead><tr><th>${T('f_instal')}</th><th>${T('f_duedate')}</th><th class="num">${T('f_amount')}</th><th>${T('f_paidon')}</th><th>${T('status')}</th></tr></thead>
+    <tbody>${u.inst.map(instRow).join('')}</tbody>
+  </table></div></div>
+
+  <div class="sect">${T('f_hist')}</div>
+  <div class="card"><div class="tw"><table>
+    <thead><tr><th>${T('ref')}</th><th>${T('category')}</th><th>${T('raised_c')}</th><th class="num">${T('cost')}</th><th>${T('status')}</th></tr></thead>
+    <tbody>
+    ${openJobs.map(w=>`<tr><td class="mono">${w.id}</td><td>${catName(CAT(w.cat))}</td>
+      <td class="mono">${fmtD(w.raised)}</td><td class="num mono">—</td><td>${stPill(w.status)}</td></tr>`).join('')}
+    ${jobs.slice(0,12).map(w=>`<tr><td class="mono">${w.id}</td><td>${catName(CAT(w.cat))}</td>
+      <td class="mono">${fmtD(w.raised)}</td><td class="num mono">${money(w.mat+w.labH*85)}</td><td>${stPill(w.status)}</td></tr>`).join('')}
+    ${(jobs.length+openJobs.length)===0?`<tr><td colspan="5" class="sub2" style="text-align:center;padding:18px">${L('No maintenance recorded','لا توجد صيانة مسجلة')}</td></tr>`:''}
+    </tbody>
+    <tfoot><tr style="background:#FBFCFC"><td colspan="3" class="strong">${L('Total','الإجمالي')}</td>
+      <td class="num mono strong">${money(maint)}</td><td></td></tr></tfoot>
+  </table></div></div>
+  <div class="note">${T('f_netnote')}</div>`);
 }
 
 /* ---------- announcements ---------- */
