@@ -1292,7 +1292,10 @@ function viewServices(){
   if(SVC_TAB==='hist'){
     const rows = doneReqs();
     return seg + (rows.length
-      ? `<div class="card tight">${rows.map(reqRow).join('')}</div>`
+      ? `<div class="card tight">${rows.map(reqRow).join('')}</div>
+         <div class="muted" style="padding:12px 4px 0;line-height:1.6">${L(
+           'Sample history. Almaria has no maintenance log yet — this shows what a resident will see once requests are being recorded.',
+           'سجل توضيحي. لا يوجد لدى المارية سجل صيانة بعد — هذا ما سيراه الساكن عند البدء بتسجيل الطلبات.')}</div>`
       : emptyState('file', T('noHist'), T('noHistD'), false));
   }
 

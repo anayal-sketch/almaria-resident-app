@@ -347,6 +347,26 @@ const D={
   imp_e_units:'No apartments were recognised. Apartment references are expected in the form Block A -001.',
   imp_e_other:'The file could not be read.',
   imp_btn:'Import',
+  nolog_t:'No maintenance log yet',
+  nolog_over:'Almaria has no record of maintenance work. Nothing on this page is invented to fill the gap — these figures stay empty until jobs are recorded. Two things fill them: a resident raising a request in the app, and a supplier invoice entered here.',
+  nolog_wo:'No work orders have been recorded. A request raised by a resident in the app arrives here automatically. A job already done can be entered from its supplier invoice.',
+  nolog_ppm:'No asset register exists yet. Planned maintenance follows from it — the lifts, tanks, pumps, fire systems and A/C units have to be walked and listed, with their statutory intervals, before a schedule can be built.',
+  nolog_sup:'No suppliers are listed. They appear here as jobs are recorded against them, with response times and spend built from those jobs rather than entered by hand.',
+  nolog_cost:'No cost has been recorded, so there is nothing to break down by service or by apartment.',
+  nolog_sla:'Response times cannot be measured until requests are logged with the time they were raised.',
+  nolog_res:'No apartment has an app account, because the app is not in service. This figure becomes meaningful the day residents are invited.',
+  nolog_note:'Rent, arrears, leases and occupancy on this console are your real figures. Everything to do with maintenance is empty because no log exists — not because the data failed to load.',
+  log_open:'Enter a completed job',
+  log_t:'Enter a job from a supplier invoice',
+  log_d:'Use this for work already carried out. It records the cost against the apartment and the supplier. It does not record a response time, because an invoice does not carry one — jobs entered this way are left out of the SLA figures rather than counted as met.',
+  log_unit:'Apartment', log_cat:'Service', log_desc:'What was done',
+  log_sup:'Supplier or technician', log_date:'Date completed',
+  log_mat:'Invoice amount', log_lab:'Labour hours (if separate)',
+  log_inv:'Invoice reference', log_save:'Record this job',
+  log_need:'Choose an apartment and a service, and enter the invoice amount.',
+  log_done:'Job recorded. The cost is now against the apartment and the supplier.',
+  log_nosla:'Not measured for SLA',
+  sup_note:'Spend and job counts are built from the jobs recorded against each supplier. Response time, rework and rating stay empty for work entered from an invoice — an invoice does not say when the fault was reported or how the resident rated it. Those fill in for jobs raised through the app.',
   export:'Export', t_export:'Prototype — export would produce an Excel workbook.',
   /* stats */
   st_open:'Open work orders', st_breach:'past target',
@@ -428,7 +448,7 @@ const D={
   f_credit:'Paid in advance', f_credit_d:'Collected ahead of the due date', f_ahead:'Ahead',
   e_wo:'No work orders match', e_wo_d:'Clear the search or choose a different filter.',
   e_arr:'No apartment is in arrears', e_arr_d:'Every billed instalment has been collected.',
-  demo:'Units, areas, leases, contract values, payment schedules and occupancy are the real register at 19 August 2026. Tenant names are substituted and no identity numbers are carried. Maintenance work orders are simulated — no maintenance log exists yet, which is the point.',
+  demo:'Units, areas, leases, contract values, payment schedules, arrears and occupancy are the real register at 19 August 2026. Tenant names are substituted and no identity numbers are carried. Nothing about maintenance is simulated — Almaria has no maintenance log, so those figures are empty until jobs are recorded.',
   seriesnote:'Series colours use a contrast- and colour-blindness-validated palette rather than the brand gold, which fails those checks as a data colour. Brand colour is kept for interface chrome.'
  },
  ar:{
@@ -520,6 +540,26 @@ const D={
   imp_e_units:'لم يتم التعرف على أي شقة. يُتوقع أن تكون المراجع بالشكل Block A -001.',
   imp_e_other:'تعذّرت قراءة الملف.',
   imp_btn:'استيراد',
+  nolog_t:'لا يوجد سجل صيانة بعد',
+  nolog_over:'لا يوجد لدى المارية سجل لأعمال الصيانة. لم يُستخدم أي رقم افتراضي لسد هذا النقص — تبقى هذه الأرقام فارغة حتى تُسجَّل أعمال فعلية. يملؤها أمران: طلب يرفعه ساكن من التطبيق، وفاتورة مورّد تُدخَل هنا.',
+  nolog_wo:'لم تُسجَّل أي أوامر عمل. الطلب الذي يرفعه الساكن من التطبيق يصل هنا تلقائياً، والعمل المنفَّذ سابقاً يمكن إدخاله من فاتورة المورّد.',
+  nolog_ppm:'لا يوجد سجل أصول بعد. الصيانة الوقائية تنبني عليه — يجب حصر المصاعد والخزانات والمضخات وأنظمة الحريق ووحدات التكييف وتوثيق دورياتها النظامية قبل بناء أي جدول.',
+  nolog_sup:'لا يوجد موردون مسجّلون. يظهرون هنا مع تسجيل الأعمال، وتُبنى أزمنة الاستجابة والإنفاق من تلك الأعمال لا بالإدخال اليدوي.',
+  nolog_cost:'لم تُسجَّل أي تكلفة، فلا يوجد ما يمكن تفصيله حسب الخدمة أو الشقة.',
+  nolog_sla:'لا يمكن قياس أزمنة الاستجابة قبل تسجيل الطلبات بوقت رفعها.',
+  nolog_res:'لا يوجد حساب تطبيق لأي شقة، لأن التطبيق غير مفعّل بعد. يصبح هذا الرقم ذا معنى يوم دعوة السكان.',
+  nolog_note:'الإيجارات والمتأخرات والعقود والإشغال في هذه المنصة أرقامكم الفعلية. كل ما يخص الصيانة فارغ لعدم وجود سجل — لا لأن البيانات لم تُحمّل.',
+  log_open:'إدخال عمل منفَّذ',
+  log_t:'إدخال عمل من فاتورة مورّد',
+  log_d:'يُستخدم للأعمال المنفَّذة سابقاً. يسجّل التكلفة على الشقة وعلى المورّد، ولا يسجّل زمن استجابة لأن الفاتورة لا تحمله — وتُستثنى هذه الأعمال من مؤشر الالتزام بدل احتسابها ملتزمة.',
+  log_unit:'الشقة', log_cat:'الخدمة', log_desc:'وصف العمل',
+  log_sup:'المورّد أو الفني', log_date:'تاريخ الإنجاز',
+  log_mat:'قيمة الفاتورة', log_lab:'ساعات العمالة (إن كانت منفصلة)',
+  log_inv:'رقم الفاتورة', log_save:'تسجيل العمل',
+  log_need:'اختر الشقة والخدمة وأدخل قيمة الفاتورة.',
+  log_done:'تم تسجيل العمل. التكلفة الآن على الشقة وعلى المورّد.',
+  log_nosla:'غير محتسب في الالتزام',
+  sup_note:'الإنفاق وعدد الأعمال مبنيان على ما يُسجَّل لكل مورّد. تبقى أزمنة الاستجابة وإعادة العمل والتقييم فارغة للأعمال المُدخلة من فاتورة، لأن الفاتورة لا تبيّن وقت الإبلاغ عن العطل ولا تقييم الساكن. وتُملأ هذه الحقول للأعمال المرفوعة عبر التطبيق.',
   draft:'مسودة', scheduled:'مجدول', complete:'اللغتان', incomplete:'العربية ناقصة',
   newann:'إعلان جديد', allres:'جميع السكان',
   t_annblock:'لا يمكن النشر — النص العربي فارغ. اللغتان مطلوبتان.',
@@ -546,7 +586,7 @@ const D={
   f_credit:'مدفوع مقدماً', f_credit_d:'محصّل قبل تاريخ الاستحقاق', f_ahead:'مقدماً',
   e_wo:'لا توجد أوامر عمل مطابقة', e_wo_d:'امسح البحث أو اختر تصفية أخرى.',
   e_arr:'لا توجد شقة عليها متأخرات', e_arr_d:'تم تحصيل جميع الدفعات المفوترة.',
-  demo:'الوحدات والمساحات والعقود وقيمها وجداول الدفعات ونسبة الإشغال هي السجل الفعلي حتى ١٩ أغسطس ٢٠٢٦. أسماء المستأجرين مستبدلة ولا تتضمن أي أرقام هوية. أوامر الصيانة محاكاة — إذ لا يوجد سجل صيانة بعد، وهذا هو جوهر الموضوع.',
+  demo:'الوحدات والمساحات والعقود وقيمها وجداول الدفعات والمتأخرات ونسبة الإشغال هي السجل الفعلي حتى ١٩ أغسطس ٢٠٢٦. أسماء المستأجرين مستبدلة ولا تتضمن أي أرقام هوية. لا يوجد أي رقم صيانة افتراضي — لا يوجد لدى المارية سجل صيانة، لذا تبقى تلك الأرقام فارغة حتى تُسجَّل أعمال فعلية.',
   seriesnote:'ألوان الرسوم تستخدم لوحة مُتحقق منها لتباين ولعمى الألوان بدلاً من الذهبي المؤسسي الذي لا يجتاز هذه الاختبارات كلون بيانات. اللون المؤسسي مخصص لواجهة النظام.'
  }
 };
@@ -602,15 +642,8 @@ const CATS=[
 const CAT=id=>CATS.find(c=>c.id===id)||CATS[0];
 const catName=c=>L(c.en,c.ar);
 
-const TECHS=[
- {n:'Mostafa A.',ar:'مصطفى ع.',type:'in'},
- {n:'Ramy H.',   ar:'رامي ح.', type:'in'},
- {n:'Sayed M.',  ar:'سيد م.',  type:'in'},
- {n:'Coolair Est.',ar:'مؤسسة كول إير',type:'sup'},
- {n:'Otis Service',ar:'أوتيس للخدمات',type:'sup'},
- {n:'Belda Housekeeping',ar:'بلدة للنظافة',type:'sup'},
- {n:'Riyadh Pest Co.',ar:'الرياض لمكافحة الحشرات',type:'sup'}
-];
+/* Technicians and suppliers are named as work is recorded, not chosen from a fixed list */
+const TECHS=[];
 const CAT_TECH={ac:['Mostafa A.','Coolair Est.'],lift:['Otis Service'],clean:['Belda Housekeeping'],
  pest:['Riyadh Pest Co.'],plumb:['Sayed M.','Ramy H.'],elec:['Ramy H.','Mostafa A.'],
  appl:['Mostafa A.'],carp:['Sayed M.'],alum:['Sayed M.'],paint:['Sayed M.'],waste:['Belda Housekeeping'],wifi:['Ramy H.']};
@@ -634,12 +667,8 @@ const UNITS=REGISTER.map(r=>({
   sheetPaid:r.paid, sheetRemain:r.remain
 }));
 /* app-account state is the only invented field here — no such system exists yet */
-UNITS.forEach((u,i)=>{
-  u.account = u.occupied ? (i%9===0 ? 'pending' : (i%13===0 ? 'none' : 'verified')) : 'none';
-  u.lastSeen = u.account==='verified' ? (i*3)%10 : null;
-  u.prefers = i%5===0 ? 'phone' : 'app';
-  u.profile = 'good';
-});
+/* the resident app is not in service, so no apartment has an account yet */
+UNITS.forEach(u=>{ u.account='none'; u.lastSeen=null; u.prefers=null; u.profile='good'; });
 
 const MONTHS=[{k:'2026-03',en:'Mar',ar:'مارس'},{k:'2026-04',en:'Apr',ar:'أبريل'},
  {k:'2026-05',en:'May',ar:'مايو'},{k:'2026-06',en:'Jun',ar:'يونيو'},
@@ -663,47 +692,11 @@ const DESCS={
 };
 
 /* generate 6 months of work orders */
+/* No maintenance log exists for Almaria yet. This array starts empty and fills
+   only with jobs that are actually recorded — raised by a resident in the app,
+   or entered here from a supplier invoice. Nothing in it is invented. */
 const WOS=[];
-let seq=0;
-MONTHS.forEach((M,mi)=>{
- const [yy,mm]=M.k.split('-').map(Number);
- const n = mi===5 ? 33 : between(19,27);
- for(let i=0;i<n;i++){
-  const cid=pick(CATPOOL), c=CAT(cid);
-  const LETU=UNITS.filter(x=>x.occupied);
-  const u=LETU[Math.floor(rnd()*LETU.length)];
-  const day = mi===5 ? between(1,19) : between(1,28);
-  const raised=new Date(yy,mm-1,day,between(8,20),between(0,59));
-  const pr = cid==='lift'?'high':(rnd()<0.13?'high':rnd()<0.35?'low':'med');
-  const ch = rnd()<0.62?'app':(rnd()<0.55?'phone':(rnd()<0.6?'wa':'desk'));
-  /* response time in working hours */
-  const slaMul = pr==='high'?0.5:pr==='low'?1.6:1;
-  const eff = Math.round(c.sla*slaMul*10)/10;
-  const late = rnd()<0.16;
-  const respH = late ? eff*(1.2+rnd()*1.6) : eff*(0.15+rnd()*0.72);
-  const closeH = respH + (pr==='high'?between(1,6):between(2,40));
-  /* open jobs are recent by nature; a couple of genuinely stuck older ones are kept deliberately */
-  const open = mi===5 && ((day>=16 && rnd()<0.90) || (day>=8 && day<16 && rnd()<0.10));
-  const status = open ? pick(['submitted','assigned','progress','hold']) : (rnd()<0.03?'cancelled':'done');
-  const techName = pick(CAT_TECH[cid]||['Mostafa A.']);
-  const tech = TECHS.find(t=>t.n===techName);
-  const [lo,hi]=c.cost;
-  const mat = status==='done' ? Math.round((lo+rnd()*(hi-lo))/10)*10 : 0;
-  const labH = status==='done' ? Math.round((0.5+rnd()*4)*2)/2 : 0;
-  seq++;
-  WOS.push({
-   id:'MR-'+String(yy).slice(2)+String(mm).padStart(2,'0')+'-'+String(1000+seq).slice(1),
-   cat:cid, unit:u.u, tenant:u.tenant, tenant_ar:u.tenant_ar,
-   desc:pick(DESCS[cid]||['Service request']),
-   pri:pr, ch, raised, respH:Math.round(respH*10)/10, closeH:Math.round(closeH*10)/10,
-   target:eff, breached: status!=='cancelled' && respH>eff,
-   status, tech:tech.n, tech_ar:tech.ar, supplier:tech.type==='sup',
-   labH, mat, rating: status==='done' ? (respH>eff? between(2,4) : between(4,5)) : null,
-   month:M.k
-  });
- }
-});
-WOS.sort((a,b)=>b.raised-a.raised);
+
 /* ==========================================================================
    ALMARIA LINK — the shared record between the resident app and the
    management console.
@@ -835,6 +828,12 @@ function LINK_apply(s){
     });
   });
 
+  /* jobs entered from supplier invoices */
+  (s.jobs||[]).forEach(j=>{
+    const u = UNITS.find(x=>x.u===j.unit);
+    logJobAdd(j, u, new Date(j.date + 'T12:00:00'));
+  });
+
   /* a register imported on this machine replaces the published one */
   if(s.register && s.register.length && typeof applyRegister === 'function'){
     applyRegister(s.register);
@@ -895,39 +894,13 @@ const unitCost=u=>{const c=costByUnitLookup[u.u];return c?c.cost:0;};
 let costByUnitLookup={};
 
 /* assets & PPM */
-const ASSETS=[
- {a:'Passenger lift A',ar:'المصعد (أ)',loc:'Core',cat:'lift',inst:2021,warr:'2027',cond:'good'},
- {a:'Passenger lift B',ar:'المصعد (ب)',loc:'Core',cat:'lift',inst:2021,warr:'2027',cond:'fair'},
- {a:'Domestic water tanks (2)',ar:'خزانات المياه (٢)',loc:'Roof',cat:'plumb',inst:2021,warr:'—',cond:'good'},
- {a:'Booster pump set',ar:'مجموعة مضخات الضغط',loc:'Basement',cat:'plumb',inst:2021,warr:'2026',cond:'fair'},
- {a:'Fire alarm panel',ar:'لوحة إنذار الحريق',loc:'Lobby',cat:'elec',inst:2021,warr:'—',cond:'good'},
- {a:'Fire pump',ar:'مضخة الحريق',loc:'Basement',cat:'elec',inst:2021,warr:'—',cond:'good'},
- {a:'Standby generator',ar:'مولد احتياطي',loc:'Basement',cat:'elec',inst:2021,warr:'2026',cond:'good'},
- {a:'Rooftop pool plant',ar:'معدات مسبح السطح',loc:'Roof',cat:'plumb',inst:2022,warr:'—',cond:'fair'},
- {a:'Split A/C units (37 apartments)',ar:'وحدات التكييف (٣٧ شقة)',loc:'Apartments',cat:'ac',inst:2021,warr:'2026',cond:'fair'},
- {a:'Common area lighting',ar:'إنارة المناطق المشتركة',loc:'Common',cat:'elec',inst:2021,warr:'—',cond:'good'},
- {a:'Gym equipment',ar:'أجهزة النادي',loc:'Roof',cat:'appl',inst:2022,warr:'2027',cond:'good'},
- {a:'CCTV and access control',ar:'المراقبة والتحكم بالدخول',loc:'Building',cat:'elec',inst:2021,warr:'—',cond:'good'}
-];
-const PPM=[
- {t:'Lift statutory inspection',ar:'الفحص النظامي للمصاعد',asset:'Passenger lift A',freq:'Annual',freq_ar:'سنوي',last:'2025-09-02',next:'2026-09-02',stat:true,cert:true},
- {t:'Lift statutory inspection',ar:'الفحص النظامي للمصاعد',asset:'Passenger lift B',freq:'Annual',freq_ar:'سنوي',last:'2025-08-28',next:'2026-08-28',stat:true,cert:true},
- {t:'Water tank clean and sterilise',ar:'تنظيف وتعقيم الخزانات',asset:'Domestic water tanks (2)',freq:'6-monthly',freq_ar:'نصف سنوي',last:'2026-02-20',next:'2026-08-20',stat:true,cert:true},
- {t:'Fire alarm system test',ar:'اختبار نظام إنذار الحريق',asset:'Fire alarm panel',freq:'Quarterly',freq_ar:'ربع سنوي',last:'2026-05-14',next:'2026-08-14',stat:true,cert:false},
- {t:'Fire pump run test',ar:'تشغيل تجريبي لمضخة الحريق',asset:'Fire pump',freq:'Monthly',freq_ar:'شهري',last:'2026-07-30',next:'2026-08-30',stat:true,cert:true},
- {t:'A/C filter clean — all apartments',ar:'تنظيف فلاتر التكييف — كل الشقق',asset:'Split A/C units (37 apartments)',freq:'Quarterly',freq_ar:'ربع سنوي',last:'2026-05-08',next:'2026-08-08',stat:false,cert:false},
- {t:'Generator load test',ar:'اختبار حمل المولد',asset:'Standby generator',freq:'Quarterly',freq_ar:'ربع سنوي',last:'2026-06-11',next:'2026-09-11',stat:true,cert:true},
- {t:'Booster pump service',ar:'صيانة مضخات الضغط',asset:'Booster pump set',freq:'6-monthly',freq_ar:'نصف سنوي',last:'2026-03-19',next:'2026-09-19',stat:false,cert:true},
- {t:'Pool plant service',ar:'صيانة معدات المسبح',asset:'Rooftop pool plant',freq:'Monthly',freq_ar:'شهري',last:'2026-07-25',next:'2026-08-25',stat:false,cert:true},
- {t:'CCTV health check',ar:'فحص كاميرات المراقبة',asset:'CCTV and access control',freq:'6-monthly',freq_ar:'نصف سنوي',last:'2026-04-02',next:'2026-10-02',stat:false,cert:true}
-];
+/* The asset register has to be walked and confirmed on site before it can be listed */
+const ASSETS=[];
+/* Planned maintenance follows from the asset register and the statutory schedule */
+const PPM=[];
 
-const SUPPLIERS=[
- {n:'Coolair Est.',ar:'مؤسسة كول إير',tr:'A/C and cooling',tr_ar:'التكييف والتبريد',resp:3.1,rew:6,rate:4.4,to:'2027-02-28'},
- {n:'Otis Service',ar:'أوتيس للخدمات',tr:'Lifts',tr_ar:'المصاعد',resp:1.6,rew:0,rate:4.7,to:'2027-06-30'},
- {n:'Belda Housekeeping',ar:'بلدة للنظافة',tr:'Housekeeping, waste',tr_ar:'النظافة والنفايات',resp:6.8,rew:11,rate:3.9,to:'2026-12-31'},
- {n:'Riyadh Pest Co.',ar:'الرياض لمكافحة الحشرات',tr:'Pest control',tr_ar:'مكافحة الحشرات',resp:9.4,rew:4,rate:4.2,to:'2027-01-31'}
-];
+/* Suppliers appear here as jobs are logged against them */
+const SUPPLIERS=[];
 /* supplier aggregates are derived — see recompute() */
 
 const ANNS=[
@@ -946,7 +919,7 @@ const workedH=w=>Math.max(0,Math.round((TODAY-w.raised)/36e5*0.42));
 const isBreached=w=> w.status==='cancelled' ? false : (isOpenWO(w) ? workedH(w)>w.target : w.breached);
 
 let byMonth,costByCat,costByUnit,totalCost,monthCost,prevCost,slaNow,slaPrev,
-    avgClose,breached,occupied,activated,appShare,ratings,avgRating,ageing,FIN;
+    avgClose,breached,occupied,activated,appShare,ratings,avgRating,ageing,FIN,measured;
 
 /* Every figure in the console is derived from WOS and UNITS. Anything that mutates
    those (closing a work order, recording a payment) must call this, or the reports
@@ -959,10 +932,13 @@ function recompute(){
  byMonth=MONTHS.map(M=>{
   const r=WOS.filter(w=>w.month===M.k);
   const d=r.filter(w=>w.status==='done');
-  const denom=r.filter(w=>w.status!=='cancelled').length;
-  const inSla=r.filter(w=>w.status!=='cancelled'&&!isBreached(w)).length;
-  return {...M, raised:r.length, closed:d.length,
-    sla: denom? Math.round(inSla/denom*100):0, cost: d.reduce((a,w)=>a+cost(w),0)};
+  /* a job entered from a supplier invoice has no response time — it must not
+     be counted as met or missed */
+  const measurable=r.filter(w=>w.status!=='cancelled'&&!w.noSla);
+  const inSla=measurable.filter(w=>!isBreached(w)).length;
+  return {...M, raised:r.length, closed:d.length, measured:measurable.length,
+    sla: measurable.length? Math.round(inSla/measurable.length*100):null,
+    cost: d.reduce((a,w)=>a+cost(w),0)};
  });
  costByCat=CATS.map(c=>{
   const d=DONE.filter(w=>w.cat===c.id);
@@ -978,7 +954,9 @@ function recompute(){
  totalCost=DONE.reduce((a,w)=>a+cost(w),0);
  monthCost=byMonth[5].cost; prevCost=byMonth[4].cost;
  slaNow=byMonth[5].sla; slaPrev=byMonth[4].sla;
- avgClose=DONE.length? DONE.reduce((a,w)=>a+w.closeH,0)/DONE.length : 0;
+ const timed=DONE.filter(w=>!w.noSla);
+ avgClose=timed.length? timed.reduce((a,w)=>a+w.closeH,0)/timed.length : null;
+ measured=WOS.filter(w=>!w.noSla&&w.status!=='cancelled').length;
  breached=OPEN.filter(isBreached);
  occupied=UNITS.filter(u=>u.occupied).length;
  activated=UNITS.filter(u=>u.account==='verified').length;
@@ -1535,9 +1513,9 @@ function applyRegister(rows){
   UNITS.length = 0;
   built.forEach((u,i) => {
     const k = keep[u.u] || {};
-    u.account = u.occupied ? (k.account && k.account !== 'none' ? k.account : 'verified') : 'none';
-    u.lastSeen = u.account === 'verified' ? (k.lastSeen ?? (i*3)%10) : null;
-    u.prefers = k.prefers || (i%5===0 ? 'phone' : 'app');
+    u.account = k.account || 'none';
+    u.lastSeen = k.lastSeen ?? null;
+    u.prefers = k.prefers || null;
     u.profile = 'good';
     UNITS.push(u);
   });
@@ -1583,7 +1561,7 @@ let TIPN=0;
 function chartFlow(){
  const W=640,H=210,PL=48,PR=12,PT=14,PB=26;
  /* round up to a multiple of 8 so the four gridline labels are whole numbers */
- const max=Math.ceil(Math.max(...byMonth.map(m=>Math.max(m.raised,m.closed)))/8)*8;
+ const max=Math.max(8, Math.ceil(Math.max(0,...byMonth.map(m=>Math.max(m.raised,m.closed)))/8)*8);
  const iw=W-PL-PR, ih=H-PT-PB, bw=iw/byMonth.length;
  const bar=(bw-10)/2-1;
  let g='';
@@ -1625,13 +1603,21 @@ function chartSla(){
  const ty=yv(90);
  g+=`<line x1="${PL}" x2="${W-PR}" y1="${ty}" y2="${ty}" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="5 4"/>
      <text x="${W-PR+4}" y="${ty+4}" font-size="10.5" font-weight="700" fill="var(--good)">${T('target')}</text>`;
- const pts=byMonth.map((m,i)=>`${xv(i)},${yv(m.sla)}`).join(' ');
- let d=`<polyline points="${pts}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+ /* a month with nothing measurable is a gap in the line, not a zero */
+ const seg=[]; let run=[];
+ byMonth.forEach((m,i)=>{ if(m.sla==null){ if(run.length>1) seg.push(run); run=[]; }
+                          else run.push(`${xv(i)},${yv(m.sla)}`); });
+ if(run.length>1) seg.push(run);
+ let d=seg.map(r=>`<polyline points="${r.join(' ')}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`).join('');
  byMonth.forEach((m,i)=>{
-  d+=`<circle cx="${xv(i)}" cy="${yv(m.sla)}" r="4.5" fill="var(--series-1)" stroke="var(--surface)" stroke-width="2" class="hp" data-i="${i}"/>`;
+  if(m.sla!=null) d+=`<circle cx="${xv(i)}" cy="${yv(m.sla)}" r="4.5" fill="var(--series-1)" stroke="var(--surface)" stroke-width="2" class="hp" data-i="${i}"/>`;
   d+=`<text x="${xv(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${L(m.en,m.ar)}</text>`;
  });
- d+=`<text x="${xv(5)}" y="${yv(byMonth[5].sla)-12}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)">${NUM(byMonth[5].sla)}%</text>`;
+ const lastMeasured=[...byMonth].reverse().find(m=>m.sla!=null);
+ if(byMonth[5].sla!=null)
+   d+=`<text x="${xv(5)}" y="${yv(byMonth[5].sla)-12}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)">${NUM(byMonth[5].sla)}%</text>`;
+ else if(!lastMeasured)
+   d+=`<text x="${PL+iw/2}" y="${PT+ih/2}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--muted)">${T('nolog_sla')}</text>`;
  return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}${d}</svg>`;
 }
 
@@ -1736,18 +1722,38 @@ const stat=(k,v,meta,extra='')=>`<div class="stat"><div class="k">${k}</div><div
   <div class="m ${meta.cls||'flat'}">${meta.ic?I(meta.ic,13,2.2):''}${meta.t}</div>${extra}</div>`;
 
 function pgOver(){
- const costDelta=Math.round((monthCost-prevCost)/prevCost*100);
- const slaDelta=slaNow-slaPrev;
+ const costDelta=prevCost?Math.round((monthCost-prevCost)/prevCost*100):0;
+ const slaDelta=(slaNow===null||slaPrev===null)?null:slaNow-slaPrev;
  const due=PPM.filter(p=>new Date(p.next)<=new Date(2026,8,15)).sort((a,b)=>new Date(a.next)-new Date(b.next));
  const today=OPEN.filter(w=>w.status==='assigned'||w.status==='progress').slice(0,5);
  return `
  <div class="demo">${I('alert',15,2.2)}<span>${T('demo')}</span></div>
 
+ ${NOLOG()?`
+ <div class="card mb"><div class="bd">
+   <div class="warnbox">${I('alert',16,2.2)}<span>${T('nolog_note')}</span></div>
+ </div></div>
+
+ <div class="grid g3 mb">
+  ${stat(T('st_occ'),NUM(occupied)+'/'+NUM(37),{t:NUM(Math.round(occupied/37*100))+'%',cls:'flat'},
+    `<div class="meter"><i style="width:${occupied/37*100}%"></i></div>`)}
+  ${stat(T('f_outstanding'),money(FIN.outstanding),{t:NUM(UNITS.filter(u=>u.outstanding>0).length)+' '+L('apartments','شقق'),cls:FIN.outstanding?'down':'flat',ic:FIN.outstanding?'alert':null})}
+  ${stat(T('f_collected'),money(FIN.collected),{t:NUM(FIN.rate)+'% '+T('f_rate'),cls:FIN.rate>=95?'up':'down',ic:FIN.rate>=95?'up':'down'},
+    `<div class="meter"><i style="width:${FIN.rate}%;background:${FIN.rate>=95?'var(--good)':'var(--warning)'}"></i></div>`)}
+ </div>
+
+ <div class="card mb">
+  <div class="hd"><div style="flex:1"><h2>${T('nolog_t')}</h2></div></div>
+  <div class="bd">${emptyState(T('nolog_t'), T('nolog_over'),
+    `<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`)}</div>
+ </div>
+ <div class="note">${T('nolog_note')}</div>`:`
  <div class="grid g6 mb">
   ${stat(T('st_open'),NUM(OPEN.length),{t:NUM(breached.length)+' '+T('st_breach'),cls:breached.length?'down':'flat',ic:breached.length?'alert':null})}
-  ${stat(T('st_sla'),NUM(slaNow)+'%',{t:(slaDelta>=0?'+':'')+NUM(Math.abs(slaDelta))+' '+T('vs'),cls:slaDelta>=0?'up':'down',ic:slaDelta>=0?'up':'down'},
+  ${slaNow===null?stat(T('st_sla'),'—',{t:T('nolog_sla'),cls:'flat'})
+    :stat(T('st_sla'),NUM(slaNow)+'%',{t:(slaDelta===null?'':(slaDelta>=0?'+':'')+NUM(Math.abs(slaDelta))+' '+T('vs')),cls:slaDelta>=0?'up':'down',ic:slaDelta>=0?'up':'down'},
     `<div class="meter"><i style="width:${slaNow}%"></i></div>`)}
-  ${stat(T('st_close'),NUM(avgClose.toFixed(1))+' '+T('hrs'),{t:T('target')+' 24 '+T('hrs'),cls:'flat'})}
+  ${stat(T('st_close'),avgClose===null?'—':NUM(avgClose.toFixed(1))+' '+T('hrs'),{t:avgClose===null?T('nolog_sla'):T('target')+' 24 '+T('hrs'),cls:'flat'})}
   ${stat(T('st_cost'),money(monthCost),{t:(costDelta>=0?'+':'−')+NUM(Math.abs(costDelta))+'% '+T('vs'),cls:costDelta<=0?'up':'down',ic:costDelta<=0?'down':'up'})}
   ${stat(T('st_occ'),NUM(occupied)+'/'+NUM(37),{t:NUM(Math.round(occupied/37*100))+'%',cls:'flat'},
     `<div class="meter"><i style="width:${occupied/37*100}%"></i></div>`)}
@@ -1799,7 +1805,100 @@ function pgOver(){
    </div>
   </div>
  </div>
- <div class="note">${T('seriesnote')}</div>`;
+ <div class="note">${T('seriesnote')}</div>`}`;
+}
+
+/* Nothing about maintenance is invented. Until a job is recorded — raised by a
+   resident in the app, or entered here from a supplier invoice — the maintenance
+   modules stay empty and say why. */
+const NOLOG = () => WOS.length === 0;
+const emptyState = (title, body, action) => `
+  <div class="empty"><span class="ei">${I('wrench',44,1.5)}</span>
+   <div class="et">${title}</div><div class="ed">${body}</div>
+   ${action||''}</div>`;
+
+
+/* ---------------------------------------------------------------------------
+   Enter a job that has already been done, from its supplier invoice.
+
+   An invoice carries a cost and a date. It does not carry the time the resident
+   reported the fault, so no response time can be derived from it. Jobs entered
+   this way are marked noSla and left out of the SLA and average-close figures
+   rather than counted as having met a target nobody measured.
+   --------------------------------------------------------------------------- */
+function logJobOpen(){
+  const let_ = UNITS.filter(u=>u.occupied).sort((a,b)=>a.u.localeCompare(b.u,'en',{numeric:true}));
+  const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  openDrawer(T('log_t'), `
+   <div class="card mb"><div class="bd">
+     <p style="font-size:13px;color:var(--ink-2);line-height:1.65;margin:0 0 4px">${T('log_d')}</p>
+   </div></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+     <div><label class="f">${T('log_unit')} <span class="req">*</span></label>
+       <select class="inp" id="jUnit"><option value="">${L('Choose…','اختر…')}</option>
+       ${let_.map(u=>`<option value="${u.u}">${u.u} — ${L(u.tenant||'',u.tenant_ar||'')}</option>`).join('')}
+       </select></div>
+     <div><label class="f">${T('log_cat')} <span class="req">*</span></label>
+       <select class="inp" id="jCat"><option value="">${L('Choose…','اختر…')}</option>
+       ${CATS.map(c=>`<option value="${c.id}">${catName(c)}</option>`).join('')}
+       </select></div>
+   </div>
+   <div style="margin-bottom:14px"><label class="f">${T('log_desc')}</label>
+     <input class="inp" id="jDesc" placeholder="${L('What was done, and any part replaced','ما تم تنفيذه وأي قطعة تم استبدالها')}"></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+     <div><label class="f">${T('log_sup')}</label><input class="inp" id="jSup" placeholder="${L('Name on the invoice','الاسم في الفاتورة')}"></div>
+     <div><label class="f">${T('log_date')} <span class="req">*</span></label><input class="inp" id="jDate" type="date" value="${iso(TODAY)}"></div>
+   </div>
+   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+     <div><label class="f">${T('log_mat')} <span class="req">*</span></label><input class="inp" id="jMat" type="number" min="0" step="10" placeholder="0"></div>
+     <div><label class="f">${T('log_lab')}</label><input class="inp" id="jLab" type="number" min="0" step="0.5" placeholder="0.0"></div>
+     <div><label class="f">${T('log_inv')}</label><input class="inp" id="jInv" placeholder="—"></div>
+   </div>
+   <div class="warnbox" style="margin-bottom:16px">${I('alert',16,2.2)}<span>${T('log_nosla')}</span></div>
+   <button class="btn pri" onclick="logJobSave()">${I('check',16,2.2)} ${T('log_save')}</button>`);
+}
+
+function logJobSave(){
+  const unit = $('jUnit').value, cat = $('jCat').value;
+  const mat  = $('jMat').value, date = $('jDate').value;
+  if(!unit || !cat || mat === '' || !date){ toast(T('log_need')); return; }
+  const u = UNITS.find(x=>x.u===unit);
+  const d = new Date(date + 'T12:00:00');
+  const sup = ($('jSup').value || '').trim();
+  const rec = {
+    unit, cat, date, supplier: sup,
+    desc: ($('jDesc').value || '').trim() || catName(CAT(cat)),
+    mat: Number(mat) || 0, labH: Number($('jLab').value) || 0,
+    inv: ($('jInv').value || '').trim()
+  };
+  const id = logJobAdd(rec, u, d);
+  LINK.commit(st => { st.jobs = st.jobs || []; st.jobs.push({...rec, id}); }, 'console');
+  recompute(); closeDrawer(); render();
+  toast(T('log_done'));
+}
+
+/* build the work order; shared by the form and by the shared-record replay */
+function logJobAdd(rec, u, d){
+  const seq = WOS.length + 1;
+  const id = rec.id || ('MR-' + String(d.getFullYear()).slice(2) + String(d.getMonth()+1).padStart(2,'0') + '-I' + String(seq).padStart(3,'0'));
+  if(WOS.some(w=>w.id===id)) return id;
+  WOS.unshift({
+    id, cat: rec.cat, unit: rec.unit,
+    tenant: (u&&u.tenant)||'—', tenant_ar: (u&&u.tenant_ar)||'—',
+    desc: rec.desc, pri:'med', ch:'desk', raised: d,
+    respH: 0, closeH: 0, target: 0, breached: false, noSla: true,
+    status: 'done', tech: rec.supplier || '—', tech_ar: rec.supplier || '—',
+    supplier: !!rec.supplier, labH: rec.labH, mat: rec.mat, rating: null,
+    invoice: rec.inv || null,
+    month: d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0')
+  });
+  WOS.sort((a,b)=>b.raised-a.raised);
+  /* a supplier exists once a job names it */
+  if(rec.supplier && !SUPPLIERS.some(x=>x.n===rec.supplier)){
+    SUPPLIERS.push({n:rec.supplier, ar:rec.supplier, tr:'—', tr_ar:'—',
+                    resp:null, rew:null, rate:null, to:'—'});
+  }
+  return id;
 }
 
 /* ---------- work orders ---------- */
@@ -1828,7 +1927,7 @@ function pgWO(){
   </select>
   <input placeholder="${T('search')}" value="${WF.q}" oninput="WF.q=this.value;clearTimeout(window._t);window._t=setTimeout(render,220)" style="min-width:250px">
   <div style="flex:1"></div>
-  <button class="tbtn pri" onclick="toast(T('t_logged'))">${I('plus',15)}<span>${T('logfor')}</span></button>
+  <button class="tbtn pri" onclick="logJobOpen()">${I('plus',15)}<span>${T('log_open')}</span></button>
  </div>
  <div class="card">${rows.length?`<div class="tw">
   <table>
@@ -1853,8 +1952,10 @@ function pgWO(){
       <td>${stPill(w.status)}</td></tr>`;}).join('')}
    </tbody>
   </table>
- </div>`:`<div class="empty"><span class="ei">${I('search',44,1.5)}</span>
-   <div class="et">${T('e_wo')}</div><div class="ed">${T('e_wo_d')}</div></div>`}</div>
+ </div>`:`${NOLOG()?emptyState(T('nolog_t'), T('nolog_wo'),
+     `<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`)
+   :`<div class="empty"><span class="ei">${I('search',44,1.5)}</span>
+   <div class="et">${T('e_wo')}</div><div class="ed">${T('e_wo_d')}</div></div>`}`}</div>
  ${rows.length?`<div class="note">${NUM(Math.min(rows.length,60))} ${T('of')} ${NUM(rows.length)} ${L('records shown','سجل معروض')}</div>`:''}`;
 }
 
@@ -1891,10 +1992,10 @@ function woDetail(id){
   <div class="card mb"><div class="bd">
    <div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end">
     <div><label class="f">${T('assignee')}</label>
-     <select class="inp" id="aTech">
-      <option value="">${L('Choose…','اختر…')}</option>
-      ${TECHS.map(t=>`<option value="${t.n}" ${(w.status!=='submitted'&&w.tech===t.n)?'selected':''}>${L(t.n,t.ar)}${t.type==='sup'?L(' (supplier)',' (مورّد)'):''}</option>`).join('')}
-     </select></div>
+     <input class="inp" id="aTech" list="techList" autocomplete="off"
+       placeholder="${L('Name of the technician or supplier','اسم الفني أو المورّد')}"
+       value="${w.status!=='submitted'&&w.tech!=='—'?w.tech:''}">
+     <datalist id="techList">${knownTechs().map(n=>`<option value="${n}">`).join('')}</datalist></div>
     <button class="btn" onclick="assignWO('${w.id}')">${L('Assign','إسناد')}</button>
     <button class="btn" onclick="startWO('${w.id}')">${L('Start work','بدء التنفيذ')}</button>
    </div>
@@ -1952,11 +2053,19 @@ function recordPayment(unit, q){
 }
 
 /* assign a job, and start it — the resident's tracker follows both */
+/* names already used on this building, offered as suggestions — the list grows
+   with the work rather than being fixed in advance */
+function knownTechs(){
+ const set=new Set();
+ WOS.forEach(w=>{ if(w.tech && w.tech!=='—') set.add(w.tech); });
+ SUPPLIERS.forEach(s=>set.add(s.n));
+ return [...set].sort();
+}
 function assignWO(id){
  const w=WOS.find(x=>x.id===id); if(!w) return;
- const sel=$('aTech'); const name=sel?sel.value:'';
- if(!name){toast(L('Choose who is going.','اختر الفني المسند إليه.'));return;}
- const t=TECHS.find(x=>x.n===name)||{n:name,ar:name,type:'in'};
+ const el=$('aTech'); const name=(el?el.value:'').trim();
+ if(!name){toast(L('Enter who is going.','أدخل اسم من سيقوم بالعمل.'));return;}
+ const t=SUPPLIERS.find(x=>x.n===name)?{n:name,ar:name,type:'sup'}:{n:name,ar:name,type:'in'};
  w.status='assigned'; w.tech=t.n; w.tech_ar=t.ar; w.supplier=t.type==='sup';
  recompute();
  LINK_wo(id,{status:'assigned', tech:t.n, tech_ar:t.ar});
@@ -1972,6 +2081,9 @@ function startWO(id){
 
 /* ---------- planned maintenance ---------- */
 function pgPPM(){
+ if(!ASSETS.length && !PPM.length)
+   return `<div class="card"><div class="bd">${emptyState(T('nolog_t'), T('nolog_ppm'))}</div></div>
+           <div class="note">${T('nolog_note')}</div>`;
  const sorted=[...PPM].sort((a,b)=>(b.stat-a.stat)||(new Date(a.next)-new Date(b.next)));
  return `
  <div class="card mb"><div class="tw">
@@ -2021,6 +2133,7 @@ function pgUnits(){
 
 /* ---------- residents ---------- */
 function pgRes(){
+ const noApp = UNITS.every(u=>u.account==='none');
  const occ=UNITS.filter(u=>u.occupied);
  return `
  <div class="grid g3 mb">
@@ -2047,6 +2160,12 @@ function pgRes(){
 /* ---------- reports ---------- */
 let COSTVIEW='chart';
 function pgRep(){
+ if(NOLOG())
+   return `<div class="card mb"><div class="bd">${emptyState(T('nolog_t'), T('nolog_cost'),
+     `<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`)}</div></div>
+     <div class="card"><div class="hd"><div><h2>${T('f_arr')}</h2><div class="d">${T('f_arr_d')}</div></div></div>
+      <div class="bd"><p style="font-size:13.5px;color:var(--ink-2);line-height:1.7;margin:0">${T('nolog_note')}</p>
+      <button class="btn" style="margin-top:14px" onclick="go('fin')">${T('t_fin')}</button></div></div>`;
  const exp=UNITS.filter(u=>u.occupied&&(u.leaseEnd-TODAY)/864e5<=90&&u.leaseEnd>=TODAY)
    .sort((a,b)=>a.leaseEnd-b.leaseEnd);
  return `
@@ -2338,6 +2457,10 @@ function pubAnn(){
 
 /* ---------- suppliers ---------- */
 function pgSup(){
+ if(!SUPPLIERS.length)
+   return `<div class="card"><div class="bd">${emptyState(T('nolog_t'), T('nolog_sup'),
+     `<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`)}</div></div>
+     <div class="note">${T('nolog_note')}</div>`;
  return `<div class="card"><div class="tw"><table>
   <thead><tr><th>${T('supplier')}</th><th>${T('trades')}</th><th class="num">${T('jobs6')}</th>
    <th class="num">${T('avgresp')}</th><th class="num">${T('rework')}</th><th class="num">${T('rating')}</th>
@@ -2345,13 +2468,14 @@ function pgSup(){
   <tbody>${SUPPLIERS.map(s=>`<tr>
    <td class="strong">${L(s.n,s.ar)}</td><td>${L(s.tr,s.tr_ar)}</td>
    <td class="num mono">${NUM(s.jobs)}</td>
-   <td class="num mono">${NUM(s.resp)} ${T('hrs')}</td>
-   <td class="num">${s.rew>10?`<span class="pill p-warn">${I('alert',12,2.1)}${NUM(s.rew)}%</span>`:`<span class="mono">${NUM(s.rew)}%</span>`}</td>
-   <td class="num mono">${NUM(s.rate)}</td>
+   <td class="num mono">${s.resp==null?'<span class="sub2">—</span>':NUM(s.resp)+' '+T('hrs')}</td>
+   <td class="num">${s.rew==null?'<span class="sub2">—</span>'
+     :(s.rew>10?`<span class="pill p-warn">${I('alert',12,2.1)}${NUM(s.rew)}%</span>`:`<span class="mono">${NUM(s.rew)}%</span>`)}</td>
+   <td class="num mono">${s.rate==null?'<span class="sub2">—</span>':NUM(s.rate)}</td>
    <td class="num mono strong">${money(s.spend)}</td>
-   <td class="mono">${fmtISO(s.to)}</td></tr>`).join('')}</tbody>
+   <td class="mono">${!s.to||s.to==='—'?'<span class="sub2">—</span>':fmtISO(s.to)}</td></tr>`).join('')}</tbody>
  </table></div></div>
- <div class="note">${L('Response time uses the same working-hours clock as the internal team, so the two are comparable.','زمن الاستجابة يُحتسب بنفس ساعات العمل المطبقة على الفريق الداخلي ليكونا قابلين للمقارنة.')}</div>`;
+ <div class="note">${T('sup_note')}</div>`;
 }
 
 /* ------------------------------ language ------------------------------ */
