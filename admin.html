@@ -367,6 +367,164 @@ const D={
   log_done:'Job recorded. The cost is now against the apartment and the supplier.',
   log_nosla:'Not measured for SLA',
   sup_note:'Spend and job counts are built from the jobs recorded against each supplier. Response time, rework and rating stay empty for work entered from an invoice — an invoice does not say when the fault was reported or how the resident rated it. Those fill in for jobs raised through the app.',
+  rp_intro:'Every report below is produced from the data this console holds, not from a stored copy. Choose one, set a period where it matters, and export it as a spreadsheet or print it.',
+  rp_s_ready:'Ready',
+  rp_s_filling:'Fills as work is logged',
+  rp_s_blocked:'Needs a module first',
+  rp_s_ready_d:'produces real output today',
+  rp_s_filling_d:'works, but only as complete as the log',
+  rp_s_blocked_d:'something has to be built first',
+  rp_g_money:'Rent and money',
+  rp_g_prop:'Property and tenancy',
+  rp_g_maint:'Maintenance',
+  rp_g_blocked:'Not possible yet',
+  rp_all:'All reports',
+  rp_print:'Print',
+  rp_total:'Total',
+  rp_period:'Period',
+  rp_exported:'Exported',
+  rp_exported_ok:'Exported as a spreadsheet.',
+  rp_norows:'Nothing to report',
+  rp_norows_d:'No apartment meets this report’s criteria at the moment. That is a result, not a failure.',
+  rp_fills:'This report works. It has nothing to show because no maintenance has been recorded yet.',
+  rp_cantyet:'This report cannot be produced yet',
+  rp_needs_asset:'It depends on an asset register that does not exist. The lifts, tanks, pumps, fire systems, generator and the air-conditioning units in each apartment have to be walked, listed and given their statutory intervals and warranty dates. That is a module of the back office, not a spreadsheet.',
+  rp_needs_app:'It depends on the resident app being in service. No apartment has an account yet, so there is no adoption to measure. This becomes the year-one metric the day residents are invited.',
+  rp_needs_budget:'It depends on a maintenance budget being set for the year. There is nothing to compare actual spend against until one exists, and there is no spend history to build one from either.',
+  rp_m2:'SAR / m²',
+  rp_from:'From',
+  rp_bucket:'Age band',
+  rp_month:'Month',
+  rp_units:'Apartments',
+  rp_instal:'Instalments',
+  rp_falls:'Falls due',
+  rp_already:'Already received',
+  rp_expected:'Still expected',
+  rp_apartments:'Apartments',
+  rp_avgarea:'Average m²',
+  rp_avgrent:'Average rent',
+  rp_avgm2:'Average SAR/m²',
+  rp_lowest:'Lowest',
+  rp_highest:'Highest',
+  rp_spread:'Spread',
+  rp_lastvalue:'Value on record',
+  rp_vacantlist:'The vacant apartments',
+  rp_vacant_n:'Vacant',
+  rp_vacant_d:'earning nothing',
+  rp_letonly:'let apartments only',
+  rp_indays:'Days',
+  rp_date:'Date',
+  rp_movement:'Movement',
+  rp_in:'Let',
+  rp_out:'Ended',
+  rp_net:'Net movement',
+  rp_net_d:'change in contracted rent',
+  rp_exp30:'Ending within 30 days',
+  rp_exp90:'Ending within 90 days',
+  rp_expired:'Already past',
+  rp_expired_d:'lease end date has passed',
+  rp_overdue_now:'Overdue now',
+  rp_next90:'Due in three months',
+  rp_next90_d:'still to be collected',
+  rp_next12:'Due in twelve months',
+  rp_next12_d:'the full contracted schedule',
+  rp_findings:'Findings',
+  rp_severity:'Severity',
+  rp_finding:'What does not reconcile',
+  rp_sev_high:'High',
+  rp_sev_med:'Medium',
+  rp_sev_low:'Low',
+  rp_jobs:'Jobs',
+  rp_open_now:'Open now',
+  rp_open_d:'across the building',
+  rp_inperiod:'in this period',
+  rp_completed:'completed',
+  rp_avgjob:'Average job',
+  rp_perjob:'per completed job',
+  rp_share:'Share',
+  rp_byunit:'The same cost, by apartment',
+  rp_ofrent:'Of rent billed',
+  rp_suppliers:'Suppliers and technicians',
+  rp_measured:'Measurable for SLA',
+  rp_measured_d:'the rest came from invoices',
+  rp_measurable:'Measurable',
+  rp_met:'Within target',
+  rp_missed:'Past target',
+  rp_missed_d:'response took longer than the target',
+  rp_excluded:'Not measurable',
+  rp_excluded_d:'entered from an invoice, no report time',
+  rp_unassigned:'Not assigned',
+  rp_repeat:'Repeating faults',
+  rp_repeat_d:'same service, same apartment, more than once',
+  rp_onrepeat:'spent on repeats',
+  rp_affected:'affected',
+  rp_times:'Times',
+  rp_lastseen:'Last seen',
+  rp_ratings:'ratings',
+  rp_response:'Response rate',
+  rp_response_d:'of completed jobs rated',
+  rp_low:'Three or below',
+  rp_low_d:'worth a call',
+  rp_rentroll_t:'Rent roll',
+  rp_rentroll_d:'Every apartment on one page — area, tenant, contract value, rate per square metre and lease term. The document a bank, a valuer or a buyer asks for first.',
+  rp_rentroll_n:'Rate per square metre is the contract value divided by the recorded area. Where an area looks wrong, so will the rate — the register data-quality report lists those.',
+  rp_arrears_t:'Collections arrears',
+  rp_arrears_d:'Who owes what, aged from the oldest unpaid instalment. The list to work from when chasing.',
+  rp_forecast_t:'Rent due, twelve months',
+  rp_forecast_d:'What falls due each month across every live lease, what has already been received against it, and what is still expected. Cash planning rather than history.',
+  rp_forecast_n:'Instalments already overdue are shown separately at the top rather than folded into a future month, so a debt cannot hide inside a forecast.',
+  rp_ledger_t:'Apartment ledger',
+  rp_ledger_d:'One row per apartment: contracted, billed, collected, outstanding, maintenance cost and the net.',
+  rp_occupancy_t:'Occupancy and vacancy',
+  rp_occupancy_d:'Let and vacant by apartment type, with the contracted rent behind each, and every empty apartment named.',
+  rp_occ_n:'Occupancy is measured against all 37 apartments. A vacant apartment carrying a value on the register is showing the last contract, not an asking rent.',
+  rp_expiry_t:'Lease expiry and renewal pipeline',
+  rp_expiry_d:'Which leases end when, sorted by how soon, with the contract value at risk and any arrears outstanding on the way out.',
+  rp_exp_n:'A lease already past its end date and still shown as let needs a decision — either a renewal was agreed and never recorded, or the apartment is being occupied without a contract.',
+  rp_movement_t:'Apartments in and out',
+  rp_movement_d:'Lettings starting and leases ending in the period, and what the two together did to contracted rent.',
+  rp_move_n:'Net movement is the contract value let in the period less the value of leases that ended. It is the number to bring to a board meeting.',
+  rp_rate_t:'Rate per square metre',
+  rp_rate_d:'What each apartment type actually achieves per square metre, with the highest and lowest in each class named.',
+  rp_rate_n:'A wide spread within one type is either a pricing inconsistency or a recording error. Check the outliers against the plan before treating either as a benchmark.',
+  rp_quality_t:'Register data quality',
+  rp_quality_d:'Every place the register contradicts itself, checked live rather than read from a note — schedules that do not sum, instalments dated past the lease, vacant apartments carrying values.',
+  rp_q_n:'This runs against whatever register is loaded, so after an import it shows the state of the file you have just imported.',
+  rp_q_d:'places the register disagrees with itself',
+  rp_q_high_d:'change a reported number',
+  rp_q_units_d:'apartments involved',
+  rp_q_lines:'Payment schedule totals {a} against a contract value of {b}',
+  rp_q_vacantvalue:'Recorded as vacant but still carries a contract value',
+  rp_q_nosched:'Let, but has no payment schedule — nothing can be billed',
+  rp_q_pastend:'An instalment is dated {d}, after the lease ends on {e}',
+  rp_q_expired:'Shown as let, but the lease ended on {d}',
+  rp_q_area:'Recorded as {t} at {a} m² — small for the type',
+  rp_q_novalue:'Let, but no contract value is recorded',
+  rp_wolog_t:'Work order log',
+  rp_wolog_d:'Every job recorded in the period, how it arrived, who did it and what it cost.',
+  rp_wolog_n:'Intake matters as much as cost. If most jobs arrive by phone rather than through the app, the log is only as complete as whoever remembered to write them down.',
+  rp_costsvc_t:'Maintenance cost by service and apartment',
+  rp_costsvc_d:'Where the money goes — by trade, and by apartment as a share of the rent that apartment is billed.',
+  rp_cost_n:'Cost as a share of rent billed is the figure to watch per apartment. A high share on one apartment usually means a recurring fault rather than an expensive one.',
+  rp_supplier_t:'Supplier spend and performance',
+  rp_supplier_d:'Spend, job count, average job value and — where the job was raised through the app — response against target and resident rating.',
+  rp_sla_t:'Response against target',
+  rp_sla_d:'How often each service was attended within its target, counting only jobs whose report time is known.',
+  rp_sla_n:'Only jobs raised through the app or logged at the time carry a report time. Work entered later from an invoice is excluded rather than assumed to have met the target.',
+  rp_recurring_t:'Repeating faults',
+  rp_recurring_d:'The same service called out more than once on the same apartment — where a repair is being repeated instead of made.',
+  rp_recur_n:'Two calls on one apartment for one trade is usually a symptom. Three is a capital decision waiting to be made.',
+  rp_satisfaction_t:'Resident satisfaction',
+  rp_satisfaction_d:'How residents rated completed work, and how many bothered to rate it at all.',
+  rp_sat_n:'The response rate matters as much as the score. A high average from a handful of ratings says little.',
+  rp_ppm_t:'Planned maintenance compliance',
+  rp_ppm_d:'Statutory and scheduled tasks, what is due, what is overdue and which certificates are held.',
+  rp_capital_t:'Asset condition and capital forecast',
+  rp_capital_d:'What each major asset is worth replacing, when, and what should be set aside each year against it.',
+  rp_adoption_t:'App adoption',
+  rp_adoption_d:'Share of apartments with an active account and share of requests raised in the app rather than by phone.',
+  rp_budget_t:'Maintenance spend against budget',
+  rp_budget_d:'Actual cost against the annual budget by service, with variance commentary.',
   export:'Export', t_export:'Prototype — export would produce an Excel workbook.',
   /* stats */
   st_open:'Open work orders', st_breach:'past target',
@@ -560,6 +718,164 @@ const D={
   log_done:'تم تسجيل العمل. التكلفة الآن على الشقة وعلى المورّد.',
   log_nosla:'غير محتسب في الالتزام',
   sup_note:'الإنفاق وعدد الأعمال مبنيان على ما يُسجَّل لكل مورّد. تبقى أزمنة الاستجابة وإعادة العمل والتقييم فارغة للأعمال المُدخلة من فاتورة، لأن الفاتورة لا تبيّن وقت الإبلاغ عن العطل ولا تقييم الساكن. وتُملأ هذه الحقول للأعمال المرفوعة عبر التطبيق.',
+  rp_intro:'كل تقرير أدناه يُبنى من البيانات الموجودة في هذه المنصة لا من نسخة محفوظة. اختر تقريراً، وحدّد الفترة عند الحاجة، ثم صدّره كجدول أو اطبعه.',
+  rp_s_ready:'جاهز',
+  rp_s_filling:'يمتلئ مع تسجيل الأعمال',
+  rp_s_blocked:'يحتاج وحدة أولاً',
+  rp_s_ready_d:'يعطي نتيجة فعلية اليوم',
+  rp_s_filling_d:'يعمل، لكنه بقدر اكتمال السجل',
+  rp_s_blocked_d:'يجب بناء شيء أولاً',
+  rp_g_money:'الإيجار والمال',
+  rp_g_prop:'العقار والعقود',
+  rp_g_maint:'الصيانة',
+  rp_g_blocked:'غير ممكن بعد',
+  rp_all:'كل التقارير',
+  rp_print:'طباعة',
+  rp_total:'الإجمالي',
+  rp_period:'الفترة',
+  rp_exported:'تاريخ التصدير',
+  rp_exported_ok:'تم التصدير كجدول.',
+  rp_norows:'لا يوجد ما يُعرض',
+  rp_norows_d:'لا تنطبق شروط هذا التقرير على أي شقة حالياً. هذه نتيجة وليست خللاً.',
+  rp_fills:'التقرير يعمل، ولا يوجد ما يعرضه لعدم تسجيل أي صيانة بعد.',
+  rp_cantyet:'لا يمكن إنتاج هذا التقرير بعد',
+  rp_needs_asset:'يعتمد على سجل أصول غير موجود. يجب حصر المصاعد والخزانات والمضخات وأنظمة الحريق والمولد ووحدات التكييف في كل شقة وتوثيق دورياتها النظامية وتواريخ ضماناتها. وهذه وحدة ضمن النظام الخلفي لا مجرد جدول.',
+  rp_needs_app:'يعتمد على تشغيل تطبيق السكان. لا يوجد حساب لأي شقة بعد، فلا يوجد تبنٍّ يمكن قياسه. ويصبح هذا مؤشر السنة الأولى يوم دعوة السكان.',
+  rp_needs_budget:'يعتمد على اعتماد موازنة صيانة سنوية. لا يوجد ما يُقارن به الإنفاق الفعلي قبل وجودها، ولا يوجد تاريخ إنفاق تُبنى عليه أصلاً.',
+  rp_m2:'ريال / م²',
+  rp_from:'من',
+  rp_bucket:'شريحة العمر',
+  rp_month:'الشهر',
+  rp_units:'الشقق',
+  rp_instal:'الدفعات',
+  rp_falls:'يستحق',
+  rp_already:'المحصّل',
+  rp_expected:'المتوقع تحصيله',
+  rp_apartments:'الشقق',
+  rp_avgarea:'متوسط المساحة',
+  rp_avgrent:'متوسط الإيجار',
+  rp_avgm2:'متوسط الريال/م²',
+  rp_lowest:'الأدنى',
+  rp_highest:'الأعلى',
+  rp_spread:'الفارق',
+  rp_lastvalue:'القيمة المسجلة',
+  rp_vacantlist:'الشقق الشاغرة',
+  rp_vacant_n:'شاغرة',
+  rp_vacant_d:'لا تدرّ دخلاً',
+  rp_letonly:'المؤجرة فقط',
+  rp_indays:'الأيام',
+  rp_date:'التاريخ',
+  rp_movement:'الحركة',
+  rp_in:'تأجير',
+  rp_out:'انتهاء',
+  rp_net:'صافي الحركة',
+  rp_net_d:'التغير في الإيجار التعاقدي',
+  rp_exp30:'تنتهي خلال ٣٠ يوماً',
+  rp_exp90:'تنتهي خلال ٩٠ يوماً',
+  rp_expired:'منتهية بالفعل',
+  rp_expired_d:'تجاوزت تاريخ الانتهاء',
+  rp_overdue_now:'متأخر الآن',
+  rp_next90:'يستحق خلال ثلاثة أشهر',
+  rp_next90_d:'لم يُحصّل بعد',
+  rp_next12:'يستحق خلال اثني عشر شهراً',
+  rp_next12_d:'كامل الجدول التعاقدي',
+  rp_findings:'الملاحظات',
+  rp_severity:'الأهمية',
+  rp_finding:'ما لا يتطابق',
+  rp_sev_high:'عالية',
+  rp_sev_med:'متوسطة',
+  rp_sev_low:'منخفضة',
+  rp_jobs:'الأعمال',
+  rp_open_now:'مفتوحة الآن',
+  rp_open_d:'على مستوى المبنى',
+  rp_inperiod:'في هذه الفترة',
+  rp_completed:'مكتملة',
+  rp_avgjob:'متوسط العمل',
+  rp_perjob:'لكل عمل مكتمل',
+  rp_share:'الحصة',
+  rp_byunit:'التكلفة نفسها حسب الشقة',
+  rp_ofrent:'من الإيجار المفوتر',
+  rp_suppliers:'الموردون والفنيون',
+  rp_measured:'قابلة للقياس',
+  rp_measured_d:'الباقي من فواتير',
+  rp_measurable:'قابلة للقياس',
+  rp_met:'ضمن المدة',
+  rp_missed:'تجاوزت المدة',
+  rp_missed_d:'استغرقت أطول من المستهدف',
+  rp_excluded:'غير قابلة للقياس',
+  rp_excluded_d:'مُدخلة من فاتورة بلا وقت إبلاغ',
+  rp_unassigned:'غير مُسند',
+  rp_repeat:'أعطال متكررة',
+  rp_repeat_d:'الخدمة نفسها والشقة نفسها أكثر من مرة',
+  rp_onrepeat:'أُنفقت على التكرار',
+  rp_affected:'متأثرة',
+  rp_times:'المرات',
+  rp_lastseen:'آخر مرة',
+  rp_ratings:'تقييم',
+  rp_response:'نسبة التقييم',
+  rp_response_d:'من الأعمال المكتملة',
+  rp_low:'ثلاثة فأقل',
+  rp_low_d:'تستحق اتصالاً',
+  rp_rentroll_t:'سجل الإيجارات',
+  rp_rentroll_d:'كل الشقق في صفحة واحدة — المساحة والمستأجر وقيمة العقد والريال لكل متر ومدة العقد. المستند الذي يطلبه البنك أو المُقيّم أو المشتري أولاً.',
+  rp_rentroll_n:'الريال لكل متر هو قيمة العقد مقسومة على المساحة المسجلة. وحيث تكون المساحة خاطئة يكون المعدل خاطئاً — ويوردها تقرير جودة السجل.',
+  rp_arrears_t:'متأخرات التحصيل',
+  rp_arrears_d:'من عليه ماذا، محسوباً من أقدم دفعة غير مسددة. القائمة المعتمدة للتحصيل.',
+  rp_forecast_t:'الإيجار المستحق خلال اثني عشر شهراً',
+  rp_forecast_d:'ما يستحق شهرياً على كل العقود السارية، وما حُصّل منه، وما يبقى متوقعاً. تخطيط للسيولة لا سرد للماضي.',
+  rp_forecast_n:'الدفعات المتأخرة تُعرض منفصلة في الأعلى بدل دمجها في شهر قادم، حتى لا يختفي دين داخل توقّع.',
+  rp_ledger_t:'سجل الشقق',
+  rp_ledger_d:'صف لكل شقة: التعاقدي والمفوتر والمحصّل والمستحق وتكلفة الصيانة والصافي.',
+  rp_occupancy_t:'الإشغال والشواغر',
+  rp_occupancy_d:'المؤجر والشاغر حسب نوع الشقة، والإيجار التعاقدي خلف كل نوع، مع تسمية كل شقة شاغرة.',
+  rp_occ_n:'يُحتسب الإشغال على ٣٧ شقة. والشقة الشاغرة التي تحمل قيمة في السجل تعرض آخر عقد لا سعراً مطلوباً.',
+  rp_expiry_t:'انتهاء العقود وخط التجديد',
+  rp_expiry_d:'أي عقد ينتهي ومتى، مرتبة بالأقرب، مع القيمة المعرضة وأي متأخرات قائمة.',
+  rp_exp_n:'العقد الذي تجاوز تاريخ انتهائه ولا يزال مؤجراً يحتاج قراراً — إما تجديد لم يُسجَّل، أو إشغال بلا عقد.',
+  rp_movement_t:'الشقق داخلاً وخارجاً',
+  rp_movement_d:'التأجيرات التي بدأت والعقود التي انتهت في الفترة، وأثرهما معاً على الإيجار التعاقدي.',
+  rp_move_n:'صافي الحركة هو قيمة ما أُجّر في الفترة ناقص قيمة العقود المنتهية. وهو الرقم الذي يُعرض على المجلس.',
+  rp_rate_t:'الريال لكل متر مربع',
+  rp_rate_d:'ما يحققه كل نوع فعلياً لكل متر، مع تسمية الأعلى والأدنى في كل فئة.',
+  rp_rate_n:'اتساع الفارق داخل النوع الواحد إما تفاوت في التسعير أو خطأ في التسجيل. راجع الحالات الشاذة قبل اعتماد أي منها معياراً.',
+  rp_quality_t:'جودة بيانات السجل',
+  rp_quality_d:'كل موضع يناقض فيه السجل نفسه، مفحوصاً مباشرة لا منقولاً من مذكرة — جداول لا تتطابق، ودفعات بعد نهاية العقد، وشقق شاغرة تحمل قيماً.',
+  rp_q_n:'يعمل على أي سجل محمّل، فيعرض بعد الاستيراد حالة الملف الذي استوردته للتو.',
+  rp_q_d:'مواضع يناقض فيها السجل نفسه',
+  rp_q_high_d:'تغيّر رقماً معلناً',
+  rp_q_units_d:'شقة معنية',
+  rp_q_lines:'مجموع جدول الدفعات {a} مقابل قيمة عقد {b}',
+  rp_q_vacantvalue:'مسجّلة شاغرة ومع ذلك تحمل قيمة عقد',
+  rp_q_nosched:'مؤجرة بلا جدول دفعات — لا يمكن فوترة شيء',
+  rp_q_pastend:'دفعة بتاريخ {d} بعد نهاية العقد في {e}',
+  rp_q_expired:'معروضة كمؤجرة رغم انتهاء العقد في {d}',
+  rp_q_area:'مسجلة {t} بمساحة {a} م² — صغيرة على النوع',
+  rp_q_novalue:'مؤجرة بلا قيمة عقد مسجلة',
+  rp_wolog_t:'سجل أوامر العمل',
+  rp_wolog_d:'كل عمل سُجّل في الفترة، وكيف وصل، ومن نفّذه، وكم كلّف.',
+  rp_wolog_n:'طريقة الوصول لا تقل أهمية عن التكلفة. فإن وصل معظم الأعمال هاتفياً بدل التطبيق، فالسجل بقدر ما تذكّره من دوّنه.',
+  rp_costsvc_t:'تكلفة الصيانة حسب الخدمة والشقة',
+  rp_costsvc_d:'أين يذهب المال — حسب المهنة، وحسب الشقة كنسبة من الإيجار المفوتر عليها.',
+  rp_cost_n:'نسبة التكلفة إلى الإيجار المفوتر هي المؤشر لكل شقة. وارتفاعها في شقة واحدة يعني غالباً عطلاً متكرراً لا عطلاً مكلفاً.',
+  rp_supplier_t:'إنفاق الموردين وأداؤهم',
+  rp_supplier_d:'الإنفاق وعدد الأعمال ومتوسط قيمة العمل — وللأعمال المرفوعة من التطبيق: الاستجابة مقابل المستهدف وتقييم الساكن.',
+  rp_sla_t:'الاستجابة مقابل المستهدف',
+  rp_sla_d:'كم مرة عولجت كل خدمة ضمن مدتها المستهدفة، محتسبةً الأعمال معلومة وقت الإبلاغ فقط.',
+  rp_sla_n:'الأعمال المرفوعة من التطبيق أو المسجلة وقتها هي وحدها التي تحمل وقت إبلاغ. أما المُدخلة لاحقاً من فاتورة فتُستثنى بدل افتراض التزامها.',
+  rp_recurring_t:'الأعطال المتكررة',
+  rp_recurring_d:'الخدمة نفسها تُطلب أكثر من مرة على الشقة نفسها — حيث يُعاد الإصلاح بدل إتمامه.',
+  rp_recur_n:'مرتان على شقة واحدة لمهنة واحدة عرض. والثالثة قرار رأسمالي ينتظر.',
+  rp_satisfaction_t:'رضا السكان',
+  rp_satisfaction_d:'كيف قيّم السكان الأعمال المكتملة، وكم منهم قيّمها أصلاً.',
+  rp_sat_n:'نسبة التقييم لا تقل أهمية عن الدرجة. فمتوسط مرتفع من تقييمات قليلة لا يعني كثيراً.',
+  rp_ppm_t:'الالتزام بالصيانة الوقائية',
+  rp_ppm_d:'المهام النظامية والمجدولة، وما يستحق، وما تأخر، وأي الشهادات محفوظة.',
+  rp_capital_t:'حالة الأصول والتوقعات الرأسمالية',
+  rp_capital_d:'ما يستحق استبداله من الأصول الرئيسية ومتى، وكم ينبغي تجنيبه سنوياً مقابله.',
+  rp_adoption_t:'تبنّي التطبيق',
+  rp_adoption_d:'نسبة الشقق ذات الحساب الفعّال ونسبة الطلبات المرفوعة من التطبيق بدل الهاتف.',
+  rp_budget_t:'إنفاق الصيانة مقابل الموازنة',
+  rp_budget_d:'التكلفة الفعلية مقابل الموازنة السنوية حسب الخدمة مع تفسير الانحرافات.',
   draft:'مسودة', scheduled:'مجدول', complete:'اللغتان', incomplete:'العربية ناقصة',
   newann:'إعلان جديد', allres:'جميع السكان',
   t_annblock:'لا يمكن النشر — النص العربي فارغ. اللغتان مطلوبتان.',
@@ -2159,57 +2475,618 @@ function pgRes(){
 
 /* ---------- reports ---------- */
 let COSTVIEW='chart';
-function pgRep(){
- if(NOLOG())
-   return `<div class="card mb"><div class="bd">${emptyState(T('nolog_t'), T('nolog_cost'),
-     `<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`)}</div></div>
-     <div class="card"><div class="hd"><div><h2>${T('f_arr')}</h2><div class="d">${T('f_arr_d')}</div></div></div>
-      <div class="bd"><p style="font-size:13.5px;color:var(--ink-2);line-height:1.7;margin:0">${T('nolog_note')}</p>
-      <button class="btn" style="margin-top:14px" onclick="go('fin')">${T('t_fin')}</button></div></div>`;
- const exp=UNITS.filter(u=>u.occupied&&(u.leaseEnd-TODAY)/864e5<=90&&u.leaseEnd>=TODAY)
-   .sort((a,b)=>a.leaseEnd-b.leaseEnd);
- return `
- <div class="grid g2 mb">
-  <div class="card">
-   <div class="hd"><div style="flex:1"><h2>${T('c_sla')}</h2><div class="d">${T('c_sla_d')}</div></div></div>
-   <div class="bd"><div class="chart" id="cSla">${chartSla()}<div class="tip"></div></div></div>
-  </div>
-  <div class="card">
-   <div class="hd"><div style="flex:1"><h2>${T('c_flow')}</h2><div class="d">${T('c_flow_d')}</div></div>
-    <div class="legend"><span><i style="background:var(--series-1)"></i>${T('raised')}</span><span><i style="background:var(--series-2)"></i>${T('closed')}</span></div></div>
-   <div class="bd"><div class="chart" id="cFlow">${chartFlow()}<div class="tip"></div></div></div>
-  </div>
- </div>
 
- <div class="card mb">
-  <div class="hd"><div style="flex:1"><h2>${T('c_cost')}</h2><div class="d">${T('c_cost_d')} · ${L('total','الإجمالي')} ${money(totalCost)} ${T('sar')}</div></div>
-   <div class="viewtog">
-     <button class="${COSTVIEW==='chart'?'on':''}" onclick="COSTVIEW='chart';render()">${T('chart')}</button>
-     <button class="${COSTVIEW==='table'?'on':''}" onclick="COSTVIEW='table';render()">${T('tableview')}</button>
-   </div></div>
-  <div class="bd">${COSTVIEW==='chart'?chartCost():`
-   <table><thead><tr><th>${T('service')}</th><th class="num">${T('jobs')}</th><th class="num">${T('cost')} (${T('sar')})</th></tr></thead>
-   <tbody>${costByCat.map(r=>`<tr><td>${catName(r.c)}</td><td class="num mono">${NUM(r.jobs)}</td><td class="num mono strong">${money(r.cost)}</td></tr>`).join('')}</tbody></table>`}
-  </div>
- </div>
+/* ==========================================================================
+   REPORT LIBRARY
 
- <div class="grid g2">
-  <div class="card">
-   <div class="hd"><div><h2>${T('r_top')}</h2><div class="d">R8</div></div></div>
-   <div class="tw"><table><thead><tr><th>${T('unit')}</th><th class="num">${T('jobs')}</th><th class="num">${T('cost')}</th></tr></thead>
-    <tbody>${costByUnit.slice(0,10).map(x=>`<tr><td class="strong">${NUM(x.u.u)}</td>
-     <td class="num mono">${NUM(x.jobs)}</td><td class="num mono strong">${money(x.cost)}</td></tr>`).join('')}</tbody></table></div>
-  </div>
-  <div class="card">
-   <div class="hd"><div><h2>${T('r_exp')}</h2><div class="d">R13</div></div></div>
-   <div class="tw">${exp.length?`<table><thead><tr><th>${T('unit')}</th><th>${T('tenant')}</th><th>${T('leaseend')}</th><th class="num">${L('Value','القيمة')}</th></tr></thead>
-    <tbody>${exp.map(u=>`<tr><td class="strong">${NUM(u.u)}</td><td>${L(u.tenant,u.tenant_ar)}</td>
-     <td class="mono">${fmtD(u.leaseEnd)}</td><td class="num mono">${money(u.rent)}</td></tr>`).join('')}</tbody></table>`
-    :`<div class="bd"><div class="okbox">${I('check',16,2.2)}<span>${T('r_none')}</span></div></div>`}</div>
-  </div>
- </div>
- <div class="note">${T('seriesnote')}</div>`;
+   Every report is a function returning one shape — columns, rows, totals and
+   a note — so the renderer, the CSV export and the print view are written
+   once and each report only has to describe its own data.
+
+   Each carries a readiness state, and it is honest rather than decorative:
+
+     ready    the data exists today, the report produces real output
+     filling  the report works, but is only as complete as the log so far
+     blocked  a module that does not exist yet has to be built first
+
+   A report that cannot be produced says what is missing instead of showing
+   an empty table that looks like a system failure.
+   ========================================================================== */
+
+let RP = {id:null, period:'y12', unit:null};
+
+const rpPeriods = () => [
+  {k:'m',    en:'This month',        ar:'هذا الشهر'},
+  {k:'q',    en:'Last three months', ar:'آخر ثلاثة أشهر'},
+  {k:'y12',  en:'Last twelve months',ar:'آخر اثني عشر شهراً'},
+  {k:'all',  en:'Everything',        ar:'الكل'}
+];
+function rpRange(){
+  const to = new Date(TODAY);
+  const from = new Date(TODAY);
+  if(RP.period==='m')   from.setDate(1);
+  if(RP.period==='q')   from.setMonth(from.getMonth()-3);
+  if(RP.period==='y12') from.setMonth(from.getMonth()-12);
+  if(RP.period==='all') from.setFullYear(2000);
+  from.setHours(0,0,0,0);
+  return {from, to};
 }
+const rpIn = (d, r) => d && d >= r.from && d <= r.to;
+const days = (a,b) => Math.round((a-b)/864e5);
+const m2 = u => (u.area && u.rent) ? u.rent/u.area : null;
+
+/* ---------------------------------------------------------------- money ---- */
+
+function repRentRoll(){
+  const rows = [...UNITS].sort((a,b)=>a.u.localeCompare(b.u,'en',{numeric:true})).map(u=>({
+    unit:u.u, floor:floorName(u.floor), type:u.type, area:u.area,
+    status: u.occupied?T('occupied'):T('vacant'),
+    tenant: u.occupied?L(u.tenant,u.tenant_ar):'—',
+    rent: u.occupied?u.rent:null,
+    m2: u.occupied?m2(u):null,
+    start: u.leaseStart, end: u.leaseEnd
+  }));
+  const letRows = rows.filter(r=>r.rent);
+  return {
+    cols:[{k:'unit',l:T('unit')},{k:'floor',l:T('floor')},{k:'type',l:T('type')},
+          {k:'area',l:T('area'),num:1},{k:'status',l:T('status')},{k:'tenant',l:T('tenant')},
+          {k:'rent',l:T('h_annual'),num:1,money:1},{k:'m2',l:T('rp_m2'),num:1,dec:1},
+          {k:'start',l:T('rp_from'),date:1},{k:'end',l:T('leaseend'),date:1}],
+    rows,
+    foot:{unit:T('rp_total'), status:`${NUM(letRows.length)} ${L('let','مؤجرة')}`,
+          area:UNITS.reduce((a,u)=>a+(u.area||0),0),
+          rent:letRows.reduce((a,r)=>a+r.rent,0)},
+    note:T('rp_rentroll_n')
+  };
+}
+
+function repArrears(){
+  const rows = arrearsRows().map(a=>({
+    unit:a.u.u, tenant:L(a.u.tenant,a.u.tenant_ar), amount:a.amt, due:a.due, age:a.days,
+    bucket: a.days<=30?T('b_30'):a.days<=60?T('b_60'):a.days<=90?T('b_90'):T('b_90p')
+  }));
+  return {
+    stats:[[T('f_outstanding'), money(FIN.outstanding), NUM(rows.length)+' '+L('apartments','شقق')],
+           [T('f_over30'), money(FIN.over30), T('f_over30_d')],
+           [T('f_rate'), NUM(FIN.rate)+'%', T('f_collected')+' '+money(FIN.collected)]],
+    cols:[{k:'unit',l:T('unit')},{k:'tenant',l:T('tenant')},{k:'amount',l:T('f_amount'),num:1,money:1},
+          {k:'due',l:T('f_arr_due'),date:1},{k:'age',l:T('f_arr_age'),num:1},{k:'bucket',l:T('rp_bucket')}],
+    rows,
+    foot:{unit:T('rp_total'), amount:rows.reduce((a,r)=>a+r.amount,0)},
+    note:T('f_arr_note')
+  };
+}
+
+/* twelve months of instalments, so the office can see what is due before it is due */
+function repForecast(){
+  const buckets = [];
+  const start = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+  for(let i=0;i<12;i++){
+    const d = new Date(start); d.setMonth(d.getMonth()+i);
+    buckets.push({key:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'), d, due:0, paid:0, n:0, units:new Set()});
+  }
+  let overdue = 0, overdueN = 0;
+  UNITS.forEach(u=>{
+    if(!u.occupied) return;
+    u.inst.forEach(x=>{
+      if(!x.due) return;
+      if(x.billed && !x.paid){ overdue += x.amt; overdueN++; return; }
+      const k = x.due.getFullYear()+'-'+String(x.due.getMonth()+1).padStart(2,'0');
+      const b = buckets.find(y=>y.key===k);
+      if(!b) return;
+      b.due += x.amt; b.n++; b.units.add(u.u);
+      if(x.paid) b.paid += x.amt;
+    });
+  });
+  const rows = buckets.map(b=>({
+    month: b.d, n:b.n, units:b.units.size, due:b.due, paid:b.paid, expect:b.due-b.paid
+  }));
+  return {
+    stats:[[T('rp_overdue_now'), money(overdue), NUM(overdueN)+' '+L('instalments','دفعات')],
+           [T('rp_next90'), money(rows.slice(0,3).reduce((a,r)=>a+r.expect,0)), T('rp_next90_d')],
+           [T('rp_next12'), money(rows.reduce((a,r)=>a+r.expect,0)), T('rp_next12_d')]],
+    cols:[{k:'month',l:T('rp_month'),month:1},{k:'units',l:T('rp_units'),num:1},
+          {k:'n',l:T('rp_instal'),num:1},{k:'due',l:T('rp_falls'),num:1,money:1},
+          {k:'paid',l:T('rp_already'),num:1,money:1},{k:'expect',l:T('rp_expected'),num:1,money:1}],
+    rows,
+    foot:{month:T('rp_total'), n:rows.reduce((a,r)=>a+r.n,0),
+          due:rows.reduce((a,r)=>a+r.due,0), paid:rows.reduce((a,r)=>a+r.paid,0),
+          expect:rows.reduce((a,r)=>a+r.expect,0)},
+    note:T('rp_forecast_n')
+  };
+}
+
+function repOccupancy(){
+  const byType = {};
+  UNITS.forEach(u=>{
+    const k = u.type||'—';
+    byType[k] = byType[k] || {k, total:0, let:0, area:0, rent:0, vacantValue:0};
+    const b = byType[k];
+    b.total++; b.area += u.area||0;
+    if(u.occupied){ b.let++; b.rent += u.rent||0; } else { b.vacantValue += u.rent||0; }
+  });
+  const rows = Object.values(byType).sort((a,b)=>a.k.localeCompare(b.k)).map(b=>({
+    type:b.k, total:b.total, let:b.let, vacant:b.total-b.let,
+    pct: Math.round(b.let/b.total*100), area:Math.round(b.area/b.total),
+    rent:b.rent, avg: b.let? Math.round(b.rent/b.let) : null
+  }));
+  const letAll = UNITS.filter(u=>u.occupied).length;
+  const vacant = UNITS.filter(u=>!u.occupied);
+  return {
+    stats:[[T('st_occ'), NUM(letAll)+'/'+NUM(UNITS.length), NUM(Math.round(letAll/UNITS.length*100))+'%'],
+           [T('rp_vacant_n'), NUM(vacant.length), T('rp_vacant_d')],
+           [T('f_contracted'), money(FIN.contracted), T('rp_letonly')]],
+    cols:[{k:'type',l:T('type')},{k:'total',l:T('rp_apartments'),num:1},{k:'let',l:L('Let','مؤجرة'),num:1},
+          {k:'vacant',l:T('vacant'),num:1},{k:'pct',l:T('st_occ'),num:1,pct:1},
+          {k:'area',l:T('rp_avgarea'),num:1},{k:'rent',l:T('f_contracted'),num:1,money:1},
+          {k:'avg',l:T('rp_avgrent'),num:1,money:1}],
+    rows,
+    foot:{type:T('rp_total'), total:UNITS.length, let:letAll, vacant:vacant.length,
+          pct:Math.round(letAll/UNITS.length*100), rent:FIN.contracted},
+    extra:{title:T('rp_vacantlist'), cols:[{k:'unit',l:T('unit')},{k:'type',l:T('type')},
+      {k:'area',l:T('area'),num:1},{k:'floor',l:T('floor')},{k:'value',l:T('rp_lastvalue'),num:1,money:1}],
+      rows: vacant.sort((a,b)=>a.u.localeCompare(b.u,'en',{numeric:true})).map(u=>({
+        unit:u.u, type:u.type, area:u.area, floor:floorName(u.floor), value:u.rent||null}))},
+    note:T('rp_occ_n')
+  };
+}
+
+function repExpiry(){
+  const rows = UNITS.filter(u=>u.occupied && u.leaseEnd).map(u=>({
+    unit:u.u, tenant:L(u.tenant,u.tenant_ar), end:u.leaseEnd,
+    inDays: days(u.leaseEnd, TODAY), rent:u.rent,
+    out: Math.max(0, u.outstanding||0)
+  })).sort((a,b)=>a.inDays-b.inDays);
+  const band = n => rows.filter(r=>r.inDays>=0 && r.inDays<=n);
+  return {
+    stats:[[T('rp_exp30'), NUM(band(30).length), money(band(30).reduce((a,r)=>a+r.rent,0))],
+           [T('rp_exp90'), NUM(band(90).length), money(band(90).reduce((a,r)=>a+r.rent,0))],
+           [T('rp_expired'), NUM(rows.filter(r=>r.inDays<0).length), T('rp_expired_d')]],
+    cols:[{k:'unit',l:T('unit')},{k:'tenant',l:T('tenant')},{k:'end',l:T('leaseend'),date:1},
+          {k:'inDays',l:T('rp_indays'),num:1},{k:'rent',l:T('h_annual'),num:1,money:1},
+          {k:'out',l:T('f_outstanding'),num:1,money:1}],
+    rows,
+    foot:{unit:T('rp_total'), rent:rows.reduce((a,r)=>a+r.rent,0), out:rows.reduce((a,r)=>a+r.out,0)},
+    note:T('rp_exp_n')
+  };
+}
+
+/* the CEO's ask: what came in, what went out, and what it did to contracted rent */
+function repMovement(){
+  const r = rpRange();
+  const inn = UNITS.filter(u=>u.occupied && rpIn(u.leaseStart, r)).map(u=>({
+    dir:T('rp_in'), unit:u.u, tenant:L(u.tenant,u.tenant_ar), type:u.type, area:u.area,
+    date:u.leaseStart, value:u.rent, m2:m2(u)
+  }));
+  const out = UNITS.filter(u=>u.leaseEnd && rpIn(u.leaseEnd, r) && u.leaseEnd < TODAY).map(u=>({
+    dir:T('rp_out'), unit:u.u, tenant:u.occupied?L(u.tenant,u.tenant_ar):'—', type:u.type, area:u.area,
+    date:u.leaseEnd, value:u.rent, m2:m2(u)
+  }));
+  const rows = [...inn,...out].sort((a,b)=>a.date-b.date);
+  const vIn = inn.reduce((a,x)=>a+(x.value||0),0), vOut = out.reduce((a,x)=>a+(x.value||0),0);
+  return {
+    period:true,
+    stats:[[T('rp_in'), NUM(inn.length), money(vIn)],
+           [T('rp_out'), NUM(out.length), money(vOut)],
+           [T('rp_net'), (vIn-vOut>=0?'+':'−')+money(Math.abs(vIn-vOut)), T('rp_net_d')]],
+    cols:[{k:'dir',l:T('rp_movement')},{k:'unit',l:T('unit')},{k:'tenant',l:T('tenant')},
+          {k:'type',l:T('type')},{k:'area',l:T('area'),num:1},{k:'date',l:T('rp_date'),date:1},
+          {k:'value',l:T('h_annual'),num:1,money:1},{k:'m2',l:T('rp_m2'),num:1,dec:1}],
+    rows,
+    foot:{dir:T('rp_total'), value:vIn-vOut},
+    note:T('rp_move_n')
+  };
+}
+
+function repLedger(){
+  const rows = finRows().map(r=>({
+    unit:r.u.u, status:r.u.occupied?T('occupied'):T('vacant'),
+    tenant:r.u.occupied?L(r.u.tenant,r.u.tenant_ar):'—',
+    annual:r.annual||null, billed:r.billed||null, coll:r.coll||null,
+    out:r.out||null, maint:r.maint||null, net:r.u.occupied||r.maint?r.net:null
+  }));
+  return {
+    cols:[{k:'unit',l:T('unit')},{k:'status',l:T('status')},{k:'tenant',l:T('tenant')},
+          {k:'annual',l:T('h_annual'),num:1,money:1},{k:'billed',l:T('f_billed'),num:1,money:1},
+          {k:'coll',l:T('f_collected'),num:1,money:1},{k:'out',l:T('f_outstanding'),num:1,money:1},
+          {k:'maint',l:T('h_maint'),num:1,money:1},{k:'net',l:T('h_net'),num:1,money:1}],
+    rows,
+    foot:{unit:T('rp_total'), annual:FIN.contracted, billed:FIN.billed, coll:FIN.collected,
+          out:FIN.outstanding, maint:totalCost, net:FIN.collected-totalCost},
+    note:T('f_netnote')
+  };
+}
+
+function repRate(){
+  const byType = {};
+  UNITS.filter(u=>u.occupied && u.area && u.rent).forEach(u=>{
+    const k=u.type||'—';
+    byType[k]=byType[k]||{k,list:[]};
+    byType[k].list.push({u, r:u.rent/u.area});
+  });
+  const rows = Object.values(byType).sort((a,b)=>a.k.localeCompare(b.k)).map(b=>{
+    const rates=b.list.map(x=>x.r).sort((x,y)=>x-y);
+    const lo=b.list.reduce((m,x)=>x.r<m.r?x:m), hi=b.list.reduce((m,x)=>x.r>m.r?x:m);
+    return {type:b.k, n:b.list.length,
+      avgArea: Math.round(b.list.reduce((a,x)=>a+x.u.area,0)/b.list.length),
+      avg: rates.reduce((a,x)=>a+x,0)/rates.length,
+      min: rates[0], minU: lo.u.u, max: rates[rates.length-1], maxU: hi.u.u,
+      spread: rates[rates.length-1]-rates[0]};
+  });
+  return {
+    cols:[{k:'type',l:T('type')},{k:'n',l:T('rp_apartments'),num:1},{k:'avgArea',l:T('rp_avgarea'),num:1},
+          {k:'avg',l:T('rp_avgm2'),num:1,dec:1},{k:'min',l:T('rp_lowest'),num:1,dec:1},
+          {k:'minU',l:T('unit')},{k:'max',l:T('rp_highest'),num:1,dec:1},{k:'maxU',l:T('unit')},
+          {k:'spread',l:T('rp_spread'),num:1,dec:1}],
+    rows,
+    note:T('rp_rate_n')
+  };
+}
+
+/* the data-quality note, run live against whatever register is loaded */
+function repQuality(){
+  const rows=[];
+  const add=(u,sev,t)=>rows.push({unit:u||'—', severity:sev, finding:t});
+  UNITS.forEach(u=>{
+    const lines=(u.inst||[]).reduce((a,x)=>a+x.amt,0);
+    if(u.occupied && u.inst.length && u.rent && Math.abs(lines-u.rent)>1)
+      add(u.u, T('rp_sev_med'), T('rp_q_lines').replace('{a}',money(lines)).replace('{b}',money(u.rent)));
+    if(!u.occupied && u.rent) add(u.u, T('rp_sev_med'), T('rp_q_vacantvalue'));
+    if(u.occupied && !u.inst.length) add(u.u, T('rp_sev_high'), T('rp_q_nosched'));
+    if(u.occupied && u.leaseEnd) (u.inst||[]).forEach(x=>{
+      if(x.due && x.due > u.leaseEnd)
+        add(u.u, T('rp_sev_high'), T('rp_q_pastend').replace('{d}',fmtD(x.due)).replace('{e}',fmtD(u.leaseEnd)));
+    });
+    if(u.occupied && u.leaseEnd && u.leaseEnd < TODAY)
+      add(u.u, T('rp_sev_high'), T('rp_q_expired').replace('{d}',fmtD(u.leaseEnd)));
+    if(u.area && u.type==='2BR' && u.area<60) add(u.u, T('rp_sev_low'), T('rp_q_area').replace('{a}',NUM(u.area)).replace('{t}',u.type));
+    if(u.area && u.type==='3BR' && u.area<90) add(u.u, T('rp_sev_low'), T('rp_q_area').replace('{a}',NUM(u.area)).replace('{t}',u.type));
+    if(u.occupied && !u.rent) add(u.u, T('rp_sev_high'), T('rp_q_novalue'));
+  });
+  rows.sort((a,b)=>a.unit.localeCompare(b.unit,'en',{numeric:true}));
+  const sev = s => rows.filter(r=>r.severity===s).length;
+  return {
+    stats:[[T('rp_findings'), NUM(rows.length), T('rp_q_d')],
+           [T('rp_sev_high'), NUM(sev(T('rp_sev_high'))), T('rp_q_high_d')],
+           [T('rp_apartments'), NUM(new Set(rows.map(r=>r.unit)).size), T('rp_q_units_d')]],
+    cols:[{k:'unit',l:T('unit')},{k:'severity',l:T('rp_severity')},{k:'finding',l:T('rp_finding')}],
+    rows,
+    note:T('rp_q_n')
+  };
+}
+
+/* ---------------------------------------------------------- maintenance ---- */
+
+const rpJobsIn = () => { const r=rpRange(); return WOS.filter(w=>rpIn(w.raised,r)); };
+
+function repWorkLog(){
+  const jobs = rpJobsIn();
+  const rows = jobs.map(w=>({
+    ref:w.id, unit:w.unit, service:catName(CAT(w.cat)), desc:w.desc,
+    raised:w.raised, channel:T('ch_'+(w.ch==='wa'?'wa':w.ch)),
+    who: w.tech==='—'?'—':w.tech, status:T(STA[w.status][2]),
+    cost: w.status==='done'?woCost(w):null
+  }));
+  return {
+    period:true, filling:true,
+    stats:[[T('rp_jobs'), NUM(rows.length), rpPeriodLabel()],
+           [T('rp_open_now'), NUM(OPEN.length), T('rp_open_d')],
+           [T('h_maint'), money(rows.reduce((a,r)=>a+(r.cost||0),0)), T('rp_inperiod')]],
+    cols:[{k:'ref',l:T('ref')},{k:'unit',l:T('unit')},{k:'service',l:T('log_cat')},
+          {k:'desc',l:T('log_desc')},{k:'raised',l:T('raised_c'),date:1},
+          {k:'channel',l:T('intake')},{k:'who',l:T('assignee')},
+          {k:'status',l:T('status')},{k:'cost',l:T('cost'),num:1,money:1}],
+    rows,
+    foot:{ref:T('rp_total'), cost:rows.reduce((a,r)=>a+(r.cost||0),0)},
+    note:T('rp_wolog_n')
+  };
+}
+
+function repCostSvc(){
+  const jobs = rpJobsIn().filter(w=>w.status==='done');
+  const byCat = {};
+  jobs.forEach(w=>{ const k=w.cat; byCat[k]=byCat[k]||{k,n:0,c:0}; byCat[k].n++; byCat[k].c+=woCost(w); });
+  const total = jobs.reduce((a,w)=>a+woCost(w),0);
+  const rows = Object.values(byCat).sort((a,b)=>b.c-a.c).map(b=>({
+    service:catName(CAT(b.k)), jobs:b.n, cost:b.c,
+    avg: Math.round(b.c/b.n), share: total? Math.round(b.c/total*100):0
+  }));
+  const byUnit = {};
+  jobs.forEach(w=>{ byUnit[w.unit]=byUnit[w.unit]||{u:w.unit,n:0,c:0}; byUnit[w.unit].n++; byUnit[w.unit].c+=woCost(w); });
+  const unitRows = Object.values(byUnit).sort((a,b)=>b.c-a.c).map(b=>{
+    const u = UNITS.find(x=>x.u===b.u) || {};
+    return {unit:b.u, jobs:b.n, cost:b.c, billed:u.billed||null,
+            pct: u.billed? b.c/u.billed*100 : null};
+  });
+  return {
+    period:true, filling:true,
+    stats:[[T('h_maint'), money(total), rpPeriodLabel()],
+           [T('rp_jobs'), NUM(jobs.length), T('rp_completed')],
+           [T('rp_avgjob'), jobs.length?money(Math.round(total/jobs.length)):'—', T('rp_perjob')]],
+    cols:[{k:'service',l:T('log_cat')},{k:'jobs',l:T('rp_jobs'),num:1},
+          {k:'cost',l:T('cost'),num:1,money:1},{k:'avg',l:T('rp_avgjob'),num:1,money:1},
+          {k:'share',l:T('rp_share'),num:1,pct:1}],
+    rows,
+    foot:{service:T('rp_total'), jobs:jobs.length, cost:total},
+    extra:{title:T('rp_byunit'), cols:[{k:'unit',l:T('unit')},{k:'jobs',l:T('rp_jobs'),num:1},
+      {k:'cost',l:T('cost'),num:1,money:1},{k:'billed',l:T('f_billed'),num:1,money:1},
+      {k:'pct',l:T('rp_ofrent'),num:1,pct:1,dec:1}], rows:unitRows},
+    note:T('rp_cost_n')
+  };
+}
+
+function repSupplier(){
+  const jobs = rpJobsIn().filter(w=>w.status==='done');
+  const by = {};
+  jobs.forEach(w=>{
+    const k = w.tech && w.tech!=='—' ? w.tech : T('rp_unassigned');
+    by[k]=by[k]||{k,n:0,c:0,rated:[],sla:[]};
+    by[k].n++; by[k].c+=woCost(w);
+    if(w.rating) by[k].rated.push(w.rating);
+    if(!w.noSla) by[k].sla.push(isBreached(w)?0:1);
+  });
+  const rows = Object.values(by).sort((a,b)=>b.c-a.c).map(b=>({
+    who:b.k, jobs:b.n, cost:b.c, avg:Math.round(b.c/b.n),
+    rating: b.rated.length? b.rated.reduce((a,x)=>a+x,0)/b.rated.length : null,
+    sla: b.sla.length? Math.round(b.sla.reduce((a,x)=>a+x,0)/b.sla.length*100) : null,
+    measured: b.sla.length
+  }));
+  return {
+    period:true, filling:true,
+    stats:[[T('rp_suppliers'), NUM(rows.length), rpPeriodLabel()],
+           [T('spend'), money(rows.reduce((a,r)=>a+r.cost,0)), T('rp_inperiod')],
+           [T('rp_measured'), NUM(rows.reduce((a,r)=>a+r.measured,0))+' / '+NUM(jobs.length), T('rp_measured_d')]],
+    cols:[{k:'who',l:T('supplier')},{k:'jobs',l:T('rp_jobs'),num:1},{k:'cost',l:T('spend'),num:1,money:1},
+          {k:'avg',l:T('rp_avgjob'),num:1,money:1},{k:'sla',l:T('st_sla'),num:1,pct:1},
+          {k:'rating',l:T('rating'),num:1,dec:1}],
+    rows,
+    foot:{who:T('rp_total'), jobs:jobs.length, cost:rows.reduce((a,r)=>a+r.cost,0)},
+    note:T('sup_note')
+  };
+}
+
+function repSla(){
+  const jobs = rpJobsIn().filter(w=>!w.noSla && w.status!=='cancelled');
+  const rows = CATS.map(c=>{
+    const mine = jobs.filter(w=>w.cat===c.id);
+    if(!mine.length) return null;
+    const met = mine.filter(w=>!isBreached(w)).length;
+    return {service:catName(c), target:c.sla, jobs:mine.length, met,
+            missed:mine.length-met, pct:Math.round(met/mine.length*100)};
+  }).filter(Boolean).sort((a,b)=>a.pct-b.pct);
+  const all = jobs.length, met = jobs.filter(w=>!isBreached(w)).length;
+  const excluded = rpJobsIn().filter(w=>w.noSla).length;
+  return {
+    period:true, filling:true,
+    stats:[[T('st_sla'), all?NUM(Math.round(met/all*100))+'%':'—', NUM(all)+' '+T('rp_measurable')],
+           [T('rp_missed'), NUM(all-met), T('rp_missed_d')],
+           [T('rp_excluded'), NUM(excluded), T('rp_excluded_d')]],
+    cols:[{k:'service',l:T('log_cat')},{k:'target',l:T('targetc'),num:1},
+          {k:'jobs',l:T('rp_measurable'),num:1},{k:'met',l:T('rp_met'),num:1},
+          {k:'missed',l:T('rp_missed'),num:1},{k:'pct',l:T('st_sla'),num:1,pct:1}],
+    rows,
+    foot:{service:T('rp_total'), jobs:all, met, missed:all-met, pct:all?Math.round(met/all*100):null},
+    note:T('rp_sla_n')
+  };
+}
+
+function repRecurring(){
+  const done = WOS.filter(w=>w.status!=='cancelled');
+  const by = {};
+  done.forEach(w=>{ const k=w.unit+'|'+w.cat; by[k]=by[k]||{unit:w.unit,cat:w.cat,n:0,c:0,last:null};
+    by[k].n++; by[k].c+=w.status==='done'?woCost(w):0;
+    if(!by[k].last || w.raised>by[k].last) by[k].last=w.raised; });
+  const rows = Object.values(by).filter(x=>x.n>1).sort((a,b)=>b.n-a.n||b.c-a.c).map(x=>({
+    unit:x.unit, service:catName(CAT(x.cat)), times:x.n, cost:x.c, last:x.last
+  }));
+  return {
+    filling:true,
+    stats:[[T('rp_repeat'), NUM(rows.length), T('rp_repeat_d')],
+           [T('h_maint'), money(rows.reduce((a,r)=>a+r.cost,0)), T('rp_onrepeat')],
+           [T('rp_apartments'), NUM(new Set(rows.map(r=>r.unit)).size), T('rp_affected')]],
+    cols:[{k:'unit',l:T('unit')},{k:'service',l:T('log_cat')},{k:'times',l:T('rp_times'),num:1},
+          {k:'cost',l:T('cost'),num:1,money:1},{k:'last',l:T('rp_lastseen'),date:1}],
+    rows,
+    foot:{unit:T('rp_total'), cost:rows.reduce((a,r)=>a+r.cost,0)},
+    note:T('rp_recur_n')
+  };
+}
+
+function repSatisfaction(){
+  const rated = WOS.filter(w=>w.rating);
+  const rows = [5,4,3,2,1].map(n=>({
+    score:NUM(n), jobs:rated.filter(w=>w.rating===n).length,
+    share: rated.length? Math.round(rated.filter(w=>w.rating===n).length/rated.length*100):0
+  }));
+  const closed = WOS.filter(w=>w.status==='done').length;
+  return {
+    filling:true,
+    stats:[[T('rating'), rated.length?NUM((rated.reduce((a,w)=>a+w.rating,0)/rated.length).toFixed(1))+' / '+NUM(5):'—', NUM(rated.length)+' '+T('rp_ratings')],
+           [T('rp_response'), closed?NUM(Math.round(rated.length/closed*100))+'%':'—', T('rp_response_d')],
+           [T('rp_low'), NUM(rated.filter(w=>w.rating<=3).length), T('rp_low_d')]],
+    cols:[{k:'score',l:T('rating')},{k:'jobs',l:T('rp_jobs'),num:1},{k:'share',l:T('rp_share'),num:1,pct:1}],
+    rows,
+    note:T('rp_sat_n')
+  };
+}
+
+/* ---------------------------------------------------------------- blocked -- */
+const blocked = (needs, why) => () => ({blocked:{needs, why}});
+
+/* ---------------------------------------------------------------- catalogue */
+const REPORTS = [
+  {id:'rentroll', g:'money', s:'ready',   f:repRentRoll},
+  {id:'arrears',  g:'money', s:'ready',   f:repArrears},
+  {id:'forecast', g:'money', s:'ready',   f:repForecast},
+  {id:'ledger',   g:'money', s:'ready',   f:repLedger},
+
+  {id:'occupancy',g:'prop',  s:'ready',   f:repOccupancy},
+  {id:'expiry',   g:'prop',  s:'ready',   f:repExpiry},
+  {id:'movement', g:'prop',  s:'ready',   f:repMovement},
+  {id:'rate',     g:'prop',  s:'ready',   f:repRate},
+  {id:'quality',  g:'prop',  s:'ready',   f:repQuality},
+
+  {id:'wolog',    g:'maint', s:'filling', f:repWorkLog},
+  {id:'costsvc',  g:'maint', s:'filling', f:repCostSvc},
+  {id:'supplier', g:'maint', s:'filling', f:repSupplier},
+  {id:'sla',      g:'maint', s:'filling', f:repSla},
+  {id:'recurring',g:'maint', s:'filling', f:repRecurring},
+  {id:'satisfaction',g:'maint',s:'filling',f:repSatisfaction},
+
+  {id:'ppm',      g:'blocked', s:'blocked', f:blocked('asset','ppm')},
+  {id:'capital',  g:'blocked', s:'blocked', f:blocked('asset','capital')},
+  {id:'adoption', g:'blocked', s:'blocked', f:blocked('app','adoption')},
+  {id:'budget',   g:'blocked', s:'blocked', f:blocked('budget','budget')}
+];
+
+const rpPeriodLabel = () => L(rpPeriods().find(p=>p.k===RP.period).en, rpPeriods().find(p=>p.k===RP.period).ar);
+
+/* ------------------------------ rendering ------------------------------ */
+function rpCell(c, v){
+  if(v === null || v === undefined || v === '') return '<span class="sub2">—</span>';
+  /* a footer row puts a label in the first column, whatever that column's type */
+  if((c.date||c.month) && !(v instanceof Date)) return v;
+  if(c.date)  return `<span class="mono">${fmtD(v)}</span>`;
+  if(c.month) return `<span class="mono">${L(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][v.getMonth()],
+                        ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][v.getMonth()])} ${NUM(v.getFullYear())}</span>`;
+  if(c.money) return `<span class="mono">${money(v)}</span>`;
+  if(c.pct)   return `<span class="mono">${NUM(c.dec?Number(v).toFixed(1):Math.round(v))}%</span>`;
+  if(c.dec)   return `<span class="mono">${NUM(Number(v).toFixed(1))}</span>`;
+  if(c.num)   return `<span class="mono">${typeof v==='number'?NUM(v.toLocaleString('en-US')):NUM(v)}</span>`;
+  return v;
+}
+function rpTable(cols, rows, foot){
+  if(!rows || !rows.length) return '';
+  return `<div class="tw"><table>
+    <thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${c.l}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${cols.map((c,i)=>
+      `<td class="${c.num?'num':''} ${i===0?'strong':''}">${rpCell(c, r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody>
+    ${foot?`<tfoot><tr style="background:#FBFCFC">${cols.map(c=>
+      `<td class="${c.num?'num':''} strong">${foot[c.k]===undefined?'':rpCell(c, foot[c.k])}</td>`).join('')}</tr></tfoot>`:''}
+  </table></div>`;
+}
+
+const rpName = id => T('rp_'+id+'_t');
+const rpDesc = id => T('rp_'+id+'_d');
+const rpChip = s => s==='ready'
+  ? `<span class="pill p-good">${I('check',12,2.1)}${T('rp_s_ready')}</span>`
+  : s==='filling' ? `<span class="pill p-warn">${I('clock',12,2.1)}${T('rp_s_filling')}</span>`
+  : `<span class="pill p-neut">${T('rp_s_blocked')}</span>`;
+
+function pgRep(){
+  if(!RP.id) return rpLibrary();
+  const meta = REPORTS.find(r=>r.id===RP.id);
+  if(!meta){ RP.id=null; return rpLibrary(); }
+  let out;
+  try{ out = meta.f(); }
+  catch(e){ return rpLibrary() + `<div class="card"><div class="bd"><div class="warnbox">${I('alert',16,2.2)}<span>${e.message}</span></div></div></div>`; }
+
+  const back = `<button class="tbtn" onclick="RP.id=null;render()">${I('chev',15)}<span>${T('rp_all')}</span></button>`;
+
+  if(out.blocked) return `
+    <div class="filters">${back}<div style="flex:1"></div>${rpChip('blocked')}</div>
+    <div class="card"><div class="hd"><div><h2>${rpName(RP.id)}</h2><div class="d">${rpDesc(RP.id)}</div></div></div>
+      <div class="bd">${emptyState(T('rp_cantyet'), T('rp_needs_'+out.blocked.needs))}</div></div>`;
+
+  const empty = !out.rows || !out.rows.length;
+  return `
+  <div class="filters">
+    ${back}
+    ${out.period?`<select onchange="RP.period=this.value;render()">
+      ${rpPeriods().map(p=>`<option value="${p.k}" ${RP.period===p.k?'selected':''}>${L(p.en,p.ar)}</option>`).join('')}
+    </select>`:''}
+    <div style="flex:1"></div>
+    ${rpChip(meta.s)}
+    <button class="tbtn" onclick="rpExport('${RP.id}')">${I('dl',15)}<span>${T('export')}</span></button>
+    <button class="tbtn" onclick="window.print()">${I('chart',15)}<span>${T('rp_print')}</span></button>
+  </div>
+
+  <div class="card mb"><div class="hd"><div style="flex:1"><h2>${rpName(RP.id)}</h2>
+    <div class="d">${rpDesc(RP.id)}${out.period?' · '+rpPeriodLabel():''}</div></div></div>
+    ${out.stats?`<div class="bd"><div class="grid g3" style="gap:12px">
+      ${out.stats.map(([a,b,c])=>`<div>
+        <div style="font-size:11.5px;font-weight:700;color:var(--ink-2)">${a}</div>
+        <div style="font-size:22px;font-weight:800;margin:4px 0 2px;font-variant-numeric:tabular-nums">${b}</div>
+        <div style="font-size:11.5px;color:var(--muted);font-weight:600">${c}</div>
+      </div>`).join('')}
+    </div></div>`:''}
+    ${empty?`<div class="bd">${emptyState(meta.s==='filling'?T('nolog_t'):T('rp_norows'),
+        meta.s==='filling'?T('rp_fills'):T('rp_norows_d'),
+        meta.s==='filling'?`<button class="btn pri" style="margin-top:14px" onclick="logJobOpen()">${I('plus',15)} ${T('log_open')}</button>`:'')}</div>`
+      :rpTable(out.cols, out.rows, out.foot)}
+    ${out.note?`<div class="note">${out.note}</div>`:''}
+  </div>
+
+  ${out.extra&&out.extra.rows&&out.extra.rows.length?`
+  <div class="card"><div class="hd"><div><h2>${out.extra.title}</h2></div></div>
+    ${rpTable(out.extra.cols, out.extra.rows, out.extra.foot)}</div>`:''}`;
+}
+
+function rpLibrary(){
+  const groups = [['money','rp_g_money'],['prop','rp_g_prop'],['maint','rp_g_maint'],['blocked','rp_g_blocked']];
+  return `
+  <div class="card mb"><div class="bd">
+    <p style="font-size:13.5px;color:var(--ink-2);line-height:1.7;margin:0">${T('rp_intro')}</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px">
+      <span style="font-size:12px;color:var(--muted);font-weight:700">${rpChip('ready')} ${T('rp_s_ready_d')}</span>
+      <span style="font-size:12px;color:var(--muted);font-weight:700">${rpChip('filling')} ${T('rp_s_filling_d')}</span>
+      <span style="font-size:12px;color:var(--muted);font-weight:700">${rpChip('blocked')} ${T('rp_s_blocked_d')}</span>
+    </div>
+  </div></div>
+  ${groups.map(([g,k])=>{
+    const list = REPORTS.filter(r=>r.g===g);
+    if(!list.length) return '';
+    return `<div class="sect">${T(k)}</div>
+    <div class="grid g3 mb" style="gap:12px">
+      ${list.map(r=>`
+      <div class="card" style="cursor:pointer" onclick="RP.id='${r.id}';render()">
+        <div class="bd">
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <div style="flex:1">
+              <div style="font-size:14.5px;font-weight:800;color:var(--ink);line-height:1.3">${rpName(r.id)}</div>
+              <div style="font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:5px">${rpDesc(r.id)}</div>
+            </div>
+            <span style="color:var(--muted);flex:none" class="flipi">${I('chev',16)}</span>
+          </div>
+          <div style="margin-top:11px">${rpChip(r.s)}</div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }).join('')}`;
+}
+
+/* ------------------------------ export ------------------------------ */
+function rpExport(id){
+  const meta = REPORTS.find(r=>r.id===id); if(!meta) return;
+  const out = meta.f(); if(out.blocked) return;
+  const esc = v => {
+    if(v === null || v === undefined) return '';
+    if(v instanceof Date) return v.toISOString().slice(0,10);
+    const s = String(v).replace(/<[^>]*>/g,'');
+    return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+  };
+  const sheet = (title, cols, rows, foot) => {
+    const lines = [title, cols.map(c=>esc(c.l)).join(',')];
+    rows.forEach(r=>lines.push(cols.map(c=>esc(r[c.k])).join(',')));
+    if(foot) lines.push(cols.map(c=>esc(foot[c.k])).join(','));
+    return lines.join('\n');
+  };
+  let csv = sheet(rpName(id), out.cols, out.rows||[], out.foot);
+  if(out.extra && out.extra.rows && out.extra.rows.length)
+    csv += '\n\n' + sheet(out.extra.title, out.extra.cols, out.extra.rows, out.extra.foot);
+  csv += `\n\n${esc(T('rp_exported'))},${esc(fmtD(TODAY))}`;
+  if(out.period) csv += `\n${esc(T('rp_period'))},${esc(rpPeriodLabel())}`;
+  if(out.note) csv += `\n${esc(out.note.replace(/<[^>]*>/g,''))}`;
+
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'almaria-' + id + '-' + TODAY.toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast(T('rp_exported_ok'));
+}
+
 
 /* ---------- unit performance (R8 + R14) ---------- */
 let FSORT={k:'unit',dir:1}, FONLY=false;
