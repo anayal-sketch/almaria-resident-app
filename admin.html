@@ -239,6 +239,16 @@ html[dir="rtl"] .flipi{transform:scaleX(-1)}
   .side{display:none}
   .main{height:auto}
 }
+
+.linkchip{text-decoration:none;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;
+  background:#E8F5EE;color:#136B43;font-size:12px;font-weight:700;border:1px solid #BFE3D0;white-space:nowrap}
+.linkchip i{width:7px;height:7px;border-radius:50%;background:#1B9E5F;flex:none}
+.linkchip.off{background:#F3F5F6;color:#6B7780;border-color:#DDE3E6}
+.linkchip.off i{background:#9AA4AC}
+@keyframes linkpulse{0%{box-shadow:0 0 0 0 rgba(27,158,95,.55)}70%{box-shadow:0 0 0 9px rgba(27,158,95,0)}100%{box-shadow:0 0 0 0 rgba(27,158,95,0)}}
+.linkchip.pulse i{animation:linkpulse 1.1s ease-out}
+tr.fromapp td:first-child::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--gold,#B8912F);margin-inline-start:6px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -263,6 +273,7 @@ html[dir="rtl"] .flipi{transform:scaleX(-1)}
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>
       <span id="langLbl">العربية</span>
     </button>
+    <a class="linkchip" id="linkdot" href="index.html" target="_blank" rel="noopener" title="Open the resident app in a second tab — the two update each other"><i></i><span id="linkLbl"></span></a>
     <button class="tbtn" id="expBtn" onclick="toast(T('t_export'))"></button>
     <div class="who">
       <div class="av">MS</div>
@@ -624,6 +635,165 @@ MONTHS.forEach((M,mi)=>{
  }
 });
 WOS.sort((a,b)=>b.raised-a.raised);
+/* ==========================================================================
+   ALMARIA LINK — the shared record between the resident app and the
+   management console.
+
+   Everything above this block is unaware of how state travels. Today the
+   transport is the browser itself: BroadcastChannel where it exists, with a
+   localStorage 'storage' event as the fallback, so two tabs of the same
+   browser stay in step. Replacing TRANSPORT with a Supabase channel and
+   read/write with table queries is the only change needed to make this
+   sync across devices — no calling code moves.
+   ========================================================================== */
+const LINK = (function(){
+  const KEY = 'almaria.link.v1';
+  const CHAN = 'almaria.link';
+  const BLANK = () => ({v:1, rev:0, at:0, by:'', wo:{}, newWO:[], anns:[], pay:{}});
+
+  let cache = null, subs = [], bc = null, ok = true;
+
+  function read(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      cache = raw ? JSON.parse(raw) : null;
+    }catch(e){ cache = null; ok = false; }
+    if(!cache || cache.v !== 1) cache = BLANK();
+    /* a stored record must still carry every branch */
+    if(!cache.wo) cache.wo = {};
+    if(!Array.isArray(cache.newWO)) cache.newWO = [];
+    if(!Array.isArray(cache.anns)) cache.anns = [];
+    if(!cache.pay) cache.pay = {};
+    return cache;
+  }
+
+  /* Mutate under a fresh read so a change made in the other tab between our
+     last read and this write is never overwritten. */
+  function commit(mutate, who){
+    const s = read();
+    try{ mutate(s); }catch(e){ console.error('LINK.commit', e); return s; }
+    s.rev  = (s.rev||0) + 1;
+    s.at   = Date.now();
+    s.by   = who || '';
+    try{ localStorage.setItem(KEY, JSON.stringify(s)); }
+    catch(e){ ok = false; console.error('LINK.persist', e); }
+    if(bc){ try{ bc.postMessage({rev:s.rev, by:s.by}); }catch(e){} }
+    return s;
+  }
+
+  function fire(msg){
+    const s = read();
+    subs.forEach(fn => { try{ fn(s, msg||{}); }catch(e){ console.error('LINK.subscriber', e); } });
+  }
+
+  try{ bc = ('BroadcastChannel' in window) ? new BroadcastChannel(CHAN) : null; }
+  catch(e){ bc = null; }
+  if(bc) bc.onmessage = ev => fire(ev && ev.data);
+  /* fires only in the OTHER tabs, which is exactly what is wanted */
+  window.addEventListener('storage', e => { if(e.key === KEY) fire({by:'storage'}); });
+
+  function reset(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    cache = BLANK();
+    if(bc){ try{ bc.postMessage({rev:0, by:'reset'}); }catch(e){} }
+    return cache;
+  }
+
+  read();
+  return {
+    get: read,
+    commit,
+    reset,
+    onChange: fn => subs.push(fn),
+    healthy: () => ok,
+    live: () => !!bc
+  };
+})();
+
+/* ---------------------------- LINK: console side ----------------------------
+   Applies the shared record over the seeded data. Deltas are absolute field
+   values and new items are guarded by id, so applying twice is the same as
+   applying once — a re-render can never double-count. */
+function LINK_apply(s){
+  /* 1. requests raised by residents in the app */
+  (s.newWO||[]).forEach(n=>{
+    if(WOS.some(w=>w.id===n.id)) return;
+    const u = UNITS.find(x=>x.u===n.unit);
+    const c = CAT(n.cat) || {sla:8};
+    const raised = new Date(n.raised);
+    WOS.unshift({
+      id:n.id, cat:n.cat, unit:n.unit,
+      tenant:(u&&u.tenant)||n.tenant||'—', tenant_ar:(u&&u.tenant_ar)||n.tenant_ar||'—',
+      desc:n.desc||'Service request', pri:n.pri||'med', ch:'app', raised,
+      respH:0, closeH:0, target:c.sla, breached:false,
+      status:'submitted', tech:'—', tech_ar:'—', supplier:false,
+      labH:0, mat:0, rating:null,
+      month:raised.getFullYear()+'-'+String(raised.getMonth()+1).padStart(2,'0'),
+      fromApp:true
+    });
+  });
+
+  /* 2. status, assignment, cost and rating changes */
+  Object.keys(s.wo||{}).forEach(id=>{
+    const w = WOS.find(x=>x.id===id); if(!w) return;
+    const d = s.wo[id];
+    if(d.status !== undefined) w.status = d.status;
+    if(d.tech   !== undefined){ w.tech = d.tech; w.tech_ar = d.tech_ar || d.tech;
+                                const t = TECHS.find(x=>x.n===d.tech); w.supplier = !!(t && t.type==='sup'); }
+    if(d.labH   !== undefined) w.labH = d.labH;
+    if(d.mat    !== undefined) w.mat  = d.mat;
+    if(d.note   !== undefined) w.note = d.note;
+    if(d.rating !== undefined) w.rating = d.rating;
+  });
+  WOS.sort((a,b)=>b.raised-a.raised);
+
+  /* 3. announcements — the console is where they are written, but a second
+        console tab or a reload has to pick them up too */
+  (s.anns||[]).forEach(a=>{
+    if(ANNS.some(x=>x.id && x.id===a.id)) return;
+    ANNS.unshift({id:a.id, en:a.en, ar:a.ar, aud:a.aud||'all', st:a.st||'published', date:a.date, ok:true});
+  });
+
+  /* 4. instalments recorded as received */
+  Object.keys(s.pay||{}).forEach(uid=>{
+    const u = UNITS.find(x=>x.u===uid); if(!u || !u.inst) return;
+    const paid = (s.pay[uid]||{}).paid || {};
+    Object.keys(paid).forEach(n=>{
+      const row = u.inst.find(x=>String(x.q)===String(n)); if(!row) return;
+      row.paid = true;
+      row.paidOn = paid[n].on ? new Date(paid[n].on) : (row.due || TODAY);
+      row.ref = paid[n].ref;
+    });
+  });
+
+  recompute();
+}
+
+/* Every write goes through here so the shape stays in one place. */
+const LINK_wo = (id, delta) => LINK.commit(s=>{ s.wo[id] = Object.assign({}, s.wo[id], delta); }, 'console');
+
+function LINK_boot(){
+  /* The console owns the reference series. Publishing the next free number
+     means a request raised in the app continues the same run rather than
+     colliding with a job that already exists here. */
+  LINK.commit(s=>{
+    const maxSeq = WOS.reduce((m,w)=>{
+      const n = parseInt(String(w.id).split('-').pop(), 10);
+      return isNaN(n) ? m : Math.max(m, n);
+    }, 0);
+    s.nextSeq = Math.max(s.nextSeq||0, maxSeq+1);
+  }, 'console');
+  LINK_apply(LINK.get());
+  LINK.onChange(s=>{ LINK_apply(s); render(); linkFlash(); });
+}
+
+/* A visible sign that the change came from the other side, so a demonstration
+   does not depend on the viewer noticing a number move. */
+function linkFlash(){
+  const el = $('linkdot'); if(!el) return;
+  el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+}
+
 
 let OPEN=[], DONE=[];
 
@@ -1100,6 +1270,19 @@ function woDetail(id){
   <div class="card mb"><div class="bd"><ul class="tl">${tl}</ul></div></div>
 
   ${open?`
+  <div class="sect">${L('Assignment','الإسناد')}</div>
+  <div class="card mb"><div class="bd">
+   <div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end">
+    <div><label class="f">${T('assignee')}</label>
+     <select class="inp" id="aTech">
+      <option value="">${L('Choose…','اختر…')}</option>
+      ${TECHS.map(t=>`<option value="${t.n}" ${(w.status!=='submitted'&&w.tech===t.n)?'selected':''}>${L(t.n,t.ar)}${t.type==='sup'?L(' (supplier)',' (مورّد)'):''}</option>`).join('')}
+     </select></div>
+    <button class="btn" onclick="assignWO('${w.id}')">${L('Assign','إسناد')}</button>
+    <button class="btn" onclick="startWO('${w.id}')">${L('Start work','بدء التنفيذ')}</button>
+   </div>
+  </div></div>
+
   <div class="sect">${T('wo_close')}</div>
   <div class="card"><div class="bd">
    <div class="warnbox" style="margin-bottom:14px">${I('alert',16,2.2)}<span>${T('wo_close_d')}</span></div>
@@ -1122,11 +1305,52 @@ function woDetail(id){
 function closeWO(id){
  const lab=$('cLab').value, mat=$('cMat').value;
  if(lab===''||mat===''){toast(T('t_needcost'));return;}
+ const note=$('cNote')?$('cNote').value:'';
  const w=WOS.find(x=>x.id===id);
  w.status='done'; w.labH=parseFloat(lab)||0; w.mat=parseFloat(mat)||0;
- w.rating=null;
+ w.note=note;
  recompute();
+ LINK_wo(id,{status:'done', labH:w.labH, mat:w.mat, note:note});
  closeDrawer(); render(); toast(T('t_closed'));
+}
+
+/* record an instalment as received; the resident's schedule flips to Paid */
+function recordPayment(unit, q){
+ const u = UNITS.find(x=>x.u===unit); if(!u) return;
+ const row = (u.inst||[]).find(x=>x.q===q); if(!row || row.paid) return;
+ const d = new Date();
+ const ref = 'RCT-'+String(d.getFullYear()).slice(2)+'-'+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+ row.paid = true; row.paidOn = d; row.ref = ref;
+ LINK.commit(s=>{
+   s.pay[unit] = s.pay[unit] || {paid:{}};
+   s.pay[unit].paid[q] = {ref, on:d.toISOString()};
+ }, 'console');
+ recompute(); closeDrawer(); render();
+ const early = row.due && row.due > TODAY;
+ toast(early
+  ? L('Advance payment recorded — receipt '+ref+' is now on the resident\'s schedule.',
+      'تم تسجيل دفعة مقدّمة — الإيصال '+ref+' ظاهر الآن في جدول الساكن.')
+  : L('Payment recorded — receipt '+ref+' is now on the resident\'s schedule.',
+      'تم تسجيل الدفعة — الإيصال '+ref+' ظاهر الآن في جدول الساكن.'));
+}
+
+/* assign a job, and start it — the resident's tracker follows both */
+function assignWO(id){
+ const w=WOS.find(x=>x.id===id); if(!w) return;
+ const sel=$('aTech'); const name=sel?sel.value:'';
+ if(!name){toast(L('Choose who is going.','اختر الفني المسند إليه.'));return;}
+ const t=TECHS.find(x=>x.n===name)||{n:name,ar:name,type:'in'};
+ w.status='assigned'; w.tech=t.n; w.tech_ar=t.ar; w.supplier=t.type==='sup';
+ recompute();
+ LINK_wo(id,{status:'assigned', tech:t.n, tech_ar:t.ar});
+ closeDrawer(); render(); toast(L('Assigned. The resident can see it.','تم الإسناد، ويظهر ذلك للساكن.'));
+}
+function startWO(id){
+ const w=WOS.find(x=>x.id===id); if(!w) return;
+ if(w.tech==='—'){toast(L('Assign the job before starting it.','أسند الطلب قبل بدء التنفيذ.'));return;}
+ w.status='progress'; recompute();
+ LINK_wo(id,{status:'progress'});
+ closeDrawer(); render(); toast(L('Marked in progress.','تم وضعه قيد التنفيذ.'));
 }
 
 /* ---------- planned maintenance ---------- */
@@ -1371,7 +1595,10 @@ function finDetail(uid){
    <td class="mono">${fmtD(x.due)}</td>
    <td class="num mono">${money(x.amt)}</td>
    <td class="mono sub2">${x.paidOn?fmtD(x.paidOn):'—'}</td>
-   <td><span class="pill ${st[0]}">${st[2]?I(st[2],12,2.1):''}${T(st[1])}</span></td></tr>`;
+   <td><span class="pill ${st[0]}">${st[2]?I(st[2],12,2.1):''}${T(st[1])}</span></td>
+   <td class="num">${!x.paid
+     ? `<button class="tbtn" onclick="recordPayment('${u.u}',${x.q})">${x.billed?L('Record','تسجيل'):L('Record early','تسجيل مقدّم')}</button>`
+     : (x.ref?`<span class="mono sub2">${x.ref}</span>`:'')}</td></tr>`;
  };
  openDrawer(`${L('Apartment','شقة')} ${NUM(u.u)}<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${u.type} · ${NUM(u.area)} m² · ${L('Floor','الدور')} ${floorName(u.floor)}</div>`,
   !u.occupied ? `
@@ -1399,7 +1626,7 @@ function finDetail(uid){
 
   <div class="sect">${T('f_sched')}</div>
   <div class="card mb"><div class="tw"><table>
-    <thead><tr><th>${T('f_instal')}</th><th>${T('f_duedate')}</th><th class="num">${T('f_amount')}</th><th>${T('f_paidon')}</th><th>${T('status')}</th></tr></thead>
+    <thead><tr><th>${T('f_instal')}</th><th>${T('f_duedate')}</th><th class="num">${T('f_amount')}</th><th>${T('f_paidon')}</th><th>${T('status')}</th><th class="num">${L('Receipt','الإيصال')}</th></tr></thead>
     <tbody>${u.inst.map(instRow).join('')}</tbody>
   </table></div></div>
 
@@ -1440,6 +1667,8 @@ function newAnn(){
  openDrawer(T('newann'),`
   <div style="margin-bottom:14px"><label class="f">${T('title_en')} <span class="req">*</span></label><input class="inp" id="aEn"></div>
   <div style="margin-bottom:14px"><label class="f">${T('title_ar')} <span class="req">*</span></label><input class="inp" id="aAr" dir="rtl"></div>
+  <div style="margin-bottom:14px"><label class="f">${L('Body — English','النص — إنجليزي')}</label><textarea class="inp" id="aBodyEn" rows="3"></textarea></div>
+  <div style="margin-bottom:14px"><label class="f">${L('Body — Arabic','النص — عربي')}</label><textarea class="inp" id="aBodyAr" rows="3" dir="rtl"></textarea></div>
   <div style="margin-bottom:16px"><label class="f">${T('audience')}</label>
    <select class="inp"><option>${T('allres')}</option><option>${L('Floor 3 only','الدور الثالث فقط')}</option></select></div>
   <div class="warnbox" style="margin-bottom:16px">${I('alert',16,2.2)}<span>${L('Both languages are required before an announcement can be published.','اللغتان مطلوبتان قبل نشر أي إعلان.')}</span></div>
@@ -1447,7 +1676,15 @@ function newAnn(){
 }
 function pubAnn(){
  if(!$('aEn').value.trim()||!$('aAr').value.trim()){toast(T('t_annblock'));return;}
- ANNS.unshift({en:$('aEn').value,ar:$('aAr').value,aud:'all',st:'published',date:'2026-08-19',ok:true});
+ const d=new Date();
+ const rec={id:'AN-'+d.getTime(), en:$('aEn').value.trim(), ar:$('aAr').value.trim(),
+   body_en:($('aBodyEn')&&$('aBodyEn').value.trim())||$('aEn').value.trim(),
+   body_ar:($('aBodyAr')&&$('aBodyAr').value.trim())||$('aAr').value.trim(),
+   aud:'all', st:'published',
+   date:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),
+   ok:true};
+ ANNS.unshift(rec);
+ LINK.commit(s=>{ s.anns.unshift(rec); }, 'console');
  closeDrawer();render();toast(L('Published and pushed to residents.','تم النشر وإرسال إشعار للسكان.'));
 }
 
@@ -1480,7 +1717,18 @@ function setLang(l){
 
 /* ------------------------------ boot ------------------------------ */
 $('brandLock').src=WORD_WHITE;
+LINK_boot();
 render();
+(function(){
+  const el=$('linkdot'), lbl=$('linkLbl');
+  if(!el) return;
+  const on = LINK.healthy();
+  el.classList.toggle('off', !on);
+  lbl.textContent = on ? 'Linked to resident app' : 'Link unavailable';
+  el.title = on
+    ? 'Changes here appear in the resident app, and requests raised there appear here.'
+    : 'This browser is blocking local storage, so the two prototypes cannot share state.';
+})();
 </script>
 </body>
 </html>
