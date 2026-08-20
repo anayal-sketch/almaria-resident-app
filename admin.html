@@ -525,6 +525,61 @@ const D={
   rp_adoption_d:'Share of apartments with an active account and share of requests raised in the app rather than by phone.',
   rp_budget_t:'Maintenance spend against budget',
   rp_budget_d:'Actual cost against the annual budget by service, with variance commentary.',
+  doc_t:'Documents',
+  doc_kind:'Document type',
+  doc_file:'File',
+  doc_size:'Size',
+  doc_added:'Attached',
+  doc_fp:'Fingerprint',
+  doc_algo:'Method',
+  doc_weak:'Rolling fingerprint — this browser blocked SHA-256',
+  doc_remove:'Remove',
+  doc_onfile:'On file',
+  doc_reading:'Reading the document…',
+  doc_k_contract:'Lease contract',
+  doc_k_receipt:'Transfer receipt',
+  doc_k_invoice:'Supplier invoice',
+  doc_k_other:'Other',
+  doc_attached:'{n} attached and fingerprinted.',
+  doc_dup:'The same file is already attached to {k}. That is either a filing error or the same document doing duty twice.',
+  doc_readable:'Digital PDF — readable',
+  doc_no_text_layer:'Scan or photograph — not readable',
+  doc_scan:'Scan or photograph',
+  doc_not_pdf:'Image — not readable',
+  doc_unreadable:'Could not be read',
+  doc_scan_d:'This is a scan or a photograph. There is a text layer in a digital PDF and none in an image, so nothing can be read from it here.',
+  doc_notpdf_d:'This is an image rather than a PDF, so there is no text to read.',
+  doc_scan_n:'It is still attached and fingerprinted, which is what makes the record auditable. Enter the terms by hand on the apartment, or attach the Ejar PDF alongside it if one exists.',
+  doc_found:'What the document appears to say',
+  doc_found_d:'These are read from the document and proposed, not applied. Check each against the contract in front of you and correct anything that is wrong before confirming.',
+  doc_instn:'Number of instalments',
+  doc_apply:'Confirm and write to the register',
+  doc_apply_r:'Confirm and settle this instalment',
+  doc_need:'Choose at least one value to confirm.',
+  doc_applied:'{u} updated from the contract.',
+  doc_receipted:'Instalment settled against receipt {r}.',
+  doc_amtdiff:'The receipt reads {a} against an instalment of {b}. Settled anyway — check which is right.',
+  doc_confirm_n:'Nothing above reaches the register until you press confirm. Identity numbers are deliberately not captured.',
+  doc_store_fingerprint:'The file itself is not kept — only its name, size, type and fingerprint. Attach it again after the backend is built and it will be stored properly.',
+  doc_store_supabase:'The file is stored in the Almaria document store, and this record is its fingerprint.',
+  doc_attachbtn:'Attach',
+  doc_evidence:'Evidence',
+  doc_backed:'Backed by a document',
+  doc_unbacked:'No document on file',
+  doc_full:'Complete',
+  doc_part:'Partial',
+  doc_none:'Nothing on file',
+  doc_settled:'Settled',
+  doc_gap:'Receipts missing',
+  doc_contracts:'Leases with a contract',
+  doc_contracts_d:'of the let apartments',
+  doc_receipts:'Payments with a receipt',
+  doc_receipts_d:'of settled instalments',
+  doc_invoices:'Jobs with an invoice',
+  doc_invoices_d:'of completed work',
+  doc_cov_n:'A figure with no document behind it is somebody’s recollection. This report is the list of figures in that position — start at the top, where the most payments are unevidenced.',
+  rp_evidence_t:'Evidence coverage',
+  rp_evidence_d:'Which figures are backed by a document and which are not — contracts against leases, receipts against payments, invoices against completed work.',
   export:'Export', t_export:'Prototype — export would produce an Excel workbook.',
   /* stats */
   st_open:'Open work orders', st_breach:'past target',
@@ -876,6 +931,61 @@ const D={
   rp_adoption_d:'نسبة الشقق ذات الحساب الفعّال ونسبة الطلبات المرفوعة من التطبيق بدل الهاتف.',
   rp_budget_t:'إنفاق الصيانة مقابل الموازنة',
   rp_budget_d:'التكلفة الفعلية مقابل الموازنة السنوية حسب الخدمة مع تفسير الانحرافات.',
+  doc_t:'المستندات',
+  doc_kind:'نوع المستند',
+  doc_file:'الملف',
+  doc_size:'الحجم',
+  doc_added:'تاريخ الإرفاق',
+  doc_fp:'البصمة',
+  doc_algo:'الطريقة',
+  doc_weak:'بصمة مبسّطة — المتصفح منع SHA-256',
+  doc_remove:'إزالة',
+  doc_onfile:'المرفق',
+  doc_reading:'جارٍ قراءة المستند…',
+  doc_k_contract:'عقد الإيجار',
+  doc_k_receipt:'إشعار التحويل',
+  doc_k_invoice:'فاتورة مورّد',
+  doc_k_other:'أخرى',
+  doc_attached:'تم إرفاق {n} وبصمه.',
+  doc_dup:'الملف نفسه مرفق مسبقاً بـ {k}. إما خطأ في الأرشفة أو مستند واحد يُستخدم مرتين.',
+  doc_readable:'ملف PDF رقمي — قابل للقراءة',
+  doc_no_text_layer:'صورة ممسوحة — غير قابلة للقراءة',
+  doc_scan:'صورة ممسوحة',
+  doc_not_pdf:'صورة — غير قابلة للقراءة',
+  doc_unreadable:'تعذّرت قراءته',
+  doc_scan_d:'هذا مستند ممسوح أو مصوّر. الملف الرقمي يحتوي طبقة نصية والصورة لا تحتوي، لذا لا يمكن قراءة شيء منه هنا.',
+  doc_notpdf_d:'هذا ملف صورة وليس PDF، فلا يوجد نص يُقرأ.',
+  doc_scan_n:'المستند مرفق ومبصوم، وهذا ما يجعل السجل قابلاً للتدقيق. أدخل الشروط يدوياً على الشقة، أو أرفق نسخة منصة إيجار الرقمية معه إن وُجدت.',
+  doc_found:'ما يبدو أن المستند يذكره',
+  doc_found_d:'هذه قراءات مقترحة من المستند ولم تُطبّق. راجع كل قيمة مقابل العقد أمامك وصحّح ما يلزم قبل الاعتماد.',
+  doc_instn:'عدد الدفعات',
+  doc_apply:'اعتماد وكتابة في السجل',
+  doc_apply_r:'اعتماد وتسديد هذه الدفعة',
+  doc_need:'اختر قيمة واحدة على الأقل للاعتماد.',
+  doc_applied:'تم تحديث {u} من العقد.',
+  doc_receipted:'تم تسديد الدفعة مقابل الإيصال {r}.',
+  doc_amtdiff:'الإيصال يذكر {a} مقابل دفعة {b}. تم التسديد على أي حال — تحقق أيهما الصحيح.',
+  doc_confirm_n:'لا شيء مما سبق يصل إلى السجل قبل الضغط على الاعتماد. ولا تُلتقط أرقام الهوية إطلاقاً.',
+  doc_store_fingerprint:'لا يُحفظ الملف نفسه — بل اسمه وحجمه ونوعه وبصمته فقط. أرفقه مجدداً بعد بناء النظام الخلفي ليُحفظ كاملاً.',
+  doc_store_supabase:'الملف محفوظ في مستودع مستندات المارية، وهذا السجل هو بصمته.',
+  doc_attachbtn:'إرفاق',
+  doc_evidence:'المستندات',
+  doc_backed:'مدعوم بمستند',
+  doc_unbacked:'لا يوجد مستند',
+  doc_full:'مكتمل',
+  doc_part:'جزئي',
+  doc_none:'لا يوجد',
+  doc_settled:'مسددة',
+  doc_gap:'إيصالات ناقصة',
+  doc_contracts:'عقود مرفقة',
+  doc_contracts_d:'من الشقق المؤجرة',
+  doc_receipts:'دفعات بإيصال',
+  doc_receipts_d:'من الدفعات المسددة',
+  doc_invoices:'أعمال بفاتورة',
+  doc_invoices_d:'من الأعمال المكتملة',
+  doc_cov_n:'الرقم بلا مستند خلفه هو ذاكرة شخص. هذا التقرير قائمة تلك الأرقام — ابدأ من الأعلى حيث أكبر عدد من الدفعات بلا إثبات.',
+  rp_evidence_t:'تغطية المستندات',
+  rp_evidence_d:'أي الأرقام مدعوم بمستند وأيها لا — العقود مقابل الإيجارات، والإيصالات مقابل الدفعات، والفواتير مقابل الأعمال المنجزة.',
   draft:'مسودة', scheduled:'مجدول', complete:'اللغتان', incomplete:'العربية ناقصة',
   newann:'إعلان جديد', allres:'جميع السكان',
   t_annblock:'لا يمكن النشر — النص العربي فارغ. اللغتان مطلوبتان.',
@@ -1132,7 +1242,27 @@ function LINK_apply(s){
     ANNS.unshift({id:a.id, en:a.en, ar:a.ar, aud:a.aud||'all', st:a.st||'published', date:a.date, ok:true});
   });
 
-  /* 4. instalments recorded as received */
+  /* 4. lease terms confirmed against a contract document */
+  Object.keys(s.leases||{}).forEach(id=>{
+    const u = UNITS.find(x=>x.u===id); if(!u) return;
+    const c = s.leases[id];
+    if(c.start) u.leaseStart = new Date(c.start);
+    if(c.end)   u.leaseEnd   = new Date(c.end);
+    if(c.value) u.rent = c.value;
+    if(c.value && c.n && c.start){
+      const rows=[]; let left=c.value;
+      for(let i=0;i<c.n;i++){
+        const d=new Date(c.start); d.setMonth(d.getMonth()+i);
+        const amt = i===c.n-1 ? left : Math.round(c.value/c.n);
+        left -= amt;
+        rows.push({q:i+1, amt, due:d, billed:d<=TODAY, paid:false, paidOn:null});
+      }
+      u.inst = rows;
+    }
+    if(c.value || c.start) u.occupied = true;
+  });
+
+  /* 5. instalments recorded as received — after the schedule they settle */
   Object.keys(s.pay||{}).forEach(uid=>{
     const u = UNITS.find(x=>x.u===uid); if(!u || !u.inst) return;
     const paid = (s.pay[uid]||{}).paid || {};
@@ -2300,6 +2430,13 @@ function woDetail(id){
    </dl>
   </div></div>
 
+  <div class="card mb"><div class="hd">
+    <div style="flex:1">${(()=>{const n=docsFor({type:'wo',wo:w.id}).length;
+      return n?`<span class="pill p-good">${I('check',12,2.1)}${T('doc_backed')}</span>`
+              :`<span class="pill p-warn">${I('alert',12,2.1)}${T('doc_unbacked')}</span>`;})()}</div>
+    <button class="tbtn" onclick="docOpen({type:'wo',wo:'${w.id}'},'invoice')">${I('up',15)}<span>${T('doc_attachbtn')}</span></button></div>
+   <div class="bd"><div class="note" style="padding:0">${T('doc_cov_n')}</div></div></div>
+
   <div class="sect" style="margin-top:0">${T('wo_timeline')}</div>
   <div class="card mb"><div class="bd"><ul class="tl">${tl}</ul></div></div>
 
@@ -2920,6 +3057,7 @@ const REPORTS = [
   {id:'forecast', g:'money', s:'ready',   f:repForecast},
   {id:'ledger',   g:'money', s:'ready',   f:repLedger},
 
+  {id:'evidence', g:'prop',  s:'ready',   f:repEvidence},
   {id:'occupancy',g:'prop',  s:'ready',   f:repOccupancy},
   {id:'expiry',   g:'prop',  s:'ready',   f:repExpiry},
   {id:'movement', g:'prop',  s:'ready',   f:repMovement},
@@ -2940,6 +3078,377 @@ const REPORTS = [
 ];
 
 const rpPeriodLabel = () => L(rpPeriods().find(p=>p.k===RP.period).en, rpPeriods().find(p=>p.k===RP.period).ar);
+
+
+/* ==========================================================================
+   EVIDENCE
+
+   Every figure in this console should be traceable to the document it came
+   from. This module attaches documents to leases, instalments and jobs,
+   fingerprints each one so a later edit or swap is detectable, reads what it
+   can out of digital PDFs, and reports on what is still unevidenced.
+
+   Storage is deliberately separated from evidence. Today only the evidence
+   record is kept — name, type, size, SHA-256, when and by whom. The file
+   itself is not stored, because a browser cannot hold 37 contracts. When the
+   Supabase bucket exists, DOCSTORE.put() uploads and returns a path, and
+   nothing else in this file changes.
+   ========================================================================== */
+
+const DOCKINDS = ['contract','receipt','invoice','other'];
+
+const DOCSTORE = {
+  mode: 'fingerprint',                 /* becomes 'supabase' once a bucket exists */
+  async put(file){ return {mode:'fingerprint', path:null}; }
+};
+
+/* SHA-256 where the browser allows it; a weaker rolling fingerprint where it
+   does not, labelled as such rather than passed off as the same thing. */
+async function docFingerprint(buf){
+  try{
+    if(crypto && crypto.subtle && crypto.subtle.digest){
+      const h = await crypto.subtle.digest('SHA-256', buf);
+      return {algo:'SHA-256', hex:[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')};
+    }
+  }catch(e){}
+  const u = new Uint8Array(buf);
+  let h1 = 0x811c9dc5, h2 = 0x01000193;
+  for(let i=0;i<u.length;i++){
+    h1 = ((h1 ^ u[i]) * 16777619) >>> 0;
+    h2 = ((h2 + u[i]) * 31 + i) >>> 0;
+  }
+  return {algo:'weak', hex:(h1.toString(16).padStart(8,'0') + h2.toString(16).padStart(8,'0'))};
+}
+
+/* ------------------------------ PDF text ------------------------------ */
+/* Digital PDFs carry a text layer. Scans do not — they carry an image, and
+   nothing in a browser can read those, so we say so rather than guess. */
+async function pdfText(buf){
+  const u = new Uint8Array(buf);
+  const head = new TextDecoder('latin1').decode(u.subarray(0, 8));
+  if(!head.startsWith('%PDF')) return {ok:false, why:'not_pdf', text:''};
+  const raw = new TextDecoder('latin1').decode(u);
+  let text = '';
+  const re = /stream\r?\n?/g;
+  let m;
+  while((m = re.exec(raw))){
+    if(raw.substr(m.index-3,3) === 'end') continue;      /* this is an endstream */
+    const dictStart = raw.lastIndexOf('<<', m.index);
+    const dict = dictStart >= 0 ? raw.slice(dictStart, m.index) : '';
+    const end = raw.indexOf('endstream', m.index);
+    if(end < 0) continue;
+    const start = m.index + m[0].length;
+    /* the dictionary states the exact length; without it, trim the newline the
+       writer puts before endstream. A single trailing byte makes the inflater
+       reject the whole stream. */
+    const lenM = /\/Length\s+(\d+)/.exec(dict);
+    let stop = lenM ? Math.min(start + Number(lenM[1]), end) : end;
+    while(!lenM && stop > start && (u[stop-1]===10 || u[stop-1]===13)) stop--;
+    let bytes = u.subarray(start, stop);
+    if(/FlateDecode/.test(dict)){
+      try{
+        const s = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+        bytes = new Uint8Array(await new Response(s).arrayBuffer());
+      }catch(e){ continue; }
+    } else if(/DCTDecode|JPXDecode|CCITTFaxDecode|JBIG2Decode/.test(dict)){
+      continue;                                  /* an image — a scanned page */
+    }
+    const page = new TextDecoder('latin1').decode(bytes);
+    /* text-showing operators */
+    page.replace(/\((?:\\.|[^\\()])*\)\s*Tj/g, s => { text += pdfLit(s) + ' '; return s; });
+    page.replace(/\[((?:[^\[\]]|\\.)*)\]\s*TJ/g, (s,inner) => {
+      inner.replace(/\((?:\\.|[^\\()])*\)/g, t => { text += pdfLit(t); return t; });
+      text += ' '; return s;
+    });
+    page.replace(/<([0-9A-Fa-f\s]+)>\s*Tj/g, (s,hex) => { text += pdfHex(hex) + ' '; return s; });
+    if(text.length > 400000) break;
+  }
+  text = text.replace(/\s+/g,' ').trim();
+  return {ok: text.length > 20, why: text.length > 20 ? null : 'no_text_layer', text};
+}
+const pdfLit = s => s.replace(/^\(|\)\s*Tj$|\)$/g,'')
+  .replace(/\\([nrtbf()\\])/g, (m,c)=>({n:'\n',r:'',t:' ',b:'',f:''}[c] ?? c))
+  .replace(/\\([0-7]{1,3})/g, (m,o)=>String.fromCharCode(parseInt(o,8)));
+const pdfHex = h => {
+  const s = h.replace(/\s/g,'');
+  let out = '';
+  for(let i=0;i+3<s.length;i+=4){
+    const c = parseInt(s.substr(i,4),16);
+    if(c >= 32) out += String.fromCharCode(c);
+  }
+  if(!out) for(let i=0;i+1<s.length;i+=2){
+    const c = parseInt(s.substr(i,2),16);
+    if(c >= 32) out += String.fromCharCode(c);
+  }
+  return out;
+};
+
+/* ------------------------- candidates from text ------------------------- */
+/* Proposals only. Nothing reaches the register until a person confirms it. */
+function docCandidates(text){
+  const out = {dates:[], amounts:[], contractNo:null};
+  const seen = new Set();
+
+  const push = (y,mo,d) => {
+    if(y<2000||y>2100||mo<1||mo>12||d<1||d>31) return;
+    const iso = `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(!seen.has(iso)){ seen.add(iso); out.dates.push(iso); }
+  };
+  (text.match(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/g)||[]).forEach(s=>{
+    const p=s.split(/[-/]/); push(+p[0],+p[1],+p[2]);
+  });
+  (text.match(/\b(\d{1,2})[-/](\d{1,2})[-/](\d{4})\b/g)||[]).forEach(s=>{
+    const p=s.split(/[-/]/); push(+p[2],+p[1],+p[0]);
+  });
+  out.dates.sort();
+
+  /* amounts: keep anything that reads like money and is plausible as rent */
+  const amt = new Set();
+  (text.match(/\b\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?\b/g)||[]).forEach(s=>amt.add(Number(s.replace(/,/g,''))));
+  (text.match(/\b\d{4,7}(?:\.\d{1,2})?\b/g)||[]).forEach(s=>{
+    const n=Number(s);
+    /* a bare 10-digit run is an identity number, not money — never captured.
+       A bare four digits in the 1900–2100 range is a year, not a rent. */
+    if(s.replace('.','').length<=7 && n>=1000 && n<=5000000 && !(n>=1900 && n<=2100)) amt.add(n);
+  });
+  out.amounts = [...amt].filter(n=>n>=1000).sort((a,b)=>b-a).slice(0,12);
+
+  const cn = text.match(/\b\d{10,14}\b/);
+  out.contractNo = cn ? cn[0] : null;
+  /* a national ID is a 10-digit number starting 1 or 2 — deliberately dropped */
+  if(out.contractNo && /^[12]\d{9}$/.test(out.contractNo)) out.contractNo = null;
+  return out;
+}
+
+/* ------------------------------ the store ------------------------------ */
+const docKey = r => r.type==='unit' ? 'u:'+r.unit
+                  : r.type==='inst' ? 'i:'+r.unit+':'+r.inst
+                  : 'w:'+r.wo;
+const docsFor = r => (LINK.get().docs||[]).filter(d=>d.key===docKey(r));
+const docCount = r => docsFor(r).length;
+
+async function docAttach(file, ref, kind){
+  const buf = await file.arrayBuffer();
+  const fp  = await docFingerprint(buf);
+  const put = await DOCSTORE.put(file);
+  let read = {ok:false, why:'not_pdf', text:''};
+  if(/pdf/i.test(file.type) || /\.pdf$/i.test(file.name)){
+    try{ read = await pdfText(buf); }catch(e){ read = {ok:false, why:'unreadable', text:''}; }
+  }
+  const rec = {
+    id: 'D-' + fp.hex.slice(0,12),
+    key: docKey(ref), ref, kind,
+    name: file.name, mime: file.type||'', size: file.size,
+    algo: fp.algo, hash: fp.hex,
+    at: new Date().toISOString(), by: T('who'),
+    readable: read.ok, why: read.why,
+    storage: put.mode, path: put.path
+  };
+  const dup = (LINK.get().docs||[]).find(d=>d.hash===rec.hash);
+  LINK.commit(s=>{
+    s.docs = s.docs || [];
+    if(!s.docs.some(d=>d.id===rec.id && d.key===rec.key)) s.docs.push(rec);
+  }, 'console');
+  return {rec, read, dup: dup && dup.key!==rec.key ? dup : null};
+}
+
+function docRemove(id, key){
+  LINK.commit(s=>{ s.docs = (s.docs||[]).filter(d=>!(d.id===id && d.key===key)); }, 'console');
+  recompute(); render();
+}
+
+/* ------------------------------ attach UI ------------------------------ */
+let DOCCTX = null;
+
+function docOpen(ref, kind){
+  DOCCTX = {ref, kind};
+  const list = docsFor(ref);
+  const label = ref.type==='unit' ? `${L('Apartment','شقة')} ${ref.unit}`
+              : ref.type==='inst' ? `${L('Apartment','شقة')} ${ref.unit} · ${T('f_instal')} ${NUM(ref.inst)}`
+              : ref.wo;
+  openDrawer(T('doc_t') + `<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${label}</div>`, `
+    <div class="card mb"><div class="bd">
+      <div class="warnbox" style="margin-bottom:14px">${I('alert',16,2.2)}<span>${T('doc_store_'+DOCSTORE.mode)}</span></div>
+      <label class="f">${T('doc_kind')}</label>
+      <select class="inp" id="dKind" style="margin-bottom:12px">
+        ${DOCKINDS.map(k=>`<option value="${k}" ${kind===k?'selected':''}>${T('doc_k_'+k)}</option>`).join('')}
+      </select>
+      <label class="f">${T('doc_file')}</label>
+      <input type="file" class="inp" id="dFile" onchange="docRun(this)"
+        accept=".pdf,.jpg,.jpeg,.png,.heic,.webp">
+      <div id="dBusy" style="display:none;margin-top:12px;font-size:13px;color:var(--muted);font-weight:700">${T('doc_reading')}</div>
+    </div></div>
+    <div id="dOut"></div>
+    ${list.length?`<div class="sect">${T('doc_onfile')} (${NUM(list.length)})</div>
+     <div class="card"><div class="tw"><table>
+      <thead><tr><th>${T('doc_kind')}</th><th>${T('doc_file')}</th><th class="num">${T('doc_size')}</th><th>${T('doc_added')}</th><th>${T('doc_fp')}</th><th></th></tr></thead>
+      <tbody>${list.map(d=>`<tr>
+        <td>${T('doc_k_'+d.kind)}</td>
+        <td><div class="strong" style="word-break:break-all">${d.name}</div>
+            <div class="sub2">${d.readable?T('doc_readable'):T('doc_'+(d.why||'scan'))}</div></td>
+        <td class="num mono">${NUM(Math.round(d.size/1024))} KB</td>
+        <td class="mono">${fmtISO(d.at.slice(0,10))}</td>
+        <td class="mono sub2" title="${d.algo}">${d.hash.slice(0,10)}…</td>
+        <td class="num"><button class="tbtn" onclick="docRemove('${d.id}','${d.key}')">${T('doc_remove')}</button></td>
+      </tr>`).join('')}</tbody>
+     </table></div></div>`:''}`);
+}
+
+async function docRun(input){
+  const file = input.files && input.files[0]; if(!file || !DOCCTX) return;
+  $('dBusy').style.display='block'; $('dOut').innerHTML='';
+  try{
+    const kind = $('dKind').value;
+    const {rec, read, dup} = await docAttach(file, DOCCTX.ref, kind);
+    $('dBusy').style.display='none';
+    $('dOut').innerHTML = docResultHtml(rec, read, dup);
+    recompute();
+  }catch(e){
+    $('dBusy').style.display='none';
+    $('dOut').innerHTML = `<div class="card"><div class="bd"><div class="warnbox">${I('alert',16,2.2)}<span>${e.message}</span></div></div></div>`;
+  }
+}
+
+function docResultHtml(rec, read, dup){
+  const cand = read.ok ? docCandidates(read.text) : null;
+  DOCCTX.cand = cand; DOCCTX.rec = rec;
+  return `
+  <div class="card mb"><div class="bd">
+    <div class="okbox">${I('check',16,2.2)}<span>${T('doc_attached').replace('{n}',rec.name)}</span></div>
+    <dl class="kv" style="margin-top:14px">
+      <dt>${T('doc_fp')}</dt><dd class="mono" style="word-break:break-all">${rec.hash}</dd>
+      <dt>${T('doc_algo')}</dt><dd>${rec.algo==='SHA-256'?'SHA-256':T('doc_weak')}</dd>
+      <dt>${T('doc_size')}</dt><dd>${NUM(Math.round(rec.size/1024))} KB</dd>
+    </dl>
+    ${dup?`<div class="warnbox" style="margin-top:12px">${I('alert',16,2.2)}<span>${T('doc_dup').replace('{k}',dup.key)}</span></div>`:''}
+  </div></div>
+
+  ${!read.ok?`
+  <div class="card"><div class="bd">
+    <div class="warnbox">${I('alert',16,2.2)}<span>${T('doc_'+(read.why==='no_text_layer'?'scan_d':'notpdf_d'))}</span></div>
+    <div class="note" style="margin-top:10px">${T('doc_scan_n')}</div>
+  </div></div>`
+  :`
+  <div class="sect">${T('doc_found')}</div>
+  <div class="card"><div class="bd">
+    <p style="font-size:13px;color:var(--ink-2);line-height:1.65;margin:0 0 14px">${T('doc_found_d')}</p>
+    ${DOCCTX.ref.type==='unit'?`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div><label class="f">${T('f_term')} — ${T('rp_from')}</label>
+        <select class="inp" id="dStart"><option value="">—</option>
+        ${cand.dates.map((d,i)=>`<option value="${d}" ${i===0?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div><label class="f">${T('f_term')} — ${T('leaseend')}</label>
+        <select class="inp" id="dEnd"><option value="">—</option>
+        ${cand.dates.map((d,i)=>`<option value="${d}" ${i===cand.dates.length-1&&cand.dates.length>1?'selected':''}>${d}</option>`).join('')}</select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><label class="f">${T('h_annual')}</label>
+        <select class="inp" id="dValue"><option value="">—</option>
+        ${cand.amounts.map((a,i)=>`<option value="${a}" ${i===0?'selected':''}>${money(a)}</option>`).join('')}</select></div>
+      <div><label class="f">${T('doc_instn')}</label>
+        <input class="inp" id="dInst" type="number" min="1" max="12" placeholder="—"></div>
+    </div>
+    <button class="btn pri" onclick="docApplyLease()">${I('check',16,2.2)} ${T('doc_apply')}</button>`
+    :`
+    <div style="margin-bottom:12px"><label class="f">${T('f_amount')}</label>
+      <select class="inp" id="dAmt"><option value="">—</option>
+      ${cand.amounts.map((a,i)=>`<option value="${a}" ${i===0?'selected':''}>${money(a)}</option>`).join('')}</select></div>
+    <div style="margin-bottom:14px"><label class="f">${T('log_date')}</label>
+      <select class="inp" id="dPaidOn"><option value="">—</option>
+      ${cand.dates.map((d,i)=>`<option value="${d}" ${i===0?'selected':''}>${d}</option>`).join('')}</select></div>
+    <button class="btn pri" onclick="docApplyReceipt()">${I('check',16,2.2)} ${T('doc_apply_r')}</button>`}
+    <div class="note" style="margin-top:12px">${T('doc_confirm_n')}</div>
+  </div></div>`}`;
+}
+
+/* a confirmed contract writes the lease terms, and says what it changed */
+function docApplyLease(){
+  const u = UNITS.find(x=>x.u===DOCCTX.ref.unit); if(!u) return;
+  const start = $('dStart').value, end = $('dEnd').value;
+  const value = Number($('dValue').value)||0, n = Number($('dInst').value)||0;
+  if(!start && !end && !value){ toast(T('doc_need')); return; }
+  const was = {start:u.leaseStart, end:u.leaseEnd, rent:u.rent, inst:u.inst.length};
+  if(start) u.leaseStart = new Date(start);
+  if(end)   u.leaseEnd   = new Date(end);
+  if(value) u.rent = value;
+  if(value && n && start){
+    const rows=[]; let left=value;
+    for(let i=0;i<n;i++){
+      const d=new Date(start); d.setMonth(d.getMonth()+i);
+      const amt = i===n-1 ? left : Math.round(value/n);
+      left -= amt;
+      rows.push({q:i+1, amt, due:d, billed:d<=TODAY, paid:false, paidOn:null});
+    }
+    u.inst = rows;
+  }
+  if(!u.occupied && (value||start)) u.occupied = true;
+  LINK.commit(s=>{
+    s.leases = s.leases || {};
+    s.leases[u.u] = {start: start||null, end: end||null, value: value||null, n: n||null,
+                     doc: DOCCTX.rec.id, at: new Date().toISOString()};
+  }, 'console');
+  recompute(); closeDrawer(); render();
+  toast(T('doc_applied').replace('{u}', u.u)
+    + (was.rent!==u.rent ? ' ' + money(was.rent) + ' → ' + money(u.rent) : ''));
+}
+
+/* a confirmed receipt settles the instalment it is attached to */
+function docApplyReceipt(){
+  const r = DOCCTX.ref;
+  const u = UNITS.find(x=>x.u===r.unit); if(!u) return;
+  const row = u.inst.find(x=>x.q===r.inst); if(!row) return;
+  const amt = Number($('dAmt').value)||0;
+  const on  = $('dPaidOn').value;
+  if(Math.abs(amt - row.amt) > 1 && amt)
+    toast(T('doc_amtdiff').replace('{a}',money(amt)).replace('{b}',money(row.amt)));
+  const ref = 'RCT-' + DOCCTX.rec.hash.slice(0,6).toUpperCase();
+  row.paid = true; row.paidOn = on ? new Date(on) : TODAY; row.ref = ref;
+  LINK.commit(s=>{
+    s.pay = s.pay || {};
+    s.pay[r.unit] = s.pay[r.unit] || {paid:{}};
+    s.pay[r.unit].paid[r.inst] = {ref, on:(on?new Date(on):TODAY).toISOString(), doc:DOCCTX.rec.id};
+  }, 'console');
+  recompute(); closeDrawer(); render();
+  toast(T('doc_receipted').replace('{r}', ref));
+}
+
+/* ------------------------------ coverage ------------------------------ */
+function docCoverage(){
+  const rows = [];
+  UNITS.forEach(u=>{
+    if(!u.occupied) return;
+    const c = docsFor({type:'unit',unit:u.u}).filter(d=>d.kind==='contract').length;
+    const billed = u.inst.filter(x=>x.billed);
+    const paid = billed.filter(x=>x.paid);
+    const withR = paid.filter(x=>docsFor({type:'inst',unit:u.u,inst:x.q}).length).length;
+    rows.push({unit:u.u, tenant:L(u.tenant,u.tenant_ar), contract:c,
+      value:u.rent, paid:paid.length, receipts:withR,
+      gap: paid.length - withR,
+      state: c && paid.length===withR ? T('doc_full') : c ? T('doc_part') : T('doc_none')});
+  });
+  return rows.sort((a,b)=>(b.gap-a.gap)||a.unit.localeCompare(b.unit,'en',{numeric:true}));
+}
+
+function repEvidence(){
+  const rows = docCoverage();
+  const withC = rows.filter(r=>r.contract).length;
+  const paid = rows.reduce((a,r)=>a+r.paid,0), rec = rows.reduce((a,r)=>a+r.receipts,0);
+  const jobs = WOS.filter(w=>w.status==='done');
+  const jobsWith = jobs.filter(w=>docsFor({type:'wo',wo:w.id}).length).length;
+  return {
+    stats:[[T('doc_contracts'), NUM(withC)+' / '+NUM(rows.length), T('doc_contracts_d')],
+           [T('doc_receipts'), NUM(rec)+' / '+NUM(paid), T('doc_receipts_d')],
+           [T('doc_invoices'), NUM(jobsWith)+' / '+NUM(jobs.length), T('doc_invoices_d')]],
+    cols:[{k:'unit',l:T('unit')},{k:'tenant',l:T('tenant')},{k:'value',l:T('h_annual'),num:1,money:1},
+          {k:'contract',l:T('doc_k_contract'),num:1},{k:'paid',l:T('doc_settled'),num:1},
+          {k:'receipts',l:T('doc_k_receipt'),num:1},{k:'gap',l:T('doc_gap'),num:1},
+          {k:'state',l:T('status')}],
+    rows,
+    foot:{unit:T('rp_total'), value:rows.reduce((a,r)=>a+(r.value||0),0),
+          contract:withC, paid, receipts:rec, gap:paid-rec},
+    note:T('doc_cov_n')
+  };
+}
 
 /* ------------------------------ rendering ------------------------------ */
 function rpCell(c, v){
@@ -3240,9 +3749,12 @@ function finDetail(uid){
    <td class="num mono">${money(x.amt)}</td>
    <td class="mono sub2">${x.paidOn?fmtD(x.paidOn):'—'}</td>
    <td><span class="pill ${st[0]}">${st[2]?I(st[2],12,2.1):''}${T(st[1])}</span></td>
-   <td class="num">${!x.paid
-     ? `<button class="tbtn" onclick="recordPayment('${u.u}',${x.q})">${x.billed?L('Record','تسجيل'):L('Record early','تسجيل مقدّم')}</button>`
-     : (x.ref?`<span class="mono sub2">${x.ref}</span>`:'')}</td></tr>`;
+   <td class="num">${(()=>{
+     const has = docsFor({type:'inst',unit:u.u,inst:x.q}).length;
+     const attach = `<button class="tbtn" onclick="docOpen({type:'inst',unit:'${u.u}',inst:${x.q}},'receipt')">${has?I('check',13,2.2):I('up',13)}<span>${has?T('doc_backed'):T('doc_attachbtn')}</span></button>`;
+     if(x.paid) return (x.ref?`<span class="mono sub2" style="margin-inline-end:8px">${x.ref}</span>`:'') + attach;
+     return `<button class="tbtn" onclick="recordPayment('${u.u}',${x.q})">${x.billed?L('Record','تسجيل'):L('Record early','تسجيل مقدّم')}</button> ` + attach;
+   })()}</td></tr>`;
  };
  openDrawer(`${L('Apartment','شقة')} ${NUM(u.u)}<div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px">${u.type} · ${NUM(u.area)} m² · ${L('Floor','الدور')} ${floorName(u.floor)}</div>`,
   !u.occupied ? `
@@ -3258,7 +3770,12 @@ function finDetail(uid){
   </div>
 
   <div class="sect" style="margin-top:0">${T('f_lease')}</div>
-  <div class="card mb"><div class="bd"><dl class="kv">
+  <div class="card mb">
+   <div class="hd"><div style="flex:1">${(()=>{const n=docsFor({type:'unit',unit:u.u}).filter(d=>d.kind==='contract').length;
+     return n?`<span class="pill p-good">${I('check',12,2.1)}${T('doc_backed')}</span>`
+             :`<span class="pill p-warn">${I('alert',12,2.1)}${T('doc_unbacked')}</span>`;})()}</div>
+    <button class="tbtn" onclick="docOpen({type:'unit',unit:'${u.u}'},'contract')">${I('up',15)}<span>${T('doc_attachbtn')}</span></button></div>
+   <div class="bd"><dl class="kv">
     <dt>${T('tenant')}</dt><dd>${L(u.tenant,u.tenant_ar)}</dd>
     <dt>${T('f_term')}</dt><dd>${fmtD(u.leaseStart)} — ${fmtD(u.leaseEnd)}</dd>
     <dt>${T('h_annual')}</dt><dd>${money(u.rent)} ${T('sar')}</dd>
@@ -3270,7 +3787,7 @@ function finDetail(uid){
 
   <div class="sect">${T('f_sched')}</div>
   <div class="card mb"><div class="tw"><table>
-    <thead><tr><th>${T('f_instal')}</th><th>${T('f_duedate')}</th><th class="num">${T('f_amount')}</th><th>${T('f_paidon')}</th><th>${T('status')}</th><th class="num">${L('Receipt','الإيصال')}</th></tr></thead>
+    <thead><tr><th>${T('f_instal')}</th><th>${T('f_duedate')}</th><th class="num">${T('f_amount')}</th><th>${T('f_paidon')}</th><th>${T('status')}</th><th class="num">${L('Receipt and evidence','الإيصال والمستند')}</th></tr></thead>
     <tbody>${u.inst.map(instRow).join('')}</tbody>
   </table></div></div>
 
