@@ -274,6 +274,7 @@ tr.fromapp td:first-child::after{content:'';display:inline-block;width:6px;heigh
       <span id="langLbl">العربية</span>
     </button>
     <a class="linkchip" id="linkdot" href="index.html" target="_blank" rel="noopener" title="Open the resident app in a second tab — the two update each other"><i></i><span id="linkLbl"></span></a>
+    <button class="tbtn" id="impBtn" onclick="importOpen()"></button>
     <button class="tbtn" id="expBtn" onclick="toast(T('t_export'))"></button>
     <div class="who">
       <div class="av">MS</div>
@@ -316,6 +317,36 @@ const D={
   t_sup:'Suppliers', s_sup:'Contractor performance and spend — R11',
   who:'Mostafa Saleh', role:'Building supervisor',
   link_on:'Linked to resident app', link_off:'Link unavailable',
+  imp_title:'Import register from the rent statement',
+  imp_privacy:'Imported data stays in this browser. It is never uploaded, and anyone else opening this link sees the published figures, not yours.',
+  imp_how:'Choose your بيان ايجارات الشقق workbook (.xlsx). It is read here on this machine — the sheets are located by their Arabic headings, duplicate rows are resolved to the live contract, and the two-line instalment cells are split into amounts and due dates.',
+  imp_reading:'Reading the workbook…',
+  imp_now:'What the console shows now',
+  imp_found:'Workbook read',
+  imp_read:'{n} apartments found on sheet {s}',
+  imp_sheets:'Sheets in the file',
+  imp_effect:'What importing would change',
+  imp_measure:'Measure', imp_current:'Now', imp_afterimp:'After import', imp_change:'Change',
+  imp_changes:'Apartment by apartment',
+  imp_nochange:'Nothing would change — the workbook matches what is loaded',
+  imp_new:'not currently in the register',
+  imp_now_let:'becomes let', imp_now_vacant:'becomes vacant',
+  imp_missing:'In the console but not in the workbook',
+  imp_arr:'Collections sheet in this workbook',
+  imp_arr_note:'Where the collections sheet and the payment schedule disagree, the difference is listed as a warning rather than resolved silently.',
+  imp_warn:'Worth checking before you commit',
+  imp_warn_note:'None of these stop the import. They are places where the workbook contradicts itself, and each will become a dispute or a write-off if carried into a live system.',
+  imp_apply:'Apply this register',
+  imp_apply_note:'This replaces the figures in the console and in the resident app on this browser. Reload without importing to go back to the published register.',
+  imp_done:'Register replaced — {n} apartments loaded.',
+  imp_failed:'Could not read that file',
+  imp_e_zip:'That does not look like an .xlsx workbook. Older .xls files must be saved as .xlsx first.',
+  imp_e_browser:'This browser cannot unpack the file. Use a current version of Chrome, Edge or Safari.',
+  imp_e_sheet:'No sheet with a رقم الشقة column was found.',
+  imp_e_cols:'The sheet was found but رقم الشقة or قيمة العقد could not be located in its heading row.',
+  imp_e_units:'No apartments were recognised. Apartment references are expected in the form Block A -001.',
+  imp_e_other:'The file could not be read.',
+  imp_btn:'Import',
   export:'Export', t_export:'Prototype — export would produce an Excel workbook.',
   /* stats */
   st_open:'Open work orders', st_breach:'past target',
@@ -459,6 +490,36 @@ const D={
   r_exp:'عقود تنتهي خلال ٩٠ يوماً', r_none:'لا يوجد',
   title_en:'العنوان (إنجليزي)', title_ar:'العنوان (عربي)', audience:'الجمهور', published:'منشور',
   link_on:'مرتبط بتطبيق السكان', link_off:'الربط غير متاح',
+  imp_title:'استيراد السجل من بيان الإيجارات',
+  imp_privacy:'البيانات المستوردة تبقى في هذا المتصفح فقط. لا يتم رفعها، ومن يفتح هذا الرابط يرى الأرقام المنشورة لا أرقامك.',
+  imp_how:'اختر ملف بيان ايجارات الشقق بصيغة xlsx. تتم القراءة على هذا الجهاز — تُحدَّد الأعمدة من عناوينها العربية، وتُحسم الصفوف المكررة لصالح العقد الساري، وتُفصل خلايا الدفعات إلى مبلغ وتاريخ.',
+  imp_reading:'جارٍ قراءة الملف…',
+  imp_now:'ما تعرضه المنصة حالياً',
+  imp_found:'تمت قراءة الملف',
+  imp_read:'تم العثور على {n} شقة في ورقة {s}',
+  imp_sheets:'أوراق الملف',
+  imp_effect:'أثر الاستيراد',
+  imp_measure:'البند', imp_current:'الحالي', imp_afterimp:'بعد الاستيراد', imp_change:'الفرق',
+  imp_changes:'التغييرات حسب الشقة',
+  imp_nochange:'لا يوجد تغيير — الملف مطابق لما هو محمّل',
+  imp_new:'غير موجودة في السجل الحالي',
+  imp_now_let:'تصبح مؤجرة', imp_now_vacant:'تصبح شاغرة',
+  imp_missing:'موجودة في المنصة وغير موجودة في الملف',
+  imp_arr:'ورقة المتأخرات في هذا الملف',
+  imp_arr_note:'عند اختلاف ورقة المتأخرات عن جدول الدفعات يُدرج الفرق كتنبيه بدلاً من معالجته تلقائياً.',
+  imp_warn:'يستحق المراجعة قبل الاعتماد',
+  imp_warn_note:'لا يمنع أي منها الاستيراد، لكنها مواضع يناقض فيها الملف نفسه، وكل منها سيتحول إلى نزاع أو شطب إذا انتقل إلى نظام فعلي.',
+  imp_apply:'اعتماد هذا السجل',
+  imp_apply_note:'سيحل هذا محل الأرقام في المنصة وفي تطبيق السكان على هذا المتصفح. أعد تحميل الصفحة دون استيراد للعودة إلى السجل المنشور.',
+  imp_done:'تم استبدال السجل — {n} شقة.',
+  imp_failed:'تعذّرت قراءة الملف',
+  imp_e_zip:'الملف لا يبدو بصيغة xlsx. يجب حفظ ملفات xls القديمة بصيغة xlsx أولاً.',
+  imp_e_browser:'هذا المتصفح لا يستطيع فك ضغط الملف. استخدم إصداراً حديثاً من كروم أو إيدج أو سفاري.',
+  imp_e_sheet:'لم يتم العثور على ورقة تحتوي عمود رقم الشقة.',
+  imp_e_cols:'تم العثور على الورقة لكن تعذّر تحديد رقم الشقة أو قيمة العقد في صف العناوين.',
+  imp_e_units:'لم يتم التعرف على أي شقة. يُتوقع أن تكون المراجع بالشكل Block A -001.',
+  imp_e_other:'تعذّرت قراءة الملف.',
+  imp_btn:'استيراد',
   draft:'مسودة', scheduled:'مجدول', complete:'اللغتان', incomplete:'العربية ناقصة',
   newann:'إعلان جديد', allres:'جميع السكان',
   t_annblock:'لا يمكن النشر — النص العربي فارغ. اللغتان مطلوبتان.',
@@ -774,7 +835,12 @@ function LINK_apply(s){
     });
   });
 
-  recompute();
+  /* a register imported on this machine replaces the published one */
+  if(s.register && s.register.length && typeof applyRegister === 'function'){
+    applyRegister(s.register);
+  } else {
+    recompute();
+  }
 }
 
 /* Every write goes through here so the shape stays in one place. */
@@ -949,6 +1015,541 @@ function recompute(){
 }
 recompute();
 
+
+/* ==========================================================================
+   REGISTER IMPORT
+
+   Reads بيان ايجارات الشقق .xlsx in the browser and rebuilds the register from
+   it, applying the same reconciliation rules that were applied by hand:
+   locate columns by their Arabic headers rather than by position, score
+   duplicate rows to find the live contract, split the two-line instalment
+   cells, and fill paid instalments from the sheet's own collected total.
+
+   No library. The zip is read directly and inflated with the browser's own
+   DecompressionStream, so the file stays a single self-contained page.
+
+   Imported data is held in this browser only. It is never uploaded, and a
+   visitor to the public link sees the published figures, not yours.
+   ========================================================================== */
+
+/* ---------------------------- zip ---------------------------- */
+async function zipEntries(buf){
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  let eocd = -1;
+  for(let i = u8.length - 22; i >= 0 && i > u8.length - 66000; i--){
+    if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if(eocd < 0) throw new Error('not_zip');
+  const count = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const out = {};
+  for(let i = 0; i < count; i++){
+    if(dv.getUint32(p, true) !== 0x02014b50) throw new Error('bad_central_directory');
+    const method = dv.getUint16(p + 10, true);
+    const csize  = dv.getUint32(p + 20, true);
+    const nlen   = dv.getUint16(p + 28, true);
+    const elen   = dv.getUint16(p + 30, true);
+    const clen   = dv.getUint16(p + 32, true);
+    const lho    = dv.getUint32(p + 42, true);
+    const name   = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nlen));
+    out[name] = {method, csize, lho};
+    p += 46 + nlen + elen + clen;
+  }
+  return {dv, u8, entries: out};
+}
+
+async function zipRead(zip, name){
+  const e = zip.entries[name]; if(!e) return null;
+  const nlen = zip.dv.getUint16(e.lho + 26, true);
+  const elen = zip.dv.getUint16(e.lho + 28, true);
+  const start = e.lho + 30 + nlen + elen;
+  const raw = zip.u8.subarray(start, start + e.csize);
+  if(e.method === 0) return new TextDecoder().decode(raw);
+  if(e.method !== 8) throw new Error('unsupported_compression');
+  if(typeof DecompressionStream === 'undefined') throw new Error('no_inflate');
+  const stream = new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return await new Response(stream).text();
+}
+
+/* ---------------------------- xlsx ---------------------------- */
+const XML = s => new DOMParser().parseFromString(s, 'application/xml');
+
+function colToIndex(ref){
+  let n = 0;
+  for(const ch of ref){
+    const c = ch.charCodeAt(0);
+    if(c < 65 || c > 90) break;
+    n = n * 26 + (c - 64);
+  }
+  return n - 1;
+}
+
+/* Excel serial → ISO date. 1900 leap-year bug included, as Excel has it. */
+function serialToISO(n){
+  const ms = Math.round((n - 25569) * 86400000);
+  const d = new Date(ms);
+  if(isNaN(d)) return null;
+  return d.toISOString().slice(0,10);
+}
+
+async function readWorkbook(file){
+  const zip = await zipEntries(await file.arrayBuffer());
+
+  /* shared strings */
+  const ssXml = await zipRead(zip, 'xl/sharedStrings.xml');
+  const shared = [];
+  if(ssXml){
+    for(const si of XML(ssXml).getElementsByTagName('si')){
+      let t = '';
+      for(const n of si.getElementsByTagName('t')) t += n.textContent;
+      shared.push(t);
+    }
+  }
+
+  /* which style indexes are dates */
+  const stXml = await zipRead(zip, 'xl/styles.xml');
+  const dateStyle = new Set();
+  if(stXml){
+    const st = XML(stXml);
+    const custom = {};
+    for(const f of st.getElementsByTagName('numFmt')){
+      custom[f.getAttribute('numFmtId')] = f.getAttribute('formatCode') || '';
+    }
+    const builtinDate = new Set(['14','15','16','17','18','19','20','21','22','45','46','47']);
+    const xfs = st.getElementsByTagName('cellXfs')[0];
+    if(xfs){
+      [...xfs.getElementsByTagName('xf')].forEach((xf, i) => {
+        const id = xf.getAttribute('numFmtId') || '0';
+        const code = custom[id];
+        if(builtinDate.has(id) || (code && /[ymd]/i.test(code.replace(/\[[^\]]*\]/g,'').replace(/"[^"]*"/g,'')))) dateStyle.add(i);
+      });
+    }
+  }
+
+  /* sheet name → part name */
+  const relXml = await zipRead(zip, 'xl/_rels/workbook.xml.rels');
+  const rel = {};
+  if(relXml) for(const r of XML(relXml).getElementsByTagName('Relationship')){
+    rel[r.getAttribute('Id')] = r.getAttribute('Target').replace(/^\/?xl\//,'').replace(/^\//,'');
+  }
+  const wbXml = await zipRead(zip, 'xl/workbook.xml');
+  if(!wbXml) throw new Error('not_xlsx');
+  const sheets = {};
+  for(const sh of XML(wbXml).getElementsByTagName('sheet')){
+    const name = sh.getAttribute('name');
+    const rid  = sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+    const part = 'xl/' + (rel[rid] || ('worksheets/sheet' + sh.getAttribute('sheetId') + '.xml'));
+    const xml = await zipRead(zip, part);
+    if(!xml) continue;
+    const grid = [];
+    for(const row of XML(xml).getElementsByTagName('row')){
+      const cells = [];
+      for(const c of row.getElementsByTagName('c')){
+        const ref = c.getAttribute('r') || '';
+        const idx = colToIndex(ref.replace(/\d+/g,''));
+        const t = c.getAttribute('t');
+        let v = null;
+        if(t === 'inlineStr'){
+          v = ''; for(const n of c.getElementsByTagName('t')) v += n.textContent;
+        } else {
+          const vn = c.getElementsByTagName('v')[0];
+          if(vn){
+            if(t === 's') v = shared[Number(vn.textContent)];
+            else if(t === 'str' || t === 'e') v = vn.textContent;
+            else {
+              const num = Number(vn.textContent);
+              const s = Number(c.getAttribute('s') || 0);
+              v = (dateStyle.has(s) && num > 20000 && num < 80000) ? serialToISO(num) : num;
+            }
+          }
+        }
+        if(idx >= 0) cells[idx] = (v === undefined ? null : v);
+      }
+      grid.push(cells);
+    }
+    sheets[name] = grid;
+  }
+  return sheets;
+}
+
+/* ---------------------------- Almaria rules ---------------------------- */
+const IMP = {result:null, file:null};
+
+const impText  = v => v === null || v === undefined ? '' : String(v).replace(/\s+/g,' ').trim();
+const impUnit  = v => { const m = /BLOCK\s*([AB])\s*-?\s*(\d+)/i.exec(impText(v).replace(/ /g,' '));
+                        return m ? m[1].toUpperCase() + '-' + String(Number(m[2])).padStart(3,'0') : null; };
+const impNum   = v => { if(typeof v === 'number') return v;
+                        const s = impText(v).replace(/[,\s]/g,'').replace(/[٠-٩]/g, d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+                        const n = Number(s); return isFinite(n) && s !== '' ? n : null; };
+
+function impDate(v){
+  if(v === null || v === undefined || v === '') return null;
+  if(typeof v === 'number') return serialToISO(v);
+  const s = impText(v);
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+  if(m) return `${m[1]}-${String(+m[2]).padStart(2,'0')}-${String(+m[3]).padStart(2,'0')}`;
+  m = /^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/.exec(s);              /* 15-9-2025 */
+  if(m) return `${m[3]}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`;
+  const d = new Date(s);
+  return isNaN(d) ? null : d.toISOString().slice(0,10);
+}
+
+/* an instalment cell is "40,000" over "15-9-2025" on two lines */
+function impInstalment(v){
+  if(v === null || v === undefined || v === '') return null;
+  const parts = String(v).split(/[\n\r]+/).map(x=>x.trim()).filter(Boolean);
+  if(!parts.length) return null;
+  const amt = impNum(parts[0]);
+  if(amt === null || amt === 0) return null;
+  const due = parts.length > 1 ? impDate(parts.slice(1).join(' ')) : null;
+  return {amt, due};
+}
+
+const ROOMS = s => { const t = impText(s);
+  if(/3\s*غرف|ثلاث/.test(t)) return '3BR';
+  if(/غرفتين|غرفتان/.test(t)) return '2BR';
+  if(/غرفة/.test(t)) return '1BR';
+  return null; };
+const FLOOR = s => { const t = impText(s);
+  if(/ارض|أرض/.test(t)) return 0;
+  if(/الأول|الاول/.test(t)) return 1;
+  if(/الثاني/.test(t)) return 2;
+  if(/الثالث/.test(t)) return 3;
+  const n = impNum(t); return n === null ? null : n; };
+
+function findHeader(grid, needle){
+  for(let i = 0; i < Math.min(grid.length, 20); i++){
+    const row = grid[i] || [];
+    for(let j = 0; j < row.length; j++) if(impText(row[j]).includes(needle)) return {row:i, col:j};
+  }
+  return null;
+}
+function headerMap(grid, hrow){
+  const map = {}; const row = grid[hrow] || [];
+  row.forEach((c, j) => { const t = impText(c); if(t) map[t] = j; });
+  return map;
+}
+function impPick(map, ...needles){
+  for(const n of needles){
+    for(const k in map) if(k.includes(n)) return map[k];
+  }
+  return null;
+}
+
+function parseRegister(sheets){
+  const warn = [];
+  const names = Object.keys(sheets);
+  const main = names.find(n => n.includes('المجمع')) || names.find(n => findHeader(sheets[n],'رقم الشقة') && findHeader(sheets[n],'قيمة العقد'));
+  if(!main) throw new Error('no_register_sheet');
+  const grid = sheets[main];
+  const h = findHeader(grid, 'رقم الشقة');
+  if(!h) throw new Error('no_header');
+  const map = headerMap(grid, h.row);
+
+  const cUnit  = impPick(map,'رقم الشقة');
+  const cRooms = impPick(map,'الغرف');
+  const cName  = impPick(map,'اسم المستأجر');
+  const cStart = impPick(map,'تاريخ بدايه','تاريخ بداية');
+  const cValue = impPick(map,'قيمة العقد');
+  const cEnd   = impPick(map,'تاريخ نهاية');
+  const cPaid  = impPick(map,'إجمالي الدفع','اجمالي الدفع');
+  const cRem   = impPick(map,'المتبقي');
+  const inst   = Object.keys(map).filter(k => /^الدفعة/.test(k))
+                   .sort((a,b) => map[a] - map[b]).map(k => map[k]);
+  if(cUnit === null || cValue === null) throw new Error('columns_not_found');
+  if(!inst.length) warn.push({t:'No instalment columns found — payment schedules will be empty'});
+
+  /* areas and floors */
+  const areaSheet = names.find(n => n.includes('المساحات'));
+  const geo = {};
+  if(areaSheet){
+    const g = sheets[areaSheet], gh = findHeader(g,'رقم الشقة');
+    if(gh){
+      const gm = headerMap(g, gh.row);
+      const gu = impPick(gm,'رقم الشقة'), ga = impPick(gm,'مساحة'), gf = impPick(gm,'الطابق'), gr = impPick(gm,'الغرف'), gv = impPick(gm,'قيمة العقد');
+      for(let i = gh.row + 1; i < g.length; i++){
+        const r = g[i] || [], u = impUnit(r[gu]); if(!u) continue;
+        geo[u] = {area: ga !== null ? impNum(r[ga]) : null,
+                  floor: gf !== null ? FLOOR(r[gf]) : null,
+                  type: gr !== null ? ROOMS(r[gr]) : null,
+                  value: gv !== null ? impNum(r[gv]) : null};
+      }
+    }
+  } else warn.push({t:'Sheet المساحات والقيمة not found — areas and floors kept from the current register'});
+
+  /* one row per apartment: prefer a row that is let, named and priced */
+  const best = {};
+  for(let i = h.row + 1; i < grid.length; i++){
+    const r = grid[i] || [];
+    const u = impUnit(r[cUnit]); if(!u) continue;
+    const joined = r.map(impText).join(' ');
+    const isLet  = /(^|\s)مؤجرة/.test(joined) && !/غير\s*مؤجرة/.test(joined);
+    const name   = cName !== null ? impText(r[cName]) : '';
+    const value  = cValue !== null ? impNum(r[cValue]) : null;
+    const score  = (isLet ? 2 : 0) + (name ? 1 : 0) + (value ? 1 : 0);
+    if(!best[u] || score > best[u].score) best[u] = {r, score, isLet, name, value, row: i + 1};
+  }
+
+  const dupes = Object.values(best).filter(b => b.score < 4 && b.isLet).length;
+  const rowCount = Object.keys(best).length;
+
+  const out = [];
+  Object.keys(best).sort((a,b)=>a.localeCompare(b,'en',{numeric:true})).forEach(u => {
+    const b = best[u], r = b.r, g = geo[u] || {};
+    const paidTotal = cPaid !== null ? impNum(r[cPaid]) : null;
+
+    let rows = inst.map(ci => impInstalment(r[ci])).filter(Boolean)
+                   .map((x, i) => ({n: i + 1, amt: x.amt, due: x.due, paid: false}));
+    /* the sheet records one collected total, not a paid flag per line:
+       fill from the earliest instalment until that total is used up */
+    if(paidTotal){
+      let left = paidTotal;
+      for(const x of rows){
+        const tol = Math.max(5, x.amt * 0.01);       /* under 1% short is a rounding gap */
+        if(left >= x.amt - tol){
+          x.paid = true;
+          if(left < x.amt) warn.push({u, t:`instalment ${x.n} treated as received although the collected total is ${Math.round(x.amt-left).toLocaleString()} SAR short of it`});
+          left -= x.amt;
+        } else break;
+      }
+    }
+
+    const lineTotal = rows.reduce((a,x)=>a+x.amt,0);
+    if(b.isLet && b.value && rows.length && Math.abs(lineTotal - b.value) > 1)
+      warn.push({u, t:`instalment lines total ${Math.round(lineTotal).toLocaleString()} against a contract value of ${Math.round(b.value).toLocaleString()}`});
+    if(g.value && b.value && Math.round(g.value) !== Math.round(b.value))
+      warn.push({u, t:`contract value differs between sheets — ${Math.round(b.value).toLocaleString()} here, ${Math.round(g.value).toLocaleString()} on المساحات والقيمة`});
+    if(!b.isLet && b.value)
+      warn.push({u, t:'recorded as vacant but still carries a contract value'});
+    if(!b.isLet && b.name)
+      warn.push({u, t:'recorded as vacant but carries a tenant name'});
+    const end = cEnd !== null ? impDate(r[cEnd]) : null;
+    if(b.isLet) rows.forEach(x => { if(end && x.due && x.due > end)
+      warn.push({u, t:`an instalment is dated ${x.due}, after the lease ends on ${end}`}); });
+
+    if(!b.isLet && rows.length){
+      warn.push({u, t:`a payment schedule of ${rows.length} instalments is attached to an apartment recorded as vacant — not carried into the register`});
+      rows = [];
+    }
+    out.push({
+      id: u,
+      type: g.type || (cRooms !== null ? ROOMS(r[cRooms]) : null) || '—',
+      area: g.area || null,
+      floor: g.floor === null || g.floor === undefined ? 0 : g.floor,
+      let: b.isLet,
+      tenant: b.isLet ? (b.name || null) : null,
+      tenantAr: b.isLet ? (b.name || null) : null,
+      value: b.value || null,
+      start: cStart !== null ? impDate(r[cStart]) : null,
+      end,
+      paid: b.isLet ? paidTotal : null,
+      remain: b.isLet ? (cRem !== null ? impNum(r[cRem]) : null) : null,
+      inst: rows
+    });
+  });
+
+  /* the collections sheet, when the workbook carries one, is authoritative
+     for what is outstanding */
+  const arrSheet = names.find(n => n.includes('متأخرات'));
+  const arrears = [];
+  if(arrSheet){
+    const g = sheets[arrSheet], gh = findHeader(g,'رقم الشقة');
+    if(gh){
+      const gm = headerMap(g, gh.row);
+      const gu = impPick(gm,'رقم الشقة'), gamt = impPick(gm,'المبلغ'), gdue = impPick(gm,'تاريخ الاستحقاق');
+      for(let i = gh.row + 1; i < g.length; i++){
+        const r = g[i] || [];
+        let u = impUnit(r[gu]);
+        if(!u){                                  /* the collections sheet often uses a bare number */
+          const n = impNum(r[gu]);
+          if(n !== null) u = out.find(x => Number(x.id.split('-')[1]) === n)?.id || null;
+        }
+        if(!u) continue;
+        const amt = gamt !== null ? impNum(r[gamt]) : null;
+        if(!amt) continue;
+        arrears.push({u, amt, due: gdue !== null ? impDate(r[gdue]) : null});
+      }
+    }
+  }
+
+  if(!arrSheet) warn.push({t:'This workbook has no متأخرات التحصيل sheet. Arrears will be derived from the payment schedule alone, so any instalment carrying a wrong year will not appear as overdue. Include the collections sheet in the file to have arrears checked against it.'});
+
+  return {rows: out, warn, arrears, sheet: main, rowCount, dupes,
+          sheetNames: names, geoSheet: areaSheet || null, arrSheet: arrSheet || null};
+}
+
+/* ---------------------------- figures ---------------------------- */
+function regFigures(rows){
+  const today = TODAY;
+  let f = {units: rows.length, let: 0, contracted: 0, billed: 0, collected: 0, arrears: 0, arrUnits: 0};
+  rows.forEach(r => {
+    if(!r.let) return;                    /* vacant apartments are outside every rent figure */
+    f.let++; f.contracted += r.value || 0;
+    let a = 0;
+    (r.inst || []).forEach(x => {
+      const due = x.due ? new Date(x.due) : null;
+      const billed = due ? due <= today : false;
+      if(billed) f.billed += x.amt;
+      if(x.paid) f.collected += x.amt;
+      if(billed && !x.paid) a += x.amt;
+    });
+    if(a > 0){ f.arrears += a; f.arrUnits++; }
+  });
+  return f;
+}
+
+/* ---------------------------- UI ---------------------------- */
+function importOpen(){
+  const cur = regFigures(REGISTER);
+  openDrawer(T('imp_title'), `
+   <div class="card mb"><div class="bd">
+     <div class="warnbox" style="margin-bottom:14px">${I('alert',16,2.2)}<span>${T('imp_privacy')}</span></div>
+     <p style="font-size:13px;color:var(--ink-2);line-height:1.65;margin:0 0 14px">${T('imp_how')}</p>
+     <input type="file" id="impFile" accept=".xlsx" class="inp" onchange="importRun(this)">
+     <div id="impBusy" style="display:none;margin-top:14px;font-size:13px;color:var(--muted);font-weight:700">${T('imp_reading')}</div>
+   </div></div>
+   <div class="sect">${T('imp_now')}</div>
+   <div class="card"><div class="bd"><dl class="kv">
+     <dt>${T('f_contracted')}</dt><dd>${money(cur.contracted)} ${T('sar')}</dd>
+     <dt>${T('st_occ')}</dt><dd>${NUM(cur.let)} / ${NUM(cur.units)}</dd>
+     <dt>${T('f_collected')}</dt><dd>${money(cur.collected)} ${T('sar')}</dd>
+     <dt>${T('f_outstanding')}</dt><dd>${money(cur.arrears)} ${T('sar')}</dd>
+   </dl></div></div>
+   <div id="impOut"></div>`);
+}
+
+async function importRun(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  $('impBusy').style.display = 'block';
+  $('impOut').innerHTML = '';
+  try{
+    const sheets = await readWorkbook(file);
+    const res = parseRegister(sheets);
+    if(!res.rows.length) throw new Error('no_units');
+    IMP.result = res; IMP.file = file.name;
+    $('impBusy').style.display = 'none';
+    $('impOut').innerHTML = importPreviewHtml(res);
+  }catch(err){
+    $('impBusy').style.display = 'none';
+    const key = {not_zip:'imp_e_zip', not_xlsx:'imp_e_zip', no_inflate:'imp_e_browser',
+                 no_register_sheet:'imp_e_sheet', no_header:'imp_e_sheet',
+                 columns_not_found:'imp_e_cols', no_units:'imp_e_units'}[err.message] || 'imp_e_other';
+    $('impOut').innerHTML = `<div class="sect">${T('imp_failed')}</div>
+      <div class="card"><div class="bd"><div class="warnbox">${I('alert',16,2.2)}<span>${T(key)}</span></div>
+      <div class="note" style="margin-top:10px">${err.message}</div></div></div>`;
+  }
+}
+
+function importPreviewHtml(res){
+  const now = regFigures(REGISTER), next = regFigures(res.rows);
+  const d = (a,b) => { const x = b - a; return x === 0 ? '<span class="sub2">—</span>'
+    : `<span style="font-weight:800;color:${x>0?'var(--good)':'var(--critical)'}">${x>0?'+':'−'}${money(Math.abs(x))}</span>`; };
+
+  const byId = {}; REGISTER.forEach(r => byId[r.id] = r);
+  const changes = [];
+  res.rows.forEach(r => {
+    const o = byId[r.id];
+    if(!o){ changes.push({u:r.id, t:T('imp_new')}); return; }
+    if(!!o.let !== !!r.let) changes.push({u:r.id, t: r.let ? T('imp_now_let') : T('imp_now_vacant')});
+    if(Math.round(o.value||0) !== Math.round(r.value||0))
+      changes.push({u:r.id, t:`${T('f_amount')}: ${money(o.value||0)} → ${money(r.value||0)}`});
+    if(Math.round(o.paid||0) !== Math.round(r.paid||0))
+      changes.push({u:r.id, t:`${T('f_collected')}: ${money(o.paid||0)} → ${money(r.paid||0)}`});
+    if((o.inst||[]).length !== (r.inst||[]).length)
+      changes.push({u:r.id, t:`${T('f_sched')}: ${NUM((o.inst||[]).length)} → ${NUM((r.inst||[]).length)}`});
+  });
+  const missing = REGISTER.filter(o => !res.rows.some(r => r.id === o.id)).map(o => o.id);
+
+  return `
+  <div class="sect">${T('imp_found')}</div>
+  <div class="card mb"><div class="bd">
+    <div class="okbox">${I('check',16,2.2)}<span>${T('imp_read')
+      .replace('{n}', NUM(res.rowCount)).replace('{s}', res.sheet)}</span></div>
+    <div class="note" style="margin-top:10px">${T('imp_sheets')}: ${res.sheetNames.join(' · ')}</div>
+  </div></div>
+
+  <div class="sect">${T('imp_effect')}</div>
+  <div class="card mb"><div class="tw"><table>
+    <thead><tr><th>${T('imp_measure')}</th><th class="num">${T('imp_current')}</th><th class="num">${T('imp_afterimp')}</th><th class="num">${T('imp_change')}</th></tr></thead>
+    <tbody>
+      <tr><td>${T('st_occ')}</td><td class="num mono">${NUM(now.let)}/${NUM(now.units)}</td><td class="num mono strong">${NUM(next.let)}/${NUM(next.units)}</td><td class="num">${next.let===now.let?'<span class="sub2">—</span>':`<span style="font-weight:800">${next.let>now.let?'+':'−'}${NUM(Math.abs(next.let-now.let))}</span>`}</td></tr>
+      <tr><td>${T('f_contracted')}</td><td class="num mono">${money(now.contracted)}</td><td class="num mono strong">${money(next.contracted)}</td><td class="num">${d(now.contracted,next.contracted)}</td></tr>
+      <tr><td>${T('f_billed')}</td><td class="num mono">${money(now.billed)}</td><td class="num mono strong">${money(next.billed)}</td><td class="num">${d(now.billed,next.billed)}</td></tr>
+      <tr><td>${T('f_collected')}</td><td class="num mono">${money(now.collected)}</td><td class="num mono strong">${money(next.collected)}</td><td class="num">${d(now.collected,next.collected)}</td></tr>
+      <tr><td>${T('f_outstanding')}</td><td class="num mono">${money(now.arrears)}</td><td class="num mono strong">${money(next.arrears)}</td><td class="num">${d(now.arrears,next.arrears)}</td></tr>
+    </tbody>
+  </table></div></div>
+
+  ${res.arrears.length?`
+  <div class="sect">${T('imp_arr')}</div>
+  <div class="card mb"><div class="tw"><table>
+    <thead><tr><th>${T('unit')}</th><th class="num">${T('f_amount')}</th><th>${T('f_arr_due')}</th></tr></thead>
+    <tbody>${res.arrears.map(a=>`<tr><td class="strong">${a.u}</td><td class="num mono">${money(a.amt)}</td><td class="mono">${a.due||'—'}</td></tr>`).join('')}</tbody>
+    <tfoot><tr style="background:#FBFCFC"><td class="strong">${L('Total','الإجمالي')}</td><td class="num mono strong">${money(res.arrears.reduce((x,a)=>x+a.amt,0))}</td><td></td></tr></tfoot>
+  </table></div><div class="note">${T('imp_arr_note')}</div></div>`:''}
+
+  ${changes.length?`
+  <div class="sect">${T('imp_changes')} (${NUM(changes.length)})</div>
+  <div class="card mb"><div class="tw"><table>
+    <thead><tr><th>${T('unit')}</th><th>${T('imp_change')}</th></tr></thead>
+    <tbody>${changes.slice(0,40).map(c=>`<tr><td class="strong">${c.u}</td><td>${c.t}</td></tr>`).join('')}</tbody>
+  </table></div>${changes.length>40?`<div class="note">${T('of')} ${NUM(changes.length)}</div>`:''}</div>`
+  :`<div class="card mb"><div class="bd"><div class="okbox">${I('check',16,2.2)}<span>${T('imp_nochange')}</span></div></div></div>`}
+
+  ${missing.length?`<div class="card mb"><div class="bd"><div class="warnbox">${I('alert',16,2.2)}<span>${T('imp_missing')}: ${missing.join(', ')}</span></div></div></div>`:''}
+
+  ${res.warn.length?`
+  <div class="sect">${T('imp_warn')} (${NUM(res.warn.length)})</div>
+  <div class="card mb"><div class="bd">
+    ${res.warn.slice(0,25).map(w=>`<div style="display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px">
+      <span class="strong" style="min-width:52px">${w.u||'—'}</span><span style="color:var(--ink-2)">${w.t}</span></div>`).join('')}
+    ${res.warn.length>25?`<div class="note" style="margin-top:10px">${NUM(res.warn.length-25)} ${L('more not shown','غير معروضة')}</div>`:''}
+  </div><div class="note">${T('imp_warn_note')}</div></div>`:''}
+
+  <button class="btn pri" onclick="importApply()">${I('check',16,2.2)} ${T('imp_apply')}</button>
+  <div class="note" style="margin-top:10px">${T('imp_apply_note')}</div>`;
+}
+
+function importApply(){
+  const res = IMP.result; if(!res) return;
+  LINK.commit(s => { s.register = res.rows; s.registerFrom = IMP.file; s.registerAt = Date.now(); }, 'console');
+  applyRegister(res.rows);
+  closeDrawer(); render();
+  toast(T('imp_done').replace('{n}', NUM(res.rows.length)));
+}
+
+/* rebuild every unit from a register, in place, then recompute everything */
+function applyRegister(rows){
+  const built = rows.map(r => ({
+    u:r.id, floor:r.floor, type:r.type, area:r.area,
+    occupied:r.let, tenant:r.tenant, tenant_ar:r.tenantAr,
+    rent:r.value||0, leaseStart:r.start?new Date(r.start):null, leaseEnd:r.end?new Date(r.end):null,
+    inst:(r.inst||[]).map(x=>({q:x.n, amt:x.amt, due:x.due?new Date(x.due):null,
+          billed: x.due? new Date(x.due)<=TODAY : false, paid:x.paid,
+          paidOn: x.paid && x.due ? new Date(x.due) : null})),
+    sheetPaid:r.paid, sheetRemain:r.remain
+  }));
+  const keep = {};
+  UNITS.forEach(u => keep[u.u] = {account:u.account, lastSeen:u.lastSeen, prefers:u.prefers});
+  UNITS.length = 0;
+  built.forEach((u,i) => {
+    const k = keep[u.u] || {};
+    u.account = u.occupied ? (k.account && k.account !== 'none' ? k.account : 'verified') : 'none';
+    u.lastSeen = u.account === 'verified' ? (k.lastSeen ?? (i*3)%10) : null;
+    u.prefers = k.prefers || (i%5===0 ? 'phone' : 'app');
+    u.profile = 'good';
+    UNITS.push(u);
+  });
+  UNITS.forEach(u => {
+    if(!u.occupied) return;
+    const unpaidBilled = u.inst.filter(x => x.billed && !x.paid);
+    u.profile = !unpaidBilled.length ? 'good'
+      : (Math.max(...unpaidBilled.map(x => (TODAY - x.due)/864e5)) > 60 ? 'problem' : 'late');
+  });
+  recompute();
+}
+
 /* ------------------------------ helpers ------------------------------ */
 const $=id=>document.getElementById(id);
 const fmtD=d=>{const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1113,6 +1714,7 @@ function render(){
  $('whoNm').textContent=T('who'); $('whoRl').textContent=T('role');
  $('brandSub').textContent=T('console');
  $('expBtn').innerHTML=I('dl',15)+'<span>'+T('export')+'</span>';
+ $('impBtn').innerHTML=I('up',15)+'<span>'+T('imp_btn')+'</span>';
  $('langLbl').textContent=LANG==='en'?'العربية':'English';
  (function(){
    const el=$('linkdot'), lbl=$('linkLbl');
